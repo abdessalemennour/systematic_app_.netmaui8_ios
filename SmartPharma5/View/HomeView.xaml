@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             x:Class="SmartPharma5.View.HomeView"
+             xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             BackgroundColor="BlueViolet"
+             MenuItem.Accelerator="true"
+             NavigationPage.HasBackButton="False"
+             Shell.FlyoutBehavior="Flyout"
+             NavigationPage.HasNavigationBar="true"
+             Title="HomeView">
+
+
+
+    <ContentPage.BindingContext>
+        <local:HomeViewModel/>
+    </ContentPage.BindingContext>
+    <NavigationPage.TitleView>
+        
+        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+
+            <!-- StackLayout principal pour le menu + titre -->
+            <StackLayout Orientation="Horizontal" 
+                     AbsoluteLayout.LayoutBounds="0,0,1,1"
+                     AbsoluteLayout.LayoutFlags="All"
+                     VerticalOptions="Center"
+                     HorizontalOptions="FillAndExpand"
+                     Spacing="10"
+                     Padding="10,0">
+
+                <!-- Bouton menu -->
+                <ImageButton Source="pichon_menu2.png"
+                         BackgroundColor="Transparent"
+                         WidthRequest="40"
+                         HeightRequest="40"
+                         Clicked="ImageButton_Clicked"
+                         HorizontalOptions="Start"
+                         VerticalOptions="Center"/>
+
+                <!-- Titre -->
+                <Label Text="Menu" 
+                   HorizontalOptions="CenterAndExpand" 
+                   HorizontalTextAlignment="Center" 
+                   FontSize="19" 
+                   TextColor="White" 
+                   VerticalOptions="Center"/>
+
+            </StackLayout>
+
+            <!-- Groupe des deux boutons à droite -->
+            <StackLayout Orientation="Horizontal"
+                     Spacing="10"
+                     AbsoluteLayout.LayoutFlags="PositionProportional"
+                     AbsoluteLayout.LayoutBounds="0.95,0.5,-1,-1"
+                     VerticalOptions="Center">
+
+                <!-- Nouveau bouton -->
+                <ImageButton Source="activity.png"
+                         BackgroundColor="Transparent"
+                         WidthRequest="30"
+                         HeightRequest="30"
+                         CornerRadius="10"
+                         Clicked="OnActivityButtonClicked"/>
+
+                <!-- Bouton chat -->
+                <Grid>
+                    <ImageButton Source="chat.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             CornerRadius="10"
+                             Clicked="OnChatButtonClicked"/>
+
+                    <!-- Badge pour messages non lus -->
+                    <Frame IsVisible="False"
+                       x:Name="UnreadBadgeFrame"
+                       BackgroundColor="Red"
+                       CornerRadius="10"
+                       Padding="0"
+                       HeightRequest="20"
+                       WidthRequest="20"
+                       HorizontalOptions="End"
+                       VerticalOptions="Start"
+                       Margin="0,-5,-5,0"
+                       HasShadow="False">
+                        <Grid>
+                            <Label x:Name="UnreadBadgeLabel"
+                               Text="0"
+                               TextColor="White"
+                               FontSize="10"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </Grid>
+                <ImageButton x:Name="MoreButton"
+                     Source="menuitem.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     Clicked="OnMoreButtonClicked">
+                    <ImageButton.IsVisible>
+                        <OnPlatform x:TypeArguments="x:Boolean">
+                            <On Platform="iOS" Value="True" />
+                            <On Platform="Android" Value="False" />
+                        </OnPlatform>
+                    </ImageButton.IsVisible>
+                </ImageButton>
+
+            </StackLayout>
+
+        </AbsoluteLayout>
+
+
+    </NavigationPage.TitleView>
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Home"></MenuBarItem>
+    </ContentPage.MenuBarItems>
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="1" Command="{Binding LogoutCommand}"/>
+
+    </ContentPage.ToolbarItems>-->
+    <ContentPage.Content>
+        <ScrollView x:Name="ScrolView">
+            <StackLayout>
+
+                <Grid 
+                       x:Name="globle_grid" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="AUTO"></RowDefinition>
+                        <RowDefinition Height="AUTO"></RowDefinition>
+                        <RowDefinition Height="AUTO"></RowDefinition>
+                        <RowDefinition Height="AUTO"></RowDefinition>
+                        <RowDefinition Height="AUTO"></RowDefinition>
+                        <RowDefinition Height="AUTO"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackLayout x:Name="opportunity_group" Grid.Row="0" >
+                        <Label Padding="10" Text="Opportunity" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="Center"></Label>
+                        <Frame>
+                            <Grid RowSpacing="20" Margin="2,10,2,8" ColumnSpacing="15" HorizontalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout  x:Name="achat_add_opportunity" Grid.Row="0" Grid.Column="0" IsVisible="{Binding AddOppIsVisible, Mode=TwoWay}">
+                                    <ImageButton BackgroundColor="#6B90BF" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="cartarrowdown.png"
+                                                 Command="{Binding CommandAddOpp}"
+                                 Aspect="AspectFit">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Opportunity" FontAttributes="Italic" TextColor="#274476" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout  x:Name="achat_my_opportunities" Grid.Row="0" Grid.Column="1" IsVisible="{Binding MyOppIsVisible, Mode=TwoWay}" >
+                                    <ImageButton BackgroundColor="#79D9B6" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="clipboardlist.png"
+                                Command="{Binding CommandMyOpp}" Aspect="AspectFit">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Opportunities" FontAttributes="Italic" TextColor="#274476" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout  x:Name="achat_all_opportunities" IsVisible="{Binding AllOppIsVisible, Mode=TwoWay} " Grid.Row="0" Grid.Column="2" >
+                                    <ImageButton BackgroundColor="#D95D30" 
+                                CornerRadius="5" 
+                               HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="clipboardlist.png"
+                                Command="{Binding CommandAllOpp}"
+                                                 Aspect="AspectFit">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End"  HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center" Text="All Opportunities" FontAttributes="Italic" TextColor="#274476" FontSize="12" ></Label>
+                                </StackLayout>
+                            </Grid>
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout x:Name="dashboard_group" Grid.Row="1" IsVisible="{Binding DashboardIsVisible}">
+                        <Label Padding="10" Text="Dashboard/Statement" HorizontalOptions="Center" FontSize="19" TextColor="White"></Label>
+                        <Frame>
+                            <Grid  RowSpacing="20" Margin="2,10,2,8" ColumnSpacing="15" HorizontalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout  x:Name="dashboard_dashboard" Grid.Row="0" Grid.Column="0" IsVisible="{Binding DashboardIsVisible}">
+                                    <ImageButton BackgroundColor="#F2798F" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="dashboard.png"
+                        
+                                Command="{Binding CommandDashboard}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Dashboard" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <!--<StackLayout x:Name="dashboard_unpaid"  Grid.Row="0" Grid.Column="1" IsVisible="{Binding StatmentIsVisible, Mode=TwoWay}" >
+                                    <ImageButton BackgroundColor="#2FCAD4" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                
+                                Source="unpaid.png"
+                                Command="{Binding CommandStatment}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Unpaid" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout  x:Name="dashboard_order" Grid.Row="0" Grid.Column="2" IsVisible="{Binding OrderIsVisible, Mode=TwoWay}" >
+                                    <ImageButton BackgroundColor="#D7F205" 
+                             CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                            Source="unpaid.png"
+                            Command="{Binding CommandOrder}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Order" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>-->
+                            </Grid>
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout x:Name="payment_group" Grid.Row="2" >
+                        <Label Padding="10" Text="Payment" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+                        <Frame  >
+                            <Grid RowSpacing="20" Margin="2,10,2,8" ColumnSpacing="15" HorizontalOptions="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout x:Name="comptabilite_add_payment" Grid.Row="0" Grid.Column="0" >
+                                    <ImageButton BackgroundColor="#77A1F7" 
+                                     CornerRadius="5" 
+                                    HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="circledollar.png"
+                        
+                                Command="{Binding CommandAddPayment}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Payment" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="comptabilite_my_payment" Grid.Row="0" Grid.Column="1">
+                                    <ImageButton BackgroundColor="#66D4CA" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="paid.png"
+                        
+                                Command="{Binding CommandMyPayment}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Payment" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="comptabilite_all_payment" Grid.Row="0" Grid.Column="2" >
+                                    <ImageButton BackgroundColor="#7CEB88" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="paid.png"
+                        
+                                Command="{Binding CommandAllPayment}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Payment" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+
+                                <StackLayout x:Name="comptabilite_add_transfer" Grid.Row="1" Grid.Column="0" >
+                                    <ImageButton BackgroundColor="#41C1F2" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="moneytransfer.png"
+                        
+                                Command="{Binding CommandAddTransfer}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="comptabilite_my_cashdesk" Grid.Row="1" Grid.Column="1" >
+                                    <ImageButton BackgroundColor="#7983D4" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="cashregister.png"
+                        
+                                Command="{Binding CommandMyCashDesk}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My CashDesk" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout  x:Name="comptabilite_all_cashdesk" Grid.Row="1" Grid.Column="2" >
+                                    <ImageButton BackgroundColor="#95DCF5" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="cashregister.png"
+                        
+                                Command="{Binding CommandAllCashDesk}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All CashDesk" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+
+
+                                <StackLayout x:Name="comptabilite_my_transfer" Grid.Row="2" Grid.Column="1" >
+                                    <ImageButton BackgroundColor="#FA927F" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="moneytransfer.png"
+                        
+                                Command="{Binding CommandMyTransfer}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="comptabilite_all_transfer" Grid.Row="2" Grid.Column="2" >
+                                    <ImageButton BackgroundColor="#D973A0" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="moneytransfer.png"
+                        
+                                Command="{Binding CommandAllTransfer}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="comptabilite_my_waiting_transfer" Grid.Row="2" Grid.Column="0" IsVisible="{Binding MyWaitingTransferIsVisible, Mode=TwoWay}">
+                                    <ImageButton BackgroundColor="#D973A0" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="moneytransfer.png"
+                        
+                                Command="{Binding CommandMyWaitingTransfer}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Waiting transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+
+                            </Grid>
+
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout x:Name="quiz_group"  Grid.Row="3">
+                        <Label Padding="10" Text="Quiz" HorizontalOptions="Center" FontSize="19" TextColor="White"></Label>
+                        <Frame>
+
+
+                            <Grid RowSpacing="20" Margin="2,10,2,8" ColumnSpacing="15" HorizontalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"></RowDefinition>
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout  x:Name="marketing_add_partner_form" Grid.Row="0" Grid.Column="0" >
+                                    <ImageButton BackgroundColor="#FFC769" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="fileform.png"
+                        
+                                Command="{Binding CommandAddPartnerForms}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add parnter forms" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+
+                                <StackLayout  x:Name="marketing_my_partner_form" Grid.Row="0" Grid.Column="1"  >
+                                    <ImageButton BackgroundColor="#C266D9" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                
+                                Source="fileform.png"
+                                Command="{Binding CommandMyForms}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My parnter forms" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+
+                                <StackLayout x:Name="marketing_all_partner_form"  Grid.Row="0" Grid.Column="2"  >
+                                    <ImageButton BackgroundColor="#927FFA" 
+                             CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                            Source="fileform.png"
+                            Command="{Binding CommandAllForms}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All parnter forms" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+
+
+                            </Grid>
+
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout x:Name="hr_group" Grid.Row="4">
+                        <Label Padding="10" Text="Human resources" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+                        <Frame >
+                            <Grid RowSpacing="20" Margin="2,10,2,8" ColumnSpacing="15" HorizontalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                    <RowDefinition Height="120"></RowDefinition>
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout x:Name="hr_my_request_day_off" Grid.Row="0" Grid.Column="1" IsVisible="{Binding HolidayRequestIsVisible}">
+                                    <ImageButton BackgroundColor="#FE6EFF" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="day_off1.png"
+                        
+                                Command="{Binding CommandHolidayRequestMy}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Holiday Request" FontAttributes="Italic" FontSize="12" TextColor="#274476" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="hr_all_request_day_off" Grid.Row="0" Grid.Column="2" >
+                                    <ImageButton BackgroundColor="#E86FAE" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="day_off1.png"
+                        
+                                Command="{Binding CommandHolidayRequestAll}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Holiday Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="hr_add_request_day_off" Grid.Row="0" Grid.Column="0" IsVisible="{Binding HolidayRequestIsVisible}">
+                                    <ImageButton BackgroundColor="#CD69F5" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="add_day_off.png"
+                        
+                                Command="{Binding InsertCongé}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Request Day Off" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+                                </StackLayout>
+                                <StackLayout x:Name="hr_my_deposit_request"  Grid.Row="1" Grid.Column="1" IsVisible="{Binding AdvanceRequestIsVisible, Mode=TwoWay}" >
+                                    <ImageButton BackgroundColor="#F57D69" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="deposit.png"
+                                Command="{Binding CommandAvanceRequestMy}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Deposit Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout  x:Name="hr_all_deposit_request" Grid.Row="1" Grid.Column="2"  >
+                                    <ImageButton BackgroundColor="#FF6E70" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="deposit.png"
+                                Command="{Binding CommandAvanceRequestAll}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Deposit Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout x:Name="hr_add_deposit_request"  Grid.Row="1" Grid.Column="0" >
+                                    <ImageButton BackgroundColor="#83D474" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="add_deposit.png"
+                                Command="{Binding InsertAvance}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Deposit Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+
+                            </Grid>
+
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout x:Name="profile_group"  Grid.Row="5">
+                        <Label Padding="10" Text="Profile" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+                        <Frame >
+                            <Grid RowSpacing="20" Margin="2,10,2,8" ColumnSpacing="15" HorizontalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120"></RowDefinition>
+                                    <RowDefinition Height="120"></RowDefinition>
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+
+                                <!--<StackLayout  Grid.Row="1" Grid.Column="0" IsVisible="{Binding AdvanceRequestIsVisible, Mode=TwoWay}" >
+                            <ImageButton BackgroundColor="#bac8f7" 
+                                CornerRadius="5"  ,
+                                HeightRequest="70" 
+                                WidthRequest="73" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="16"
+                                Source="profile.png"
+                                Command="{Binding ProfilePartner}">
+                            </ImageButton>
+                            <Label VerticalTextAlignment="End" HorizontalTextAlignment="Center" Text="All Profil Partner" TextColor="#274476" FontSize="12" ></Label>
+                        </StackLayout>-->
+                                <!--<StackLayout  IsVisible="{Binding AllOppIsVisible, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"  >
+                                <ImageButton BackgroundColor="#0cdaed" 
+                                CornerRadius="5" 
+                                HeightRequest="70" 
+                                WidthRequest="73" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="19"
+                                Source="notif.png"
+                                Command="{Binding CommandNotificationTempValue}">
+                                </ImageButton>
+                                <Label VerticalTextAlignment="End" HorizontalTextAlignment="Center" Text="VALIDATION UPDATE 1" TextColor="#274476" FontSize="12" ></Label>
+                            </StackLayout>-->
+
+                                <StackLayout x:Name="marketing_update_profile" Grid.Row="0" Grid.Column="0"  >
+                                    <ImageButton BackgroundColor="#6666cc" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="profile.png"
+                                Command="{Binding AllPartnerCommand}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Updates" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout x:Name="marketing_add_partner"  Grid.Row="0" Grid.Column="1"  >
+                                    <ImageButton BackgroundColor="Green" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="add_partner.png"
+                                Command="{Binding AddPartnerTemp}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Partner" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+
+
+
+
+                                <!--<StackLayout  Grid.Row="2" Grid.Column="0" IsVisible="{Binding AdvanceRequestIsVisible, Mode=TwoWay}" >
+                                <ImageButton BackgroundColor="DarkSlateGray" 
+                                CornerRadius="5" 
+                                HeightRequest="70" 
+                                WidthRequest="73" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="16"
+                                Source="profile.png"
+                                Command="{Binding ChnageProfilePage}">
+                                </ImageButton>
+                                <Label VerticalTextAlignment="End" HorizontalTextAlignment="Center" Text="Validate Change Profile" TextColor="#274476" FontSize="12" ></Label>
+                            </StackLayout>-->
+                                <StackLayout x:Name="marketing_validation_profile" Grid.Row="0" Grid.Column="2"   >
+                                    <ImageButton BackgroundColor="DarkSlateGray" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="notifi.png"
+                                Command="{Binding Validation}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" x:Name="TitleValidation"  Text="Validation" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout  Grid.Row="1" Grid.Column="0" IsVisible="false" >
+                                    <ImageButton BackgroundColor="DarkSlateGray" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="notifi.png"
+                                Command="{Binding AllPartnerCommand}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalTextAlignment="Center" Text="All Partner Updates" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+                                <StackLayout  Grid.Row="1" Grid.Column="0" IsVisible="false"  >
+                                    <ImageButton BackgroundColor="DarkSlateGray" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="notifi.png"
+                                Command="{Binding CommandTtest}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" x:Name="TestEtat"  Text="TestEtat" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                                </StackLayout>
+
+                                <StackLayout Grid.Row="1" Grid.Column="0">
+                                    <ImageButton BackgroundColor="#FFD700" 
+                 CornerRadius="5" 
+                 HeightRequest="100" 
+                 WidthRequest="100" 
+                 HorizontalOptions="Center" 
+                 VerticalOptions="StartAndExpand"
+                 Padding="20"
+                 Source="notifi.png"
+                 Command="{Binding MyRequests}">
+                                    </ImageButton>
+                                    <Label VerticalTextAlignment="End" 
+           HorizontalOptions="CenterAndExpand" 
+           HorizontalTextAlignment="Center" 
+           Text="MY REQUESTS" 
+           TextColor="#274476" 
+           FontAttributes="Italic" 
+           FontSize="12">
+                                    </Label>
+                                </StackLayout>
+
+
+
+
+
+
+                                <dxco:DXPopup IsOpen="{Binding IsOpen}">
+                                    <StackLayout WidthRequest="200" BackgroundColor="AliceBlue">
+                                        <Label
+                    Text="This is the DevExpress Popup component for Xamarin.Forms.&#10;&#10;
+                        Tap outside the popup to hide it."
+                    Margin="5, 5"/>
+                                    </StackLayout>
+                                </dxco:DXPopup>
+                            </Grid>
+                        </Frame>
+                    </StackLayout>
+
+
+
+                    <StackLayout  WidthRequest="300"  HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="White" IsVisible="{Binding MenuVisisble,Mode=TwoWay}">
+                        <Image Margin="3" x:Name="Image"    WidthRequest="110" HeightRequest="90"></Image>
+
+
+                        <Label  TextColor="Black" Margin="20" FontSize="30" HorizontalOptions="CenterAndExpand">Menu</Label>
+                        <StackLayout BackgroundColor="LightGray" HeightRequest="1" ></StackLayout>
+
+                        <StackLayout Margin="10">
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_summary"></TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers>
+                                <Image Margin="10,0,10,0" Source="pichon_dashboard.png" WidthRequest="20" HeightRequest="20" VerticalOptions="CenterAndExpand"></Image>
+                                <Label VerticalOptions="CenterAndExpand" VerticalTextAlignment="Center" TextColor="Black" Margin="10" FontAttributes="Italic" HorizontalOptions="StartAndExpand">Summary</Label>
+                            </StackLayout>
+                            <StackLayout BackgroundColor="LightGray" HeightRequest="1" ></StackLayout>
+
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_sales"></TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers>
+                                <Image Margin="10,0,10,0" Source="info_pichon.png" WidthRequest="20" HeightRequest="20" VerticalOptions="CenterAndExpand"></Image>
+                                <Label TextColor="Black" Margin="10" HorizontalOptions="StartAndExpand">INFO SESSION</Label>
+                            </StackLayout>
+
+
+
+
+                            <StackLayout HeightRequest="270">
+
+                            </StackLayout>
+                            <StackLayout BackgroundColor="White" Orientation="Vertical">
+
+
+                                <Image Margin="0,0,0,10" Source="logo_systematic.jpeg" WidthRequest="100"></Image>
+                            </StackLayout>
+
+                        </StackLayout>
+
+
+                    </StackLayout>
+
+                </Grid>
+
+
+                <StackLayout BackgroundColor="White" Orientation="Vertical">
+
+                    <Label Margin="20"  Text="powred by www.systematic-erp.com" FontSize="Subtitle" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" FontAttributes="Italic" TextColor="Gray"></Label>
+                    <Image Margin="0,0,0,10" Source="logo_systematic.jpeg" WidthRequest="100"></Image>
+                </StackLayout>
+            </StackLayout>
+
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

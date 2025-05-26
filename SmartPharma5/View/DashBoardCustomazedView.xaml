@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.DashBoardCustomazedView"
+                xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             Title="DashBoardCustomazedView">
+ 
+    <VerticalStackLayout>
+        <StackLayout   >
+            <ImageButton BackgroundColor="#F2798F" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="dashboard.png"
+                         Clicked="ImageButton_Clicked_1"
+                        
+                                >
+            </ImageButton>
+            <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center" Text="Customazed DashBoard" TextColor="#274476"  FontSize="12" ></Label>
+
+        </StackLayout>
+        <StackLayout  >
+            <ImageButton BackgroundColor="#F2798F" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="grid1.png"
+                        
+                                Clicked="ImageButton_Clicked">
+            </ImageButton>
+            <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Customzed Grid" TextColor="#274476" FontAttributes="Bold" FontSize="12" ></Label>
+
+        </StackLayout>
+        <dxco:DXPopup  x:Name="Popup2" BackgroundColor="LightGray" CornerRadius="20" Margin="10"   AllowShadow="True">
+            <StackLayout  Padding="10" BackgroundColor="LightGray">
+                <ScrollView>
+                    <CollectionView   ItemsSource="{Binding List_Paramettre_final,Mode=TwoWay}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+
+                                <StackLayout Margin="5">
+
+
+                                    <dxe:TextEdit HorizontalOptions="FillAndExpand"   IsVisible="{Binding IsString}"  Text="{Binding StringValue,Mode=TwoWay}"  LabelText="{Binding Name}" IsLabelFloating="False"></dxe:TextEdit>
+
+                                    <dxe:NumericEdit HorizontalOptions="FillAndExpand"  IsVisible="{Binding IsInt,Mode=TwoWay}" Value="{Binding IntValue}" LabelText="{Binding Name}"  IsLabelFloating="False"></dxe:NumericEdit>
+
+                                    <Label HorizontalOptions="Start"  IsVisible="{Binding IsBool}" Text="{Binding Name,Mode=TwoWay}"></Label>
+                                    <dxe:CheckEdit  HorizontalOptions="FillAndExpand" IsChecked="{Binding BoolValue,Mode=TwoWay}" IsVisible="{Binding IsBool}"></dxe:CheckEdit>
+
+                                    <dxe:DateEdit HorizontalOptions="FillAndExpand" LabelText="{Binding Name}"  Date="{Binding DateValue,Mode=TwoWay}"  IsVisible="{Binding IsDate}" IsLabelFloating="False"></dxe:DateEdit>
+
+
+                                </StackLayout>
+
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+                </ScrollView>
+                <Button Clicked="Button_Clicked" Text="Config"></Button>
+            </StackLayout>
+
+
+        </dxco:DXPopup>
+    </VerticalStackLayout>
+</ContentPage>

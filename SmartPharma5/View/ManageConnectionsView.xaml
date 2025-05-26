@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.ManageConnectionsView"
+             Title="Gestion des connexions"
+             xmlns:viewmodel="clr-namespace:SmartPharma5.ViewModel">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+            <Label Text="Connexions enregistrées"
+               FontSize="24"
+               HorizontalOptions="Center" />
+
+            <CollectionView x:Name="ConnectionList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="Gray" Padding="10" CornerRadius="10" Margin="5">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                            </Frame.GestureRecognizers>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Colonne gauche - Infos connexion -->
+                                <StackLayout Grid.Column="0" Spacing="5" Padding="0,0,10,0">
+                                    <!-- padding à droite pour espacer -->
+                                    <!-- Toujours visible -->
+                                    <Label Text="{Binding CustomName}" 
+                                       FontAttributes="Bold" 
+                                       FontSize="18" 
+                                       TextColor="DarkBlue"/>
+
+                                    <!-- Affiché uniquement en mode édition -->
+                                    <Grid IsVisible="{Binding IsEditing}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0.85*" />
+                                            <!-- un peu moins de largeur -->
+                                            <ColumnDefinition Width="0.15*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Entry Text="{Binding CustomName}" 
+                                               FontAttributes="Bold" 
+                                               FontSize="18"
+                                               Grid.Column="0"
+                                               VerticalOptions="Center"
+                                               Margin="0,0,10,0"/>
+                                        <!-- Espace à droite -->
+
+                                        <ImageButton Source="check.png"
+                                                     BackgroundColor="Transparent"
+                                                     HeightRequest="30"
+                                                     WidthRequest="30"
+                                                     Grid.Column="1"
+                                                     VerticalOptions="Center"
+                                                     Clicked="ValidateButton_Clicked"/>
+                                    </Grid>
+
+                                    <Label Text="{Binding ConnectionDate, StringFormat='Date de la dernière connexion : {0:dd/MM/yyyy HH:mm}'}" />
+                                </StackLayout>
+
+                                <!-- Colonne droite - Boutons edit/delete -->
+                                <StackLayout Grid.Column="1" Spacing="5">
+
+                                    <ImageButton 
+                                        Source="delete_icon.png"
+                                        BackgroundColor="Transparent"
+                                        HeightRequest="30"
+                                        WidthRequest="30"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="End"
+                                        IsVisible="{Binding IsNotCurrentConnection}"
+                                        Clicked="OnDeleteButtonClicked" />
+
+                                    <ImageButton 
+                                        Source="edit.png"
+                                        BackgroundColor="Transparent"
+                                        HeightRequest="30"
+                                        WidthRequest="30"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="End"
+                                        Clicked="OnEditButtonClicked"/>
+                                </StackLayout>
+
+                            </Grid>
+
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

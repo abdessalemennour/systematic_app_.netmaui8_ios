@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.DétailsView"
+                 xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             NavigationPage.HasBackButton="False"
+             Title="DétailsView">
+    <Grid BackgroundColor="#F3F5F9" RowSpacing="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="200"/>
+            
+        </Grid.RowDefinitions>
+        <Image IsVisible="false" Grid.Row="0" Source="back8.jpg" Aspect="Fill" VerticalOptions="StartAndExpand" HeightRequest="110" ></Image>
+        <Grid IsVisible="false" Grid.Row="0"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout Margin="0,-20,0,0" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label TextColor="White" FontSize="40" HorizontalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans >
+                                <Span Text="REQUEST DAY OFF" FontSize="35" FontAttributes="Bold" />
+
+
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label Text="EDIT REQUEST" TextColor="White" FontSize="15" HorizontalTextAlignment="Center" Margin="0,-10,0,0"/>
+            </StackLayout>
+        </Grid>
+        <StackLayout  Grid.Row="1" Margin="10" HeightRequest="5"  Orientation="Horizontal">
+            <Button Command="{Binding ValiderRequest}" IsVisible="false" ImageSource="accepte.png" TextColor="White" Text="Accepter" FontSize="Medium" BackgroundColor="LawnGreen" Margin="5" HeightRequest="80" VerticalOptions="CenterAndExpand" WidthRequest="180" HorizontalOptions="StartAndExpand" ></Button>
+            <Button Command="{Binding RéfuserRequest}" IsVisible="false" ImageSource="refuse.png" TextColor="White" Margin="5" Text="Réfuser" HeightRequest="80" BackgroundColor="red" FontSize="Medium" VerticalOptions="CenterAndExpand" WidthRequest="180" HorizontalOptions="CenterAndExpand"></Button>
+        </StackLayout>
+
+        <StackLayout  Grid.Row="2" >
+            <StackLayout Orientation="Vertical"  HorizontalOptions="CenterAndExpand" Padding="20" Margin="5" Spacing="25">
+
+
+                <dxe:ComboBoxEdit ItemsSource="{Binding Day_Off_Types}" SelectedItem="{Binding Selected_type}" DisplayMember="Description"  LabelText="Pick Type" IsLabelFloating="false"></dxe:ComboBoxEdit>
+
+                <StackLayout Orientation="Vertical">
+
+                    <Label Text="Start date :"  FontSize="Medium"  TextColor="Gray"  HorizontalTextAlignment="Start" TextDecorations="None" VerticalOptions="CenterAndExpand" Margin="0" />
+                    <Frame CornerRadius="2" BorderColor="CadetBlue" BackgroundColor="#F3F5F9" HasShadow="True" Margin="0" Padding="10">
+                        <StackLayout Orientation="Horizontal"  >
+                            <DatePicker  WidthRequest="200" Date="{Binding Start_date , Mode=TwoWay}" x:Name="date1" FontFamily = "Lobster" TextColor="Black" FontSize="Medium"  Margin="5" HorizontalOptions="StartAndExpand"  VerticalOptions="CenterAndExpand" ></DatePicker>
+                            <TimePicker  Time="{Binding Start_time,Mode=TwoWay}" HorizontalOptions="CenterAndExpand" WidthRequest="100" VerticalOptions="CenterAndExpand"></TimePicker>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+
+
+
+
+
+                <StackLayout Orientation="Vertical">
+
+                    <Label Text="End date :" FontSize="Medium" HorizontalTextAlignment="Start" TextColor="Gray"  VerticalOptions="StartAndExpand" Margin="0"></Label>
+                    <Frame CornerRadius="5" BorderColor="CadetBlue" BackgroundColor="#F3F5F9" HasShadow="True" Padding="10" Margin="0">
+                        <StackLayout Orientation="Horizontal">
+                            <DatePicker   Margin="5" FontSize="Medium"  FontFamily="Lobster-Regular" HorizontalOptions="StartAndExpand"  Date="{Binding End_date , Mode=TwoWay}" VerticalOptions="CenterAndExpand" WidthRequest="200"></DatePicker>
+                            <TimePicker Time="{Binding End_time ,Mode=TwoWay}" HorizontalOptions="CenterAndExpand" WidthRequest="100" VerticalOptions="CenterAndExpand"></TimePicker>
+                        </StackLayout>
+
+                    </Frame>
+
+                </StackLayout>
+
+
+
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                    <dxe:MultilineEdit Margin="0" Text="{Binding Description1}"  HeightRequest="150" LabelFontSize="Medium" CursorPosition="-100"  HorizontalOptions="FillAndExpand" LabelText="Réquest déscription" IsLabelFloating="False"></dxe:MultilineEdit>
+                </StackLayout>
+
+
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Update" TextColor="White" FontFamily="Lobster-Regular" BackgroundColor="GreenYellow" ImageSource="update3.png" Command="{Binding updateCommande}" HorizontalOptions="FillAndExpand"  CornerRadius="5" Margin="10"  />
+                    <Button Text="Delete"  TextColor="White" ImageSource="refuse3.png" FontFamily="Lobster-Regular" BackgroundColor="Red"  HorizontalOptions="FillAndExpand" CornerRadius="5" Margin="10"  Command="{Binding deleteCommande}" />
+                </StackLayout>
+
+
+
+            </StackLayout>
+        </StackLayout>
+        <StackLayout Grid.Row="3">
+            
+        </StackLayout>
+        <dxco:DXPopup  x:Name="Popup"  IsOpen="{Binding TestCon,Mode=TwoWay}"  CornerRadius="20"  AllowShadow="True">
+            <Frame CornerRadius="20" Padding="20,25,20,25">
+                <StackLayout Padding="5" WidthRequest="150" BackgroundColor="White" Orientation="Vertical" >
+                    <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                    <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+                </StackLayout>
+            </Frame>
+
+        </dxco:DXPopup>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
+             x:Class="SmartPharma5.View.LocationView"
+             BackgroundColor="{DynamicResource PageBackgroundColor}"
+             Title="Location">
+
+    <!-- Conteneur principal -->
+    <Grid RowDefinitions="Auto,*,Auto,Auto" 
+          ColumnDefinitions="*"
+          Margin="10,0,10,0"
+          VerticalOptions="FillAndExpand">
+
+        <!-- Frame des coordonnées -->
+        <Frame Grid.Row="0"
+               BackgroundColor="#F5F5F5"
+               CornerRadius="15"
+               Margin="0,20,0,0"
+               Padding="20"
+               HasShadow="True">
+            <Grid ColumnDefinitions="*,*,*"
+                  RowDefinitions="Auto">
+
+                <!-- Coordonnées 1 -->
+                <StackLayout Grid.Row="0" Grid.Column="0" 
+                             Orientation="Vertical" 
+                             HorizontalOptions="Start" 
+                             Padding="10">
+                    <Label x:Name="LatitudeLabel1"
+                           Text="Latitude 1: Non valide"
+                           FontSize="14"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCoordinateTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label x:Name="LongitudeLabel1"
+                           Text="Longitude 1: Non valide"
+                           FontSize="14"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCoordinateTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+
+                <!-- Distance (au centre) -->
+                <StackLayout Grid.Row="0" Grid.Column="1" 
+                             Orientation="Vertical" 
+                             HorizontalOptions="Center" 
+                             Padding="10">
+                    <Label x:Name="DistanceLabel"
+                           Text="Distance: Non calculée"
+                           FontSize="14"
+                           TextColor="Black"
+                           HorizontalTextAlignment="Center" />
+                </StackLayout>
+
+                <!-- Coordonnées 2 -->
+                <StackLayout Grid.Row="0" Grid.Column="2" 
+                             Orientation="Vertical" 
+                             HorizontalOptions="End" 
+                             Padding="10">
+                    <Label x:Name="LatitudeLabel2"
+                           Text="Latitude 2: Non valide"
+                           FontSize="14"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCoordinateTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label x:Name="LongitudeLabel2"
+                           Text="Longitude 2: Non valide"
+                           FontSize="14"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCoordinateTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+            </Grid>
+        </Frame>
+
+        <!-- Carte -->
+        <Frame Grid.Row="1"
+               BackgroundColor="#D8D8D8"
+               CornerRadius="10"
+               Padding="0"
+               HasShadow="True"
+               Margin="0,20,0,0"
+               VerticalOptions="FillAndExpand">
+            <mapsui:MapView x:Name="mapView"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalOptions="FillAndExpand" />
+        </Frame>
+
+        <!-- Boutons -->
+        <Button Grid.Row="2"
+                Text="Zoom to Bounds"
+                FontSize="18"
+                Clicked="ZoomToBoundsButton_Clicked"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="End"
+                BackgroundColor="#0000FF"
+                TextColor="White"
+                HeightRequest="50"
+                Margin="0,20,0,0"
+                CornerRadius="25" />
+
+        <Button Grid.Row="3"
+                Text="See on Google Maps"
+                FontSize="18"
+                Clicked="OpenGoogleMaps"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="End"
+                BackgroundColor="#0000FF"
+                TextColor="White"
+                HeightRequest="50"
+                Margin="0,10,0,20"
+                CornerRadius="25" />
+    </Grid>
+</ContentPage>

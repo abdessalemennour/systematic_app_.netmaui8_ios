@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.PartnerFormView"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Partner Form"
+           
+             x:Name="Expander">
+
+
+    <Grid>
+
+        <StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Frame HorizontalOptions="Start" Margin="0,0,10,0" >
+                    <ImageButton  Source="calendar.png"   HeightRequest="50"    Clicked="ImageButton_Clicked" ></ImageButton>
+                </Frame>
+                <Frame  HorizontalOptions="FillAndExpand">
+                    <Button Clicked="Button_Clicked" VerticalOptions="CenterAndExpand"   HeightRequest="40"  CornerRadius="30" Text="FILTRAGE"></Button>
+                </Frame>
+                <Frame x:Name="added"  HorizontalOptions="FillAndExpand">
+                    <Button Clicked="Button_Clicked_1" VerticalOptions="CenterAndExpand" BackgroundColor="ForestGreen"   HeightRequest="40"  CornerRadius="30" Text="ADD VISIT"></Button>
+                </Frame>
+            </StackLayout>
+
+            <StackLayout  IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Margin="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
+                <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+
+            </StackLayout>
+
+
+            <RefreshView  IsRefreshing="{Binding ActPopup}" Command="{Binding RefreshCommand}" HorizontalOptions="CenterAndExpand"  RefreshColor="#4B9EE8">
+                <dxcv:DXCollectionView x:Name="PartnerCollection"  ItemsSource="{Binding PartnerFormList,Mode=TwoWay}"    ItemSpacing="1" >
+                    <!--Define the item template.-->
+                    <dxcv:DXCollectionView.ItemTemplate  >
+                        <DataTemplate >
+                            <Frame  Margin="8" HasShadow="True" BorderColor="{Binding ValidatedColor}" Padding="0">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                </Frame.GestureRecognizers>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Frame Grid.Column="0"
+                                                BackgroundColor="{Binding ValidatedColor}"
+                                                HasShadow="False" Padding="10" >
+                                        <Image Source="Images/fileform.png"  HeightRequest="50" />
+                                    </Frame>
+                                    <StackLayout Grid.Column="1" Padding="10">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid Grid.Row="0" >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="60"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Form_name}" FontSize="Medium" TextColor="#55575c" FontAttributes="Bold"  />
+                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Estimated_date,StringFormat='{0:dd/MM/yyyy HH:mm}'}" HorizontalOptions="EndAndExpand" VerticalOptions="Center" TextColor="{Binding Estimated_dateColor}" FontSize="Small"  FontAttributes="Bold"  />
+                                                <Label Grid.Row="1" Grid.Column="0" TextColor="{Binding ColorDefDate}" Text="{ Binding   messageRestDate }" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  FontSize="11"></Label>
+                                                <Label Grid.Row="2" Grid.Column="0" Text="{Binding Partner_name}" LineBreakMode="WordWrap" TextColor="#959aa0" FontAttributes="Bold" FontSize="16" VerticalOptions="CenterAndExpand" HorizontalOptions="Start"  />
+                                                <!--localisation button-->
+                                                <Button Grid.Row="1" Margin="5" Grid.Column="1" VerticalOptions="Center"  HorizontalOptions="End" Padding="5" Text="LOCALISATION >" FontSize="Caption" TextColor="White" FontAttributes="Bold" BackgroundColor="#0000FF" Command="{Binding goLocalisation}" IsVisible="{Binding IsGpsAvailable}" />
+                                                <Button Grid.Row="1" Margin="5" Grid.Column="1" VerticalOptions="Center"  HorizontalOptions="End" Padding="5" Text="LOCALISATION >" FontSize="Caption" TextColor="White" FontAttributes="Bold" BackgroundColor="Black" Command="{Binding goLocalisation}" IsVisible="{Binding IsGps1Available}" />
+                                                <Button Grid.Row="1" Margin="5" Grid.Column="1" VerticalOptions="Center"  HorizontalOptions="End" Padding="5" Text="LOCALISATION >" FontSize="Caption" TextColor="White" FontAttributes="Bold" BackgroundColor="Red" Command="{Binding goLocalisation}" IsVisible="{Binding IsGps2Available}" />
+                                                <Button Grid.Row="1" Margin="5" Grid.Column="1" VerticalOptions="Center"  HorizontalOptions="End" Padding="5" Text="LOCALISATION >" FontSize="Caption" TextColor="White" FontAttributes="Bold" BackgroundColor="Green" Command="{Binding goLocalisation}" IsVisible="{Binding IsGps3Available}" />
+                                                <!--localisation button-->
+
+                                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Agent_name}" LineBreakMode="WordWrap" VerticalOptions="CenterAndExpand" IsVisible="{Binding Agent_IsVisible}"  TextColor="#959aa0" FontAttributes="Bold" FontSize="16" HorizontalOptions="Start" HorizontalTextAlignment="Start" />
+                                                <Label Grid.Row="3" Grid.Column="0" Text="{Binding Open_date,StringFormat='Opened: {0: dd/MM/yyyy HH:mm:ss}'}" FontSize="Caption" TextColor="#959aa0" />
+                                                <Label Grid.Row="3" Grid.Column="1" IsVisible="{Binding Close_date_IsVisible}" Text="{Binding Close_date,StringFormat='Closed: {0:dd/MM/yyyy HH:mm}'}" FontSize="Caption" TextColor="#959aa0" HorizontalOptions="EndAndExpand"/>
+                                                <Label Grid.Row="5" Grid.Column="0" Text="{Binding Cycle_name,StringFormat='Cycle {0}'}" FontSize="Caption" TextColor="#959aa0" FontAttributes="Bold" IsVisible="{Binding Cycle_IsVisible}" VerticalOptions="Center" />
+                                                <Button Grid.Row="5" Margin="5" Grid.Column="1" VerticalOptions="Center"  HorizontalOptions="End" Padding="5" Text="CONFIGURATION >" BackgroundColor="#0000FF" FontSize="Caption" TextColor="White" FontAttributes="Bold" Command="{Binding Source={x:Reference Expander} ,Path=BindingContext.ConfigBtnCommand}" CommandParameter="{Binding .}" />
+                                                <Label Grid.Row="6" Grid.Column="0" Text="{Binding Begin_date,StringFormat='Begin: {0:dd/MM/yyyy HH:mm}'}" FontSize="Caption" HorizontalTextAlignment="Start" HorizontalOptions="Start" TextColor="#959aa0" />
+                                                <Label Grid.Row="6" Grid.Column="1" Text="{Binding End_date,StringFormat='End: {0:dd/MM/yyyy HH:mm}'}" FontSize="Caption" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" TextColor="#959aa0" />
+                                                <StackLayout Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center">
+                                                    <Label Text="{Binding total_amount, Mode=OneWay, StringFormat='Total : {0:N0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Start"/>
+                                                    <Label Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" Margin="2,0,0,0"/>
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalOptions="Center">
+                                                    <Label Text="{Binding rest_amount, Mode=OneWay, StringFormat='Rest : {0:N0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Start"/>
+                                                    <Label Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" Margin="2,0,0,0"/>
+                                                </StackLayout>
+                                            </Grid>
+                                        </Grid>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </RefreshView>
+
+        </StackLayout>
+        <dxco:DXPopup  x:Name="Popup"  IsOpen="False" AllowScrim="True" CornerRadius="20"  AllowShadow="True">
+            <Frame CornerRadius="20" Padding="20,25,20,25">
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                    <Label HorizontalTextAlignment="Center" Text="PLEASE WAITING" FontAttributes="Bold" TextColor="#6CC5DE" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                    <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="30" HeightRequest="30" Margin="5,5"></ActivityIndicator>
+                </StackLayout>
+            </Frame>
+        </dxco:DXPopup>
+        <dxco:DXPopup  x:Name="PopupConfig"  IsOpen="{Binding Loading,Mode=TwoWay}" AllowScrim="True" CornerRadius="20"  AllowShadow="True">
+            <Frame CornerRadius="20" Padding="20,25,20,25">
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                    <Label HorizontalTextAlignment="Center" Text="PLEASE WAITING" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                    <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="30" HeightRequest="30" Margin="5,5"></ActivityIndicator>
+                </StackLayout>
+            </Frame>
+
+        </dxco:DXPopup>
+        <dxco:DXPopup  x:Name="PopupConnection"  CornerRadius="20"  AllowShadow="True">
+            <Frame CornerRadius="20">
+                <StackLayout Padding="5" WidthRequest="150" BackgroundColor="White" Orientation="Vertical" >
+                    <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                    <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+                </StackLayout>
+            </Frame>
+
+        </dxco:DXPopup>
+        <dxco:DXPopup x:Name="filtredPannel"  VerticalOptions="Fill" HorizontalOptions="FillAndExpand" CornerRadius="10" BackgroundColor="AliceBlue" Margin="30,50,30,50">
+
+            <StackLayout VerticalOptions="Center"  Spacing="2" Padding="30" Margin="10" >
+                <ScrollView VerticalOptions="CenterAndExpand">
+                    <StackLayout VerticalOptions="CenterAndExpand">
+                        <dxe:ComboBoxEdit HeightRequest="55" BorderColor="BlueViolet" x:Name="PartnerSearch" LabelText="Partner" FilterCondition="Contains" IsFilterEnabled="True" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" ItemsSource="{Binding PartnerList}" DisplayMember="Name" ValueMember="Id" SelectionChanged="Search_Changed" ></dxe:ComboBoxEdit>
+                        <dxe:ComboBoxEdit HeightRequest="55" BorderColor="BlueViolet" x:Name="FormSearch" LabelText="Form" FilterCondition="Contains" IsFilterEnabled="True" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" ItemsSource="{Binding ListOfForm}"  SelectionChanged="Search_Changed" ></dxe:ComboBoxEdit>
+
+                        <!--<dxe:ComboBoxEdit x:Name="AgentSearch" LabelText="Agent" FilterMode="Contains" IsFilterEnabled="True" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" ItemsSource="{Binding PartnerFormList}" DisplayMember="Agent_name" ValueMember="Agent_id" SelectionChanged="Search_Changed" ></dxe:ComboBoxEdit>-->
+                        <!--<dxe:TextEdit x:Name="FormSearch" LabelText="Form" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" TextChanged="Search_Changed"></dxe:TextEdit>-->
+
+                        <!--<dxe:DateEdit x:Name="EstimatedSearch" LabelText="Estimated Date"  ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" DateChanged="Search_Changed"></dxe:DateEdit>-->
+
+                        <Label  Margin="10,5,0,-5" Text="Estimated date :"></Label>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:DateEdit Margin="5"  BorderColor="BlueViolet" HeightRequest="55" HorizontalOptions="FillAndExpand" x:Name="StartEstimatedSearch"  IsEndIconVisible="False" LabelText="From" LabelFontSize="13" DisplayFormat="dd/MM/yyyy"  TextFontSize="12" CornerMode="Round" CornerRadius="25" DateChanged="Search_Changed"></dxe:DateEdit>
+                            <dxe:DateEdit Margin="5"  BorderColor="BlueViolet" HeightRequest="55" HorizontalOptions="FillAndExpand"  x:Name="EndEstimatedSearch" IsEndIconVisible="False" LabelText="To" LabelFontSize="13" DisplayFormat="dd/MM/yyyy"  TextFontSize="12" CornerMode="Round" CornerRadius="25" DateChanged="Search_Changed"></dxe:DateEdit>
+                        </StackLayout>
+
+
+                        <!--<dxe:DateEdit x:Name="CloseDateSearch" LabelText="Close Date"  ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" DateChanged="Search_Changed"></dxe:DateEdit>-->
+                        <Label Margin="10,5,0,-5" Text="Close date :"></Label>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:DateEdit Margin="5"   BorderColor="BlueViolet" HeightRequest="55" HorizontalOptions="FillAndExpand"  x:Name="StartCloseDateSearch"  LabelText="From"  IsEndIconVisible="False" LabelFontSize="13" DisplayFormat="dd/MM/yyyy" CornerMode="Round" TextFontSize="12" CornerRadius="25" DateChanged="Search_Changed"></dxe:DateEdit>
+                            <dxe:DateEdit Margin="5"  BorderColor="BlueViolet" HeightRequest="55" HorizontalOptions="FillAndExpand"   x:Name="EndCloseDateSearch" LabelText="To" IsEndIconVisible="False" LabelFontSize="13" DisplayFormat="dd/MM/yyyy" CornerMode="Round" TextFontSize="12" CornerRadius="25" DateChanged="Search_Changed"></dxe:DateEdit>
+                        </StackLayout>
+
+
+                        <dxe:ComboBoxEdit x:Name="CycleSearch" BorderColor="BlueViolet" HeightRequest="55" LabelText="Cycle" FilterCondition="Contains" IsFilterEnabled="True" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25"  ItemsSource="{Binding CycleList}" DisplayMember="Name" ValueMember="Id" SelectionChanged="Search_Changed"></dxe:ComboBoxEdit>
+                        <dxe:ComboBoxEdit x:Name="StateSearch"  BorderColor="BlueViolet" HeightRequest="55" LabelText="State" FilterCondition="Contains" IsFilterEnabled="True" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25"  ItemsSource="{Binding StateList}"  SelectionChanged="Search_Changed"></dxe:ComboBoxEdit>
+                        <dxe:ComboBoxEdit x:Name="EmployeSearch" BorderColor="BlueViolet" HeightRequest="55" LabelText="Employe" FilterCondition="Contains" IsFilterEnabled="True" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25"  ItemsSource="{Binding EmpolyeList}" DisplayMember="Name" ValueMember="Id" SelectionChanged="Search_Changed"></dxe:ComboBoxEdit>
+
+                        <StackLayout HorizontalOptions="FillAndExpand" Padding="10" Orientation="Horizontal">
+                            <dxco:SimpleButton BackgroundColor="AliceBlue"  HeightRequest="50" HorizontalOptions="FillAndExpand" Text="Clear filter"  Clicked="SimpleButton_Clicked" TextColor="#3897f0" ></dxco:SimpleButton>
+                            <dxco:SimpleButton BackgroundColor="AliceBlue" HeightRequest="50" HorizontalOptions="FillAndExpand" Text="Apply" Clicked="SimpleButton_Clicked_1" TextColor="#3897f0"  ></dxco:SimpleButton>
+
+                        </StackLayout>
+                    </StackLayout>
+                </ScrollView>
+
+
+
+
+            </StackLayout>
+
+
+        </dxco:DXPopup>
+    </Grid>
+
+</ContentPage>

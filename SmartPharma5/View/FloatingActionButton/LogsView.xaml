@@ -1,0 +1,87 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:SmartPharma5.ModelView"
+             x:Class="SmartPharma5.View.FloatingActionButton.LogsView"
+             Title="Historique">
+
+    <ContentPage.BindingContext>
+        <viewmodel:LogsViewModel />
+    </ContentPage.BindingContext>
+
+    <CollectionView ItemsSource="{Binding Logs}" Margin="10">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Frame Margin="0,5" Padding="10" CornerRadius="10" 
+                       BackgroundColor="{AppThemeBinding Light=#f8f8f8, Dark=#333333}">
+                    <!-- Grid avec deux colonnes et plusieurs lignes -->
+                    <Grid>
+                        <!-- Définitions des colonnes -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <!-- Contenu principal -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- ImageButton -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Définitions des lignes -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Ligne 0 : Avatar et infos -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Ligne 1 : Log Message -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Ligne 2 : Button -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Première ligne : Avatar et informations utilisateur -->
+                        <StackLayout Grid.Column="0" Grid.Row="0" Spacing="10" Orientation="Horizontal">
+                            <Frame WidthRequest="40" HeightRequest="40" CornerRadius="20" BackgroundColor="#2196F3" Padding="0">
+                                <Label Text="{Binding Initials}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       TextColor="White"
+                                       FontAttributes="Bold"/>
+                            </Frame>
+
+                            <StackLayout VerticalOptions="Center">
+                                <HorizontalStackLayout VerticalOptions="Center" Spacing="6">
+                                    <Label Text="{Binding FullName}" FontSize="14" FontAttributes="Bold"/>
+                                    <Label Text="{Binding RelativeDate}" FontSize="12" TextColor="Gray"/>
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding Date}" FontSize="12" TextColor="Gray" Margin="0,2,0,0"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Affichage Operation + LogType à droite -->
+                        <Label Grid.Column="1" Grid.Row="0"
+                               Text="{Binding OperationLogType}"
+                               FontSize="12"
+                               TextColor="Gray"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End"
+                               Margin="0,0,0,0"/>
+
+                        <!-- Deuxième ligne : Message de Log -->
+                        <StackLayout Grid.Column="0" Grid.Row="1" Margin="0,10,0,0">
+                            <Label Text="{Binding ActionType}" FontSize="14" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                            <Label Text="{Binding Note}" FontSize="13" Margin="0,5,0,0" TextColor="{AppThemeBinding Light=#555555, Dark=#AAAAAA}"/>
+                        </StackLayout>
+
+                        <!-- Troisième ligne : ImageButton (si GPS disponible) -->
+                        <ImageButton Grid.Column="1" Grid.Row="1"
+                     Source="location.png"
+                     IsVisible="{Binding IsGpsVisible}"
+                     BackgroundColor="Transparent"
+                     HorizontalOptions="End"
+                     VerticalOptions="Start"
+                     HeightRequest="30" WidthRequest="30"
+                     Clicked="OnGpsClicked"/>
+
+                        <Image Grid.Column="1" Grid.Row="1" Source="{Binding ReadIcon}" IsVisible="{Binding IsMessage}" HeightRequest="15" WidthRequest="15" HorizontalOptions="End"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding ReadDateString}" FontSize="12" TextColor="#4CAF50" Margin="0,0,0,0" IsVisible="{Binding IsMessage}"/>
+                    </Grid>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

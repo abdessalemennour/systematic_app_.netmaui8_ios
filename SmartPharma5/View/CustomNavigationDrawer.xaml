@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<syncfusion:SfNavigationDrawer xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:local="clr-namespace:SmartPharma5.Model"
+                 x:Class="SmartPharma5.View.CustomNavigationDrawer"
+                 xmlns:syncfusion="clr-namespace:Syncfusion.Maui.NavigationDrawer;assembly=Syncfusion.Maui.NavigationDrawer"
+                 xmlns:viewmodels="clr-namespace:SmartPharma5.ModelView"
+                 x:Name="navigationDrawer">
+
+    <!-- Définir le ViewModel comme BindingContext -->
+    <syncfusion:SfNavigationDrawer.BindingContext>
+        <viewmodels:CustomNavigationDrawerViewModel />
+    </syncfusion:SfNavigationDrawer.BindingContext>
+
+    <syncfusion:SfNavigationDrawer.DrawerSettings>
+        <syncfusion:DrawerSettings DrawerHeaderHeight="110" Position="Right" DrawerWidth="{Binding DrawerWidth}">
+            <syncfusion:DrawerSettings.DrawerHeaderView>
+
+            </syncfusion:DrawerSettings.DrawerHeaderView>
+
+            <syncfusion:DrawerSettings.DrawerContentView>
+                <ContentView>
+                    <ContentView.Triggers>
+                        <DataTrigger TargetType="ContentView" Binding="{Binding CurrentViewIndex}" Value="0">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StackLayout Spacing="10" Padding="10">
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Spacing="5">
+                                            <CheckBox x:Name="addMemoCheckBox" IsChecked="{Binding IsMemoFormVisible, Mode=TwoWay}"/>
+                                            <Label Text="Add Memo" VerticalOptions="Center" FontSize="16"/>
+                                        </StackLayout>
+
+                                        <StackLayout x:Name="memoFormLayout" IsVisible="{Binding IsMemoFormVisible}" Spacing="10" Padding="10" BackgroundColor="#F8F8F8">
+                                            <Label Text="Name" FontAttributes="Bold"/>
+                                            <Entry Placeholder="Enter Name" WidthRequest="250" Text="{Binding NewMemoName, Mode=TwoWay}"/>
+                                            <Label Text="Description" FontAttributes="Bold"/>
+                                            <Entry Placeholder="Enter Description" WidthRequest="250" Text="{Binding NewMemoDescription, Mode=TwoWay}"/>
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+                                                <Button Text="Cancel" BackgroundColor="Red" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120"/>
+                                                <Button Text="Save" BackgroundColor="Green" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Command="{Binding AddMemoCommand}"/>
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                        <Label Text="List of Memos" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,5"/>
+                                        <!-- La ScrollView ne contient que la liste des mémos -->
+                                        <ScrollView HeightRequest="500">
+                                            <StackLayout Spacing="10" x:Name="MemosStackLayout" Padding="10" BindableLayout.ItemsSource="{Binding Memos}">
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Margin="5" Padding="10" CornerRadius="10" HasShadow="True" BackgroundColor="#F0F0F0">
+                                                            <StackLayout>
+                                                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16"/>
+                                                                <Label Text="{Binding CreateDate, StringFormat='Date: {0:yyyy-MM-dd}'}" FontSize="14"/>
+                                                                <Label Text="{Binding Description}" FontSize="14"/>
+                                                            </StackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+
+                                        </ScrollView>
+                                    </StackLayout>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger TargetType="ContentView" Binding="{Binding CurrentViewIndex}" Value="1">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <!-- Contenu de la vue Activity -->
+                                    <StackLayout Spacing="10" Padding="10">
+                                        <!-- Case à cocher pour afficher le formulaire -->
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Spacing="5">
+                                            <CheckBox x:Name="addActivityCheckBox" IsChecked="{Binding IsActivityFormVisible, Mode=TwoWay}"/>
+                                            <Label Text="Add Activity" VerticalOptions="Center" FontSize="16"/>
+                                        </StackLayout>
+
+                                        <!-- Formulaire pour ajouter une activité (visible uniquement si la case est cochée) -->
+                                        <StackLayout x:Name="activityFormLayout" IsVisible="{Binding IsActivityFormVisible}" Spacing="10" Padding="10" BackgroundColor="#F8F8F8">
+                                            <Label Text="Summary" FontAttributes="Bold"/>
+                                            <Entry Placeholder="Enter Summary" Text="{Binding Summary, Mode=TwoWay}" />
+                                            <Label Text="Due Date" FontAttributes="Bold"/>
+                                            <DatePicker Date="{Binding DueDate, Mode=TwoWay}" />
+                                            <Label Text="Memo" FontAttributes="Bold"/>
+                                            <Editor Placeholder="Enter Memo" Text="{Binding ActivityMemo, Mode=TwoWay}" HeightRequest="100" />
+
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+                                                <Button Text="Cancel" BackgroundColor="Red" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120"/>
+                                                <Button Text="Save" BackgroundColor="Green" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Command="{Binding AddActivityCommand}"/>
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                        <!-- Liste des activités -->
+                                        <Label Text="Activities" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,5"/>
+                                        <ScrollView HeightRequest="500">
+                                            <StackLayout Spacing="10" Padding="10" BindableLayout.ItemsSource="{Binding Activities}">
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Margin="5" Padding="10" CornerRadius="10" HasShadow="True"
+                                                                  BackgroundColor="{Binding StateColor}">
+                                                            <StackLayout>
+                                                                <Label Text="{Binding Summary}" FontAttributes="Bold" FontSize="16"/>
+                                                                <Label Text="{Binding CreateDate, StringFormat='Created: {0:yyyy-MM-dd HH:mm}'}" FontSize="14"/>
+                                                                <Label Text="{Binding DueDate, StringFormat='Due: {0:yyyy-MM-dd}'}" FontSize="14"/>
+                                                                <Label Text="{Binding Memo}" FontSize="14"/>
+
+                                                                <!-- Picker pour modifier le State -->
+                                                                <Picker Title="Select State"
+            ItemsSource="{Binding Source={x:Static local:Activity.States}}"
+            SelectedItem="{Binding SelectedState, Mode=TwoWay}">
+                                                                    <Picker.ItemDisplayBinding>
+                                                                        <Binding Path="Name" />
+                                                                    </Picker.ItemDisplayBinding>
+                                                                </Picker>
+                                                            </StackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </ScrollView>
+                                    </StackLayout>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+
+
+                        <DataTrigger TargetType="ContentView" Binding="{Binding CurrentViewIndex}" Value="2">
+                            <Setter Property="Content">
+                                <Setter.Value>
+
+                                    <!-- Contenu de la vue Chat -->
+                                    <StackLayout Spacing="10" Padding="10">
+                                        <!-- Photos de profil -->
+                                        <ScrollView Orientation="Horizontal">
+                                            <StackLayout Orientation="Horizontal" Spacing="10" Padding="10">
+                                                <Image Source="avatar1.png" WidthRequest="50" HeightRequest="50"/>
+                                                <Image Source="avatar2.png" WidthRequest="50" HeightRequest="50"/>
+                                                <Image Source="avatar3.png" WidthRequest="50" HeightRequest="50"/>
+                                                <Image Source="avatar4.png" WidthRequest="50" HeightRequest="50"/>
+                                                <Image Source="avatar5.png" WidthRequest="50" HeightRequest="50"/>
+                                                <Image Source="avatar6.png" WidthRequest="50" HeightRequest="50"/>
+                                            </StackLayout>
+                                        </ScrollView>
+
+                                        <!-- Zone des messages -->
+                                        <ScrollView HeightRequest="280">
+                                            <StackLayout Spacing="10" Padding="10" BackgroundColor="#F0F0F0">
+
+                                                <!-- Message par défaut -->
+                                                <Frame Padding="5" CornerRadius="10 " BackgroundColor="LightGreen" >
+                                                    <Label Text="User1: Hello!" Padding="5" HorizontalOptions="Start"/>
+                                                </Frame>
+                                                <!-- Liste des messages dynamiques -->
+                                                <CollectionView ItemsSource="{Binding Messages}" >
+                                                    <CollectionView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Frame Padding="5" CornerRadius="10" BackgroundColor="{Binding BackgroundColor}">
+                                                                <Label Text="{Binding Text}" Padding="5" HorizontalOptions="{Binding Alignment}"/>
+                                                            </Frame>
+                                                        </DataTemplate>
+                                                    </CollectionView.ItemTemplate>
+                                                </CollectionView>
+                                            </StackLayout>
+                                        </ScrollView>
+
+                                        <!-- Zone de saisie et bouton -->
+                                        <StackLayout Orientation="Horizontal" Spacing="10" Padding="10" VerticalOptions="End">
+                                            <Entry Placeholder="Type a message..." 
+                                                       Text="{Binding MessageText, Mode=TwoWay}" 
+                                                       HorizontalOptions="FillAndExpand" 
+                                                       BackgroundColor="White" 
+                                                       TextColor="Black"/>
+                                            <Button Text="Send" 
+                                                        Command="{Binding SendMessageCommand}" 
+                                                        BackgroundColor="Green" 
+                                                        TextColor="White" 
+                                                        CornerRadius="10" 
+                                                        WidthRequest="80" 
+                                                        BorderWidth="1"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </ContentView.Triggers>
+                </ContentView>
+            </syncfusion:DrawerSettings.DrawerContentView>
+
+            <!--<syncfusion:DrawerSettings.DrawerFooterView>
+                    <StackLayout Spacing="5" Padding="10" HorizontalOptions="FillAndExpand">
+                        <Label Text="Swipe to navigate" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                         Gestes de glissement 
+                        <StackLayout.GestureRecognizers>
+                            <SwipeGestureRecognizer Direction="Right" Command="{Binding SwipeRightCommand}"/>
+                            <SwipeGestureRecognizer Direction="Left" Command="{Binding SwipeLeftCommand}"/>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </syncfusion:DrawerSettings.DrawerFooterView>-->
+            <syncfusion:DrawerSettings.DrawerFooterView>
+                <StackLayout Spacing="5" Padding="10" HorizontalOptions="FillAndExpand">
+                    <!-- Boutons de navigation -->
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                        <Button Text="Memo" Command="{Binding NavigateToMemoCommand}" />
+                        <Button Text="Activity" Command="{Binding NavigateToActivityCommand}" />
+                        <Button Text="Chat" Command="{Binding NavigateToChatCommand}" />
+                    </StackLayout>
+                </StackLayout>
+            </syncfusion:DrawerSettings.DrawerFooterView>
+        </syncfusion:DrawerSettings>
+    </syncfusion:SfNavigationDrawer.DrawerSettings>
+
+    <syncfusion:SfNavigationDrawer.ContentView>
+        <ContentPresenter />
+    </syncfusion:SfNavigationDrawer.ContentView>
+
+</syncfusion:SfNavigationDrawer>

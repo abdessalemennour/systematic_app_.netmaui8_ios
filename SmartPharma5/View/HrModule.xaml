@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.HrModule"
+             xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             
+             Title="HrModule">
+    <ContentPage.BindingContext>
+        <local:HomeViewModel/>
+    </ContentPage.BindingContext>
+  
+    <ScrollView>
+
+        <VerticalStackLayout  VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand">
+
+            <Grid  HorizontalOptions="CenterAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto">
+                        
+                    </RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                
+            
+            
+            <StackLayout HorizontalOptions="CenterAndExpand" x:Name="hr_my_request_day_off" Grid.Row="0" Grid.Column="1" IsVisible="{Binding HolidayRequestIsVisible}">
+                <ImageButton BackgroundColor="#FE6EFF" 
+                                 CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/day_off1.png"
+                        
+                                Command="{Binding CommandHolidayRequestMy}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Holiday Request" FontAttributes="Italic" FontSize="12" TextColor="#274476" ></Label>
+
+            </StackLayout>
+                <StackLayout HorizontalOptions="CenterAndExpand" x:Name="hr_all_request_day_off" Grid.Row="0" Grid.Column="2" >
+                <ImageButton BackgroundColor="#E86FAE" 
+                                CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/day_off1.png"
+                        
+                                Command="{Binding CommandHolidayRequestAll}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Holiday Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+                <StackLayout HorizontalOptions="CenterAndExpand" x:Name="hr_add_request_day_off" Grid.Row="0" Grid.Column="0" IsVisible="{Binding HolidayRequestIsVisible}">
+                <ImageButton BackgroundColor="#CD69F5" 
+                                 CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="add_day_off.png"
+                        
+                                Command="{Binding InsertCongé}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Request Day Off" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+                <StackLayout HorizontalOptions="CenterAndExpand" x:Name="hr_my_deposit_request"  Grid.Row="1" Grid.Column="1" IsVisible="{Binding AdvanceRequestIsVisible, Mode=TwoWay}" >
+                <ImageButton BackgroundColor="#F57D69" 
+                                CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/deposit.png"
+                                Command="{Binding CommandAvanceRequestMy}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Deposit Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+            </StackLayout>
+                <StackLayout HorizontalOptions="CenterAndExpand"  x:Name="hr_all_deposit_request" Grid.Row="1" Grid.Column="2"  >
+                <ImageButton BackgroundColor="#FF6E70" 
+                                CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/deposit.png"
+                                Command="{Binding CommandAvanceRequestAll}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Deposit Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+            </StackLayout>
+                <StackLayout HorizontalOptions="CenterAndExpand" x:Name="hr_add_deposit_request"  Grid.Row="1" Grid.Column="0" >
+                <ImageButton BackgroundColor="#83D474" 
+                                 CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/add_deposit.png"
+                                Command="{Binding InsertAvance}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Deposit Request" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+            </StackLayout>
+
+                <StackLayout HorizontalOptions="CenterAndExpand"   Grid.Row="1" Grid.Column="0" >
+                    <ImageButton BackgroundColor="#83D474" 
+                                 CornerRadius="5" 
+                                HeightRequest="120" 
+                                WidthRequest="120" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/add_deposit.png"
+                                Clicked="ImageButton_Clicked_1">
+                    </ImageButton>
+                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="test" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+                </StackLayout>
+
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+   
+</ContentPage>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+          xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             x:Class="SmartPharma5.View.PieDashboard"
+             Title="PieDashboard">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <dxc:PieChartView Grid.Row="0"  FlowDirection="MatchParent" Visual="Material">
+
+            <dxc:PieChartView.Hint>
+                <dxc:PieHint Enabled="True"/>
+            </dxc:PieChartView.Hint>
+
+            <dxc:PieChartView.Legend>
+
+                <dxc:Legend Orientation="TopToBottom"
+                                HorizontalPosition="Left"
+                                VerticalPosition="BottomOutside"/>
+            </dxc:PieChartView.Legend>
+
+
+
+            <dxc:PieChartView.Series >
+
+                <dxc:DonutSeries>
+
+                    <dxc:DonutSeries.CenterLabel>
+                        <dxc:PieCenterTextLabel TextPattern="{Binding GaugeValue}"/>
+                    </dxc:DonutSeries.CenterLabel>
+
+                    <dxc:DonutSeries.HintOptions>
+                        <dxc:PieSeriesHintOptions PointTextPattern="{}{L}: {VP}%"/>
+                    </dxc:DonutSeries.HintOptions>
+
+                    <dxc:DonutSeries.Label>
+                        <dxc:PieSeriesLabel x:Name="PieLabel"  Position="Inside" TextPattern="{}{V}"  Indent="30">
+                            <dxc:PieSeriesLabel.Style>
+                                <dxc:PieSeriesLabelStyle>
+                                    <dxc:PieSeriesLabelStyle.TextStyle>
+                                        <dxc:TextStyle Color="White" Size="15"  />
+                                    </dxc:PieSeriesLabelStyle.TextStyle>
+                                </dxc:PieSeriesLabelStyle>
+                            </dxc:PieSeriesLabel.Style>
+                        </dxc:PieSeriesLabel>
+                    </dxc:DonutSeries.Label>
+
+                    <dxc:DonutSeries.Data>
+                        <dxc:PieSeriesDataAdapter DataSource="{Binding LandAreasDirectAndIndirect }"
+                                                                  LabelDataMember="Name"
+                                                                  ValueDataMember="Number" AutomationProperties.IsInAccessibleTree="True"
+                                                                  />
+                    </dxc:DonutSeries.Data>
+
+                </dxc:DonutSeries>
+            </dxc:PieChartView.Series>
+        </dxc:PieChartView>
+        <dxc:PieChartView Grid.Row="1"  FlowDirection="MatchParent" Visual="Material">
+
+            <dxc:PieChartView.Hint>
+                <dxc:PieHint Enabled="True"/>
+            </dxc:PieChartView.Hint>
+
+            <dxc:PieChartView.Legend>
+                <dxc:Legend Orientation="TopToBottom"
+                                HorizontalPosition="Left"
+                                VerticalPosition="BottomOutside"/>
+            </dxc:PieChartView.Legend>
+
+            <dxc:PieChartView.Series >
+
+                <dxc:PieSeries>
+
+                    <dxc:PieSeries.HintOptions>
+                        <dxc:PieSeriesHintOptions PointTextPattern="{}{L}: {VP}%"/>
+                    </dxc:PieSeries.HintOptions>
+
+                    <dxc:PieSeries.Label>
+                        <dxc:PieSeriesLabel x:Name="PieLabel3"  Position="Inside" TextPattern="{}{V}"  Indent="30">
+                            <dxc:PieSeriesLabel.Style>
+                                <dxc:PieSeriesLabelStyle>
+                                    <dxc:PieSeriesLabelStyle.TextStyle>
+                                        <dxc:TextStyle Color="White" Size="15"  />
+                                    </dxc:PieSeriesLabelStyle.TextStyle>
+                                </dxc:PieSeriesLabelStyle>
+                            </dxc:PieSeriesLabel.Style>
+                        </dxc:PieSeriesLabel>
+                    </dxc:PieSeries.Label>
+
+                    <dxc:PieSeries.Data>
+                        <dxc:PieSeriesDataAdapter DataSource="{Binding LandAreasNbDirectAndIndirect }"
+                                                                  LabelDataMember="Name"
+                                                                  ValueDataMember="Number" AutomationProperties.IsInAccessibleTree="True"
+                                                                  />
+                    </dxc:PieSeries.Data>
+
+                </dxc:PieSeries>
+            </dxc:PieChartView.Series>
+        </dxc:PieChartView>
+    </Grid>
+        
+        
+       
+ 
+    
+</ContentPage>

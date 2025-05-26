@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.SammaryView"
+             xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+          xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             xmlns:control="clr-namespace:Syncfusion.Maui.Gauges;assembly=Syncfusion.Maui.Gauges"
+             Shell.FlyoutBehavior="Flyout"
+             Title="SammaryView"
+             >
+    <!--<ContentPage.BindingContext>
+        <local:SammaryViewModel></local:SammaryViewModel>
+    </ContentPage.BindingContext>-->
+    
+    <NavigationPage.TitleView>
+        <Grid IsVisible="true" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Text="{Binding Title }" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+            <ImageButton  Grid.Column="1"  HorizontalOptions="EndAndExpand"  Source="home.png" Clicked="ImageButton_Clicked" WidthRequest="40"  IsVisible="{Binding Load_finish,Mode=TwoWay}"></ImageButton>
+            <Label Grid.Column="1" Text="Loading..." HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand" IsVisible="{Binding Loading,Mode=TwoWay}"></Label>
+
+        </Grid>
+
+    </NavigationPage.TitleView>
+
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Opportinity">
+            <MenuFlyoutItem Text="Add Opportunity"></MenuFlyoutItem>
+            <MenuFlyoutSeparator></MenuFlyoutSeparator>
+            <MenuFlyoutItem Text="My Opportunities"></MenuFlyoutItem>
+            <MenuFlyoutSeparator></MenuFlyoutSeparator>
+            <MenuFlyoutItem Text="All Opportunities"></MenuFlyoutItem>
+            
+        </MenuBarItem >
+        <MenuBarItem Text="Marketing">
+            <MenuFlyoutItem Text="Add Partner Form"></MenuFlyoutItem>
+            <MenuFlyoutSeparator></MenuFlyoutSeparator>
+            <MenuFlyoutItem Text="My Partner Form"></MenuFlyoutItem>
+            <MenuFlyoutSeparator></MenuFlyoutSeparator>
+            <MenuFlyoutItem Text="All Partner Form"></MenuFlyoutItem>
+        </MenuBarItem>
+        <MenuBarItem Text="Profile">
+            <MenuFlyoutItem Text="Update Profile"></MenuFlyoutItem>
+            <MenuFlyoutSeparator></MenuFlyoutSeparator>
+            <MenuFlyoutItem Text="Add New Partner"></MenuFlyoutItem>
+            <MenuFlyoutSeparator></MenuFlyoutSeparator>
+            <MenuFlyoutItem Text="Validation"></MenuFlyoutItem>
+
+        </MenuBarItem>
+        
+        <!--<MenuBarItem>
+
+        </MenuBarItem>-->
+    </ContentPage.MenuBarItems>
+    <ContentPage.Content>
+        <ScrollView x:Name="ScrolView">
+            <Grid RowSpacing="10">
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="AUTO"/>
+                    <RowDefinition Height="AUTO"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                   
+                </Grid.RowDefinitions>
+
+                <StackLayout VerticalOptions="Start" IsVisible="{Binding FilterDateIsVisible}" Grid.Row="0">
+
+                    <StackLayout x:Name="FilterTitle" Orientation="Horizontal">
+
+                        <Label Text="Select period" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Padding="5"/>
+                        <Label x:Name="SelectedAgentName" Text="{Binding agentName}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"  VerticalTextAlignment="Center" HorizontalTextAlignment="End" Padding="5"/>
+
+                    </StackLayout>
+                    <Frame Margin="0" >
+                        <StackLayout Orientation="Horizontal" Spacing="3" >
+
+                            <dxe:DateEdit LabelText="Start Date" VerticalOptions="CenterAndExpand" x:Name="StartDate" Date="{Binding StartDate, Mode=TwoWay}" DisplayFormat="dd/MM/yyyy" HorizontalOptions="CenterAndExpand" TextVerticalAlignment="Center"  BoxPadding="8" IsDateIconVisible="False" />
+                            <dxe:DateEdit LabelText="End Date" x:Name="EndDate" Date="{Binding EndDate,Mode=TwoWay}" DisplayFormat="dd/MM/yyyy" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextVerticalAlignment="Center"  BoxPadding="8" IsDateIconVisible="False" />
+                            <Button BackgroundColor="#4DBF49" Text="Refresh" TextColor="White" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"  Command="{Binding RefreshCommand }"/>
+
+                        </StackLayout>
+
+                    </Frame>
+                </StackLayout>
+                <Frame Grid.Row="1"  Margin="0" Padding="5,-7,0,0" >
+                    <StackLayout>
+                        <StackLayout Margin="10" Grid.Row="0" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" BackgroundColor="Red">
+                            <Label  HorizontalOptions="CenterAndExpand" Text="Alerts" TextColor="White" FontSize="Subtitle"   VerticalOptions="Fill" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5" />
+                        </StackLayout>
+                        
+                       
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="5*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackLayout Grid.Column="0">
+                                <StackLayout>
+                                    <StackLayout  HorizontalOptions="CenterAndExpand" Spacing="0" Orientation="Vertical">
+                                        <Label Text="Total Unpaid" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"/>
+                                        <Label Text="{Binding TotalUnpaid}" TextColor="DarkCyan" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  HorizontalOptions="CenterAndExpand" Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="Processing" TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding TotalProceccing}" TextColor="#F59132" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                    <StackLayout  HorizontalOptions="CenterAndExpand" Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="Unpaied Invoice " TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding Unpaied_invoice }" TextColor="#F59132" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                            <StackLayout Grid.Column="1">
+                                <StackLayout  HorizontalOptions="FillAndExpand" >
+                                    <StackLayout Spacing="0" Orientation="Vertical">
+                                        <Label Text="First due date" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding MaxDueDate,StringFormat='{0:dd/MM/yyyy}'}" HorizontalOptions="CenterAndExpand" TextColor="#ED1416" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"  />
+
+
+                                    </StackLayout>
+                                    <StackLayout Spacing="0" Orientation="Vertical">
+                                        <Label Text="En Attente" TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"  />
+                                        <Label Text="{Binding TotalEnAttente}" TextColor="#F59132" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+
+                                    </StackLayout>
+                                    <StackLayout  HorizontalOptions="CenterAndExpand" Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="Unpaied Invoice Due" TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding Unpaied_invoice_due}" TextColor="Red" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                </StackLayout>
+
+                            </StackLayout>
+                        </Grid>
+
+                    </StackLayout>
+
+                </Frame>
+                <Frame Grid.Row="2" Margin="0" Padding="5,-7,0,0" >
+                    <StackLayout>
+                        <StackLayout Margin="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" BackgroundColor="Red">
+                            <Label Text="Quiz Alerts"  HorizontalOptions="CenterAndExpand" TextColor="White" FontSize="Subtitle"   VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5" />
+                        </StackLayout>
+                       
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+
+
+                            <StackLayout  Grid.Column="0" HorizontalOptions="CenterAndExpand">
+                                <Label Text="Today" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"/>
+
+                                <StackLayout>
+                                    <StackLayout HorizontalOptions="CenterAndExpand"  Spacing="0" Orientation="Vertical">
+                                        <Label Text="Visited " TextColor="Gray" HorizontalOptions="CenterAndExpand" FontSize="Caption" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"/>
+                                        <Label Text="{Binding NowVisited}" HorizontalOptions="CenterAndExpand" TextColor="#4DBF49" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout HorizontalOptions="CenterAndExpand" Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="Visits" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding NowVisit}" HorizontalOptions="CenterAndExpand" TextColor="Black" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout HorizontalOptions="CenterAndExpand"  Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="To Visit" TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding NowToVisit}" TextColor="#F59132" HorizontalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout HorizontalOptions="CenterAndExpand" Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="KPI" TextColor="Gray" FontSize="Caption" FontAttributes="Bold"  HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding NowKPI,StringFormat='{0:p2}'}" TextColor="Black" HorizontalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                            <StackLayout  Grid.Column="1">
+                                <StackLayout>
+                                    <Label Text="Period" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"  VerticalTextAlignment="Center"/>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical">
+                                        <Label Text="Visited" TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"/>
+                                        <Label Text="{Binding PeriodVisited}" HorizontalOptions="CenterAndExpand" TextColor="#4DBF49" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="Visits" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding PeriodVisit}" HorizontalOptions="CenterAndExpand" TextColor="Black" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="To Visit" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding PeriodToVisit}" TextColor="#F59132"  FontSize="Large" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical"  >
+                                        <Label Text="KPI" TextColor="Gray" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding PeriodKPI,StringFormat='{0:p2}'}" TextColor="Black" HorizontalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </StackLayout>
+                            <StackLayout HorizontalOptions="CenterAndExpand" Grid.Column="2">
+                                <StackLayout>
+                                    <Label Text="Cycle" TextColor="Gray" HorizontalOptions="CenterAndExpand" FontSize="Medium" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"/>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                                        <Label Text="Visited" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center"/>
+                                        <Label Text="{Binding CycleVisited}" TextColor="#4DBF49" HorizontalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical" HorizontalOptions="CenterAndExpand" >
+                                        <Label Text="Visits" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding CycleVisit}" TextColor="Black" FontSize="Large" HorizontalOptions="CenterAndExpand"  FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical"   HorizontalOptions="CenterAndExpand">
+                                        <Label Text="To Visit" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding CycleToVisit}" TextColor="#F59132" FontSize="Large" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+
+                                    <StackLayout  Spacing="0" Orientation="Vertical" HorizontalOptions="CenterAndExpand" >
+                                        <Label Text="KPI" TextColor="Gray" FontSize="Caption" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                        <Label Text="{Binding CycleKPI,StringFormat='{0:p2}'}" HorizontalOptions="CenterAndExpand" TextColor="Black" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </StackLayout>
+                        </Grid>
+
+                    </StackLayout>
+
+                </Frame>
+                <StackLayout IsVisible="true" Grid.Row="3"   HorizontalOptions="FillAndExpand" Margin="3" >
+                    <StackLayout BackgroundColor="#2296F3">
+                        <Label   Text="Target" TextColor="White" FontSize="Subtitle"  HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5"  />
+                    </StackLayout>
+                    <Label FontAttributes="Bold" Margin="0,10,0,0"  FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="Green" Text="{Binding GaugeValue, StringFormat='{0:#.###} DT' ,Mode=TwoWay} "></Label>
+                    <ProgressBar ScaleY="2"  ScaleX="1" HeightRequest="30" Progress="{Binding Progress,Mode=TwoWay}" Margin="10,0,10,0"   ProgressColor="Green" ></ProgressBar>
+
+                    <Label FontAttributes="Bold" Margin="0,-10,0,0"  FontSize="25" HorizontalOptions="CenterAndExpand" Text="{Binding ToGoal, StringFormat='Target | {0:} DT' ,Mode=TwoWay} "></Label>
+                    
+
+                  
+                  
+
+                </StackLayout>
+
+
+                <StackLayout Grid.Row="4" IsVisible="true" BackgroundColor="#2296F3" Margin="3">
+                    <Label Text="Turnover" TextColor="White" FontSize="Subtitle"  HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5"  />
+                </StackLayout>
+                <Frame IsVisible="true"  Grid.Row="5" Padding="5" VerticalOptions="Fill" HeightRequest="400"> 
+                    <dxc:PieChartView  Margin="0"  FlowDirection="MatchParent" Visual="Material">
+
+                        <dxc:PieChartView.Hint>
+                            <dxc:PieHint Enabled="True"/>
+                        </dxc:PieChartView.Hint>
+
+                        <dxc:PieChartView.Legend>
+
+                            <dxc:Legend Orientation="TopToBottom"
+                                HorizontalPosition="Left"
+                                VerticalPosition="BottomOutside"/>
+                        </dxc:PieChartView.Legend>
+
+
+
+                        <dxc:PieChartView.Series >
+
+                            <dxc:DonutSeries>
+
+                                <dxc:DonutSeries.CenterLabel>
+                                    <dxc:PieCenterTextLabel TextPattern="{Binding GaugeValue}"/>
+                                </dxc:DonutSeries.CenterLabel>
+
+                                <dxc:DonutSeries.HintOptions>
+                                    <dxc:PieSeriesHintOptions PointTextPattern="{}{L}: {VP}%"/>
+                                </dxc:DonutSeries.HintOptions>
+
+                                <dxc:DonutSeries.Label>
+                                    <dxc:PieSeriesLabel x:Name="PieLabel"  Position="Inside" TextPattern="{}{V}"  Indent="30">
+                                        <dxc:PieSeriesLabel.Style>
+                                            <dxc:PieSeriesLabelStyle>
+                                                <dxc:PieSeriesLabelStyle.TextStyle>
+                                                    <dxc:TextStyle Color="White" Size="15"  />
+                                                </dxc:PieSeriesLabelStyle.TextStyle>
+                                            </dxc:PieSeriesLabelStyle>
+                                        </dxc:PieSeriesLabel.Style>
+                                    </dxc:PieSeriesLabel>
+                                </dxc:DonutSeries.Label>
+
+                                <dxc:DonutSeries.Data>
+                                    <dxc:PieSeriesDataAdapter DataSource="{Binding LandAreasDirectAndIndirect }"
+                                                                  LabelDataMember="Name"
+                                                                  ValueDataMember="Number" AutomationProperties.IsInAccessibleTree="True"
+                                                                  />
+                                </dxc:DonutSeries.Data>
+
+                            </dxc:DonutSeries>
+                        </dxc:PieChartView.Series>
+                    </dxc:PieChartView>
+                </Frame>
+
+
+                
+                     
+                       
+                 
+               
+                       
+
+                        <dxc:PieChartView IsVisible="true" Grid.Row="6" Margin="0" HeightRequest="400" FlowDirection="MatchParent" >
+
+                            <dxc:PieChartView.Hint>
+                                <dxc:PieHint Enabled="True"/>
+                            </dxc:PieChartView.Hint>
+
+                            <dxc:PieChartView.Legend>
+                                <dxc:Legend Orientation="TopToBottom"
+                                HorizontalPosition="Left"
+                                VerticalPosition="BottomOutside"/>
+                            </dxc:PieChartView.Legend>
+
+                            <dxc:PieChartView.Series >
+
+                                <dxc:DonutSeries>
+
+                                    <dxc:DonutSeries.HintOptions>
+                                        <dxc:PieSeriesHintOptions PointTextPattern="{}{L}: {VP}%"/>
+                                    </dxc:DonutSeries.HintOptions>
+
+                                    <dxc:DonutSeries.Label>
+                                        <dxc:PieSeriesLabel x:Name="PieLabel2"  Position="Inside" TextPattern="{}{V}"  Indent="30">
+                                            <dxc:PieSeriesLabel.Style>
+                                                <dxc:PieSeriesLabelStyle>
+                                                    <dxc:PieSeriesLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Color="White" Size="15"  />
+                                                    </dxc:PieSeriesLabelStyle.TextStyle>
+                                                </dxc:PieSeriesLabelStyle>
+                                            </dxc:PieSeriesLabel.Style>
+                                        </dxc:PieSeriesLabel>
+                                    </dxc:DonutSeries.Label>
+
+                                    <dxc:DonutSeries.Data>
+                                        <dxc:PieSeriesDataAdapter DataSource="{Binding LandAreasAvrgDirectAndIndirect }"
+                                                                  LabelDataMember="Name"
+                                                                  ValueDataMember="Number" 
+                                                                  />
+                                    </dxc:DonutSeries.Data>
+
+                                </dxc:DonutSeries>
+                            </dxc:PieChartView.Series>
+                        </dxc:PieChartView>
+                   
+
+
+             
+                <Frame Grid.Row="7" IsVisible="true" Padding="5">
+                    <StackLayout>
+                        
+                        <dxc:ChartView x:Name="bar_chart"
+                                              SelectionMode="Single"
+                                       
+                                              HeightRequest="400" 
+                                              WidthRequest="300" 
+                                              ScrollIndicatorsEnabled="True">
+                            <dxc:ChartView.Series>
+                               
+                                <dxc:BarSeries>
+                                    <dxc:BarSeries.Data>
+                                        <dxc:SeriesDataAdapter DataSource="{Binding LandAreasAvrgDirectAndIndirect}" ArgumentDataMember="Name">
+                                            
+                                            <dxc:ValueDataMember Type="Value" Member="Number" />
+
+                                        </dxc:SeriesDataAdapter>
+                                    </dxc:BarSeries.Data>
+                                    <dxc:BarSeries.Label>
+                                        <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                            <dxc:BarSeriesLabel.Style>
+                                                <dxc:SeriesLabelStyle>
+                                                    <dxc:SeriesLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Color="White"/>
+                                                    </dxc:SeriesLabelStyle.TextStyle>
+                                                </dxc:SeriesLabelStyle>
+                                            </dxc:BarSeriesLabel.Style>
+                                        </dxc:BarSeriesLabel>
+                                    </dxc:BarSeries.Label>
+
+                                    <dxc:BarSeries.Style>
+                                        <dxc:BarSeriesStyle Fill="#03ABFF" />
+                                    </dxc:BarSeries.Style>
+                                </dxc:BarSeries>
+                                <dxc:BarSeries>
+                                    <dxc:BarSeries.Data>
+                                        <dxc:SeriesDataAdapter DataSource="{Binding LandAreasAvrgDirectAndIndirect}" ArgumentDataMember="Name">
+
+                                            <dxc:ValueDataMember Type="Value" Member="Number3" />
+
+                                        </dxc:SeriesDataAdapter>
+                                    </dxc:BarSeries.Data>
+                                    <dxc:BarSeries.Label>
+                                        <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                            <dxc:BarSeriesLabel.Style>
+                                                <dxc:SeriesLabelStyle>
+                                                    <dxc:SeriesLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Color="White"/>
+                                                    </dxc:SeriesLabelStyle.TextStyle>
+                                                </dxc:SeriesLabelStyle>
+                                            </dxc:BarSeriesLabel.Style>
+                                        </dxc:BarSeriesLabel>
+                                    </dxc:BarSeries.Label>
+
+                                    <dxc:BarSeries.Style>
+                                        <dxc:BarSeriesStyle Fill="Red" />
+                                    </dxc:BarSeries.Style>
+                                </dxc:BarSeries>
+                            </dxc:ChartView.Series>
+
+                            <dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+                                    <dxc:QualitativeAxisX.Label >
+                                        <dxc:AxisLabel Angle="45"/>
+                                    </dxc:QualitativeAxisX.Label>
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>
+                        </dxc:ChartView>
+                    </StackLayout>
+                </Frame>
+                
+                <Frame Grid.Row="8" Padding="5" IsVisible="{Binding LandAreasTOBbyAgentIsVisible}">
+                    <StackLayout Padding="0,0,0,50" >
+                        <dxc:ChartView 
+                                              SelectionMode="Single"
+                                       SelectionChanged="bar_chart2_SelectionChanged"
+                                              
+                                              HeightRequest="400" 
+                                              ScrollIndicatorsEnabled="True"
+                                        AxisYNavigationMode="ScrollingAndZooming"
+                                              AxisXNavigationMode="ScrollingAndZooming" >
+                            <!--<dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY>
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange Min="-1" SideMargin="0"/>
+                                    </dxc:NumericAxisY.Range>
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>-->
+                            <!--<dxc:ChartView.AxisX>
+                                <dxc:NumericAxisX>
+                                    <dxc:NumericAxisX.LogarithmicOptions>
+                                        <dxc:AxisLogarithmicOptions Enabled="True" Base="1"/>
+                                    </dxc:NumericAxisX.LogarithmicOptions>
+                                </dxc:NumericAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisX>
+                                
+                                <dxc:NumericAxisX>
+                                    <dxc:NumericAxisX.Range>
+                                        <dxc:NumericRange VisualMax="3"/>
+                                    </dxc:NumericAxisX.Range>
+                                   
+           
+                                     
+                                </dxc:NumericAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY>
+                                    <dxc:NumericAxisY.LogarithmicOptions>
+                                        <dxc:AxisLogarithmicOptions Enabled="True" Base="10"/>
+                                    </dxc:NumericAxisY.LogarithmicOptions>
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange SideMargin="0" Min="1" />
+                                    </dxc:NumericAxisY.Range>-->
+                            <!-- Other settings of the Y-axis -->
+                            <!--
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>-->
+                            <!--BarWidth="0.2"-->
+
+
+                            <dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+
+                                    <dxc:QualitativeAxisX.Label>
+                                        <dxc:AxisLabel Angle="45" Position="Outside" >
+                                            <dxc:AxisLabel.Style>
+                                                <dxc:AxisLabelStyle>
+                                                    <dxc:AxisLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Size="10" />
+                                                    </dxc:AxisLabelStyle.TextStyle>
+                                                </dxc:AxisLabelStyle>
+                                            </dxc:AxisLabel.Style>
+                                        </dxc:AxisLabel>
+                                    </dxc:QualitativeAxisX.Label>
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>
+
+
+                            <dxc:ChartView.Series>
+
+
+                                <dxc:BarSeries BarWidth="0.9">
+
+                                    <dxc:BarSeries.Data>
+                                        <dxc:SeriesDataAdapter  DataSource="{Binding LandAreasTOBbyAgent}"  ArgumentDataMember="Name" >
+                                            <dxc:ValueDataMember Type="Value" Member="Number" />
+                                        </dxc:SeriesDataAdapter>
+                                    </dxc:BarSeries.Data>
+
+                                    <dxc:BarSeries.Label >
+                                        <dxc:BarSeriesLabel x:Name="bar_chart2" Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                            <dxc:BarSeriesLabel.Style>
+                                                <dxc:SeriesLabelStyle>
+                                                    <dxc:SeriesLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Color="Black"/>
+                                                    </dxc:SeriesLabelStyle.TextStyle>
+                                                </dxc:SeriesLabelStyle>
+                                            </dxc:BarSeriesLabel.Style>
+                                        </dxc:BarSeriesLabel>
+
+                                    </dxc:BarSeries.Label>
+
+                                    <dxc:BarSeries.Style>
+                                        <dxc:BarSeriesStyle Fill="#73c8eb" />
+                                    </dxc:BarSeries.Style>
+                                </dxc:BarSeries>
+
+
+
+                            </dxc:ChartView.Series>
+
+
+
+                            <!--<dxc:ChartView.AxisX >
+                                
+                            </dxc:ChartView.AxisX>-->
+                        </dxc:ChartView>
+                    </StackLayout>
+                </Frame>
+                <Frame Grid.Row="9" Padding="5" IsVisible="{Binding LandAreasTOBbyAgentIsVisible}">
+                    <StackLayout Padding="0,0,0,50" >
+                        <Label Grid.Row="0" Text="KPI By Agent" TextColor="White" FontSize="Subtitle" BackgroundColor="#2296F3" HorizontalOptions="Fill" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5" />
+
+                        <dxc:ChartView 
+                                              SelectionMode="Single"
+                                       SelectionChanged="bar_chart2_SelectionChanged"
+                                              
+                                              HeightRequest="400" 
+                                              ScrollIndicatorsEnabled="True"
+                                        AxisYNavigationMode="ScrollingAndZooming"
+                                              AxisXNavigationMode="ScrollingAndZooming" >
+                            <!--<dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY>
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange Min="-1" SideMargin="0"/>
+                                    </dxc:NumericAxisY.Range>
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>-->
+                            <!--<dxc:ChartView.AxisX>
+                                <dxc:NumericAxisX>
+                                    <dxc:NumericAxisX.LogarithmicOptions>
+                                        <dxc:AxisLogarithmicOptions Enabled="True" Base="1"/>
+                                    </dxc:NumericAxisX.LogarithmicOptions>
+                                </dxc:NumericAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisX>
+                                
+                                <dxc:NumericAxisX>
+                                    <dxc:NumericAxisX.Range>
+                                        <dxc:NumericRange VisualMax="3"/>
+                                    </dxc:NumericAxisX.Range>
+                                   
+           
+                                     
+                                </dxc:NumericAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY>
+                                    <dxc:NumericAxisY.LogarithmicOptions>
+                                        <dxc:AxisLogarithmicOptions Enabled="True" Base="10"/>
+                                    </dxc:NumericAxisY.LogarithmicOptions>
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange SideMargin="0" Min="1" />
+                                    </dxc:NumericAxisY.Range>-->
+                            <!-- Other settings of the Y-axis -->
+                            <!--
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>-->
+                            <!--BarWidth="0.2"-->
+                            <dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY AlwaysShowZeroLevel="False">
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange Min="0" Max="100"/>
+                                    </dxc:NumericAxisY.Range>
+                                    <dxc:NumericAxisY.Title>
+                                        <dxc:AxisTitle Alignment="Outside"/>
+                                    </dxc:NumericAxisY.Title>
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>
+
+                            <dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+
+                                    <dxc:QualitativeAxisX.Label>
+                                        <dxc:AxisLabel Angle="45" Position="Outside" >
+                                            <dxc:AxisLabel.Style>
+                                                <dxc:AxisLabelStyle>
+                                                    <dxc:AxisLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Size="10" />
+                                                    </dxc:AxisLabelStyle.TextStyle>
+                                                </dxc:AxisLabelStyle>
+                                            </dxc:AxisLabel.Style>
+                                        </dxc:AxisLabel>
+                                    </dxc:QualitativeAxisX.Label>
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>
+
+
+                            <dxc:ChartView.Series>
+
+
+                                <dxc:BarSeries BarWidth="0.9">
+
+                                    <dxc:BarSeries.Data>
+                                        <dxc:SeriesDataAdapter  DataSource="{Binding LandAreasKPIByAgent}"  ArgumentDataMember="Name" >
+                                            <dxc:ValueDataMember Type="Value" Member="Number" />
+                                        </dxc:SeriesDataAdapter>
+                                    </dxc:BarSeries.Data>
+
+                                    <dxc:BarSeries.Label >
+                                        <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                            <dxc:BarSeriesLabel.Style>
+                                                <dxc:SeriesLabelStyle>
+                                                    <dxc:SeriesLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Color="Black"/>
+                                                    </dxc:SeriesLabelStyle.TextStyle>
+                                                </dxc:SeriesLabelStyle>
+                                            </dxc:BarSeriesLabel.Style>
+                                        </dxc:BarSeriesLabel>
+
+                                    </dxc:BarSeries.Label>
+
+                                    <dxc:BarSeries.Style>
+                                        <dxc:BarSeriesStyle Fill="#73c8eb" />
+                                    </dxc:BarSeries.Style>
+                                </dxc:BarSeries>
+
+
+
+                            </dxc:ChartView.Series>
+
+
+
+                            <!--<dxc:ChartView.AxisX >
+                                
+                            </dxc:ChartView.AxisX>-->
+                        </dxc:ChartView>
+                    </StackLayout>
+                </Frame>
+                <Frame Grid.Row="10" Padding="5" IsVisible="{Binding LandAreasTOBbyAgentIsVisible}">
+                    <StackLayout Padding="0,0,0,50" >
+                        <Label Grid.Row="0" Text="KPI By Job Position" TextColor="White" FontSize="Subtitle" BackgroundColor="#2296F3" HorizontalOptions="Fill" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5" />
+
+                        <dxc:ChartView 
+                                              SelectionMode="Single"
+                                       
+                                              SelectionChanged="ChartView_SelectionChanged"
+                                              HeightRequest="400" 
+                                              ScrollIndicatorsEnabled="True"
+                                        AxisYNavigationMode="ScrollingAndZooming"
+                                              AxisXNavigationMode="ScrollingAndZooming" >
+                            <!--<dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY>
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange Min="-1" SideMargin="0"/>
+                                    </dxc:NumericAxisY.Range>
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>-->
+                            <!--<dxc:ChartView.AxisX>
+                                <dxc:NumericAxisX>
+                                    <dxc:NumericAxisX.LogarithmicOptions>
+                                        <dxc:AxisLogarithmicOptions Enabled="True" Base="1"/>
+                                    </dxc:NumericAxisX.LogarithmicOptions>
+                                </dxc:NumericAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisX>
+                                
+                                <dxc:NumericAxisX>
+                                    <dxc:NumericAxisX.Range>
+                                        <dxc:NumericRange VisualMax="3"/>
+                                    </dxc:NumericAxisX.Range>
+                                   
+           
+                                     
+                                </dxc:NumericAxisX>
+                            </dxc:ChartView.AxisX>-->
+                            <!--<dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY>
+                                    <dxc:NumericAxisY.LogarithmicOptions>
+                                        <dxc:AxisLogarithmicOptions Enabled="True" Base="10"/>
+                                    </dxc:NumericAxisY.LogarithmicOptions>
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange SideMargin="0" Min="1" />
+                                    </dxc:NumericAxisY.Range>-->
+                            <!-- Other settings of the Y-axis -->
+                            <!--
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>-->
+                            <!--BarWidth="0.2"-->
+
+
+                            <dxc:ChartView.AxisX >
+                                <dxc:QualitativeAxisX >
+
+                                    <dxc:QualitativeAxisX.Label>
+                                        <dxc:AxisLabel Angle="45" Position="Outside" >
+                                            <dxc:AxisLabel.Style>
+                                                <dxc:AxisLabelStyle>
+                                                    <dxc:AxisLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Size="10" />
+                                                    </dxc:AxisLabelStyle.TextStyle>
+                                                </dxc:AxisLabelStyle>
+                                            </dxc:AxisLabel.Style>
+                                        </dxc:AxisLabel>
+                                    </dxc:QualitativeAxisX.Label>
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>
+
+                            <dxc:ChartView.AxisY>
+                                <dxc:NumericAxisY AlwaysShowZeroLevel="False">
+                                    <dxc:NumericAxisY.Range>
+                                        <dxc:NumericRange Min="0" Max="5"/>
+                                    </dxc:NumericAxisY.Range>
+                                    <dxc:NumericAxisY.Title>
+                                        <dxc:AxisTitle Alignment="Outside"/>
+                                    </dxc:NumericAxisY.Title>
+                                </dxc:NumericAxisY>
+                            </dxc:ChartView.AxisY>
+
+
+                            <dxc:ChartView.Series>
+
+
+                                <dxc:BarSeries BarWidth="0.9">
+
+                                    <dxc:BarSeries.Data>
+                                        <dxc:SeriesDataAdapter  DataSource="{Binding LandAreasJobPosition}"  ArgumentDataMember="Name" >
+                                            <dxc:ValueDataMember Type="Value" Member="Number" />
+                                        </dxc:SeriesDataAdapter>
+                                    </dxc:BarSeries.Data>
+
+                                    <dxc:BarSeries.Label >
+                                        <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                            <dxc:BarSeriesLabel.Style>
+                                                <dxc:SeriesLabelStyle>
+                                                    <dxc:SeriesLabelStyle.TextStyle>
+                                                        <dxc:TextStyle Color="Black"/>
+                                                    </dxc:SeriesLabelStyle.TextStyle>
+                                                </dxc:SeriesLabelStyle>
+                                            </dxc:BarSeriesLabel.Style>
+                                        </dxc:BarSeriesLabel>
+
+                                    </dxc:BarSeries.Label>
+
+                                    <dxc:BarSeries.Style>
+                                        <dxc:BarSeriesStyle Fill="#73c8eb" />
+                                    </dxc:BarSeries.Style>
+                                </dxc:BarSeries>
+
+
+
+                            </dxc:ChartView.Series>
+
+
+
+                            <!--<dxc:ChartView.AxisX >
+                                
+                            </dxc:ChartView.AxisX>-->
+                        </dxc:ChartView>
+                    </StackLayout>
+                </Frame>
+                <Frame Grid.Row="8" Padding="5" IsVisible="false" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Text="Opportunities" TextColor="White" FontSize="Subtitle" BackgroundColor="#2296F3" HorizontalOptions="Fill" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5" />
+
+                        <dxc:PieChartView Grid.Row="1" Margin="0">
+
+                            <dxc:PieChartView.Legend>
+                                <dxc:Legend Orientation="TopToBottom"
+                        HorizontalPosition="RightOutside"
+                        VerticalPosition="Center"/>
+                            </dxc:PieChartView.Legend>
+
+                            <dxc:PieChartView.Series>
+                                <dxc:DonutSeries>
+                                    <dxc:DonutSeries.Data>
+                                        <dxc:PieSeriesDataAdapter DataSource="{Binding LandAreas}"
+                                                                  LabelDataMember="Name"
+                                                                  ValueDataMember="Number"/>
+                                    </dxc:DonutSeries.Data>
+                                </dxc:DonutSeries>
+                            </dxc:PieChartView.Series>
+                        </dxc:PieChartView>
+                    </Grid>
+                </Frame>
+    
+              
+
+
+
+                <!--<Frame Grid.Row="4">
+                    <dxc:ChartView>
+                        <dxc:ChartView.SeriesDataTemplate>
+                            <dxc:SeriesTemplateAdapter DataSource="{Binding SeriesData}"
+                                       SeriesDataMember="Country"
+                                       ArgumentDataMember="Year">
+                                <dxc:SeriesTemplateAdapter.ValueDataMembers>
+                                    <dxc:ValueDataMember Type="Value" Member="Gdp"/>
+                                </dxc:SeriesTemplateAdapter.ValueDataMembers>
+                                <dxc:SeriesTemplateAdapter.SeriesTemplate>
+                                    <DataTemplate>
+                                        <dxc:BarSeries DisplayName="{Binding Path=SeriesDataMemberValue}"/>
+                                    </DataTemplate>
+                                </dxc:SeriesTemplateAdapter.SeriesTemplate>
+                            </dxc:SeriesTemplateAdapter>
+                        </dxc:ChartView.SeriesDataTemplate>
+                        <dxc:ChartView.AxisY>
+                            <dxc:NumericAxisY AlwaysShowZeroLevel="False">
+                                <dxc:NumericAxisY.Style>
+                                    <dxc:AxisStyle MajorTickmarksVisible="True"
+                                   MinorTickmarksVisible="True"/>
+                                </dxc:NumericAxisY.Style>
+                                <dxc:NumericAxisY.Title>
+                                    <dxc:AxisTitle Text="Total GDP per capita, USD"/>
+                                </dxc:NumericAxisY.Title>
+                            </dxc:NumericAxisY>
+                        </dxc:ChartView.AxisY>
+                        <dxc:ChartView.AxisX>
+                            <dxc:NumericAxisX GridAlignment="1"/>
+                        </dxc:ChartView.AxisX>
+                        <dxc:ChartView.Legend>
+                            <dxc:Legend/>
+                        </dxc:ChartView.Legend>
+                    </dxc:ChartView>
+                </Frame>-->
+
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

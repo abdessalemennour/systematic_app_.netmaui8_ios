@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:dxschi="clr-namespace:DevExpress.Maui.Scheduler.Internal;assembly=DevExpress.Maui.Scheduler"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             
+             x:Class="SmartPharma5.View.AppointmentEditPage"
+             Title="Configuration">
+    <ContentPage.ToolbarItems  >
+        <ToolbarItem 
+                
+                IconImageSource="Images/done_pichon.png"
+             x:Name="saveToolbarItem"
+             Clicked="OnSaveTapped" IsEnabled="{Binding Edit_IsEnable}" >
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dxschi:CommonEditorStyles />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="FormItemStyle" TargetType="Grid" BasedOn="{StaticResource FormItemStyleBase}"/>
+            <Style x:Key="FormDateTimeItemStyle" TargetType="Grid" BasedOn="{StaticResource FormDateTimeItemStyleBase}"/>
+            <Style x:Key="Wrapper" TargetType="Frame" BasedOn="{StaticResource WrapperBase}"/>
+
+            <dxschi:BoolToThicknessConverter x:Key="AddReminderButtonTextMarginSelector" 
+                                            TrueThickness="60,0,0,0"
+                                            FalseThickness="12,0,0,0"/>
+            <dxschi:BoolToStringConverter x:Key="AddReminderButtonTextSelector"
+                                         TrueString="Add another reminder"
+                                         FalseString="Add a reminder"/>
+            <dxschi:BoolToThicknessConverter x:Key="ReminderLabelMarginSelector" 
+                                            TrueThickness="12,0,0,0"
+                                            FalseThickness="60,0,0,0"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView Padding="10">
+           
+            <StackLayout x:Name="root" Style="{StaticResource RootContainerStyle}">
+                <!-- MARK: Estimated date -->
+                <Grid Style="{DynamicResource FormItemStyle}"
+                              ColumnDefinitions="Auto,Auto,auto,auto" ColumnSpacing="0" >
+
+                    <ImageButton Margin="5" Source="Images/time_pichon.png"
+                                    Grid.Column="0"
+                                    Style="{StaticResource FormItemIcon}" 
+                                     />
+                    <Label Text="Estimated:" TextColor="Black"
+                                    Grid.Column="1" 
+                                    Style="{StaticResource FormItemPrimaryContent-Label} "
+                                    VerticalOptions="Center"  />
+                    <dxe:DateEdit  x:Name="estimated_date"  Date="{Binding StartDate}"
+                                                IsEnabled="{Binding Edit_IsEnable}"
+                                                Grid.Column="2"
+                                                DisplayFormat="dd/MM/yyyy"
+                                                HorizontalOptions="CenterAndExpand" BorderThickness="1" BorderColor="CadetBlue" IsDateIconVisible="False" Margin="3"/>
+                    <dxe:TimeEdit TimeSpan="{Binding StartTime}"
+                                                IsEnabled="{Binding Edit_IsEnable}"
+                                                Grid.Column="3"
+                                                BorderThickness="1"  Margin="3"  IsTimeIconVisible="False" BorderColor="CadetBlue" HorizontalOptions="FillAndExpand"/>
+
+                    
+                </Grid>
+
+                
+
+
+
+         
+
+                <!-- MARK: Cycle -->
+                <Grid  Style="{DynamicResource FormItemStyle}"
+                                  ColumnDefinitions="Auto,Auto,auto,auto" IsVisible="{Binding PartnerForm.Cycle_IsVisible}">
+
+                    <ImageButton Margin="5" Source="Images/t_pichon.png"
+                                       Style="{StaticResource FormItemIcon}"
+                                       Grid.Column="0"/>
+                    <Label Text="Cycle:" TextColor="Black"
+                                       Grid.Column="1" 
+                                           Style="{StaticResource FormItemPrimaryContent-Label}"
+                                       VerticalOptions="Center"   />
+                    <dxe:TextEdit 
+                                    Text="{Binding PartnerForm.Cycle_name}" TextFontAttributes="Italic"
+                                    PlaceholderText="Event name"
+                                    Style="{StaticResource FormItemPrimaryContent-Entry}"
+                                    Grid.Column="2" IsReadOnly="True"/>
+                </Grid>
+
+                <!-- MARK: Status -->
+          
+
+                <StackLayout BackgroundColor="Gray" Margin="5" WidthRequest="2"></StackLayout>
+
+                <!-- MARK: Begin -->
+                <Grid Style="{DynamicResource FormItemStyle}"
+                              ColumnDefinitions="Auto,Auto,auto,auto" ColumnSpacing="0" >
+
+                    <ImageButton Margin="5" Source="Images/time_pichon.png"
+                                    Grid.Column="0"
+                                    Style="{StaticResource FormItemIcon}" 
+                                     />
+                    <Label Text="Begin :" TextColor="Black"
+                                    Grid.Column="1"  
+                                    Style="{StaticResource FormItemPrimaryContent-Label} "
+                                    VerticalOptions="Center"  />
+                    <dxe:DateEdit BorderColor="CadetBlue"   TextFontAttributes="Italic" x:Name="begin_date"  Date="{Binding PartnerForm.Begin_date}"
+                                                
+                                                Grid.Column="2" 
+                                                DisplayFormat="dd/MM/yyyy"
+                                                HorizontalOptions="CenterAndExpand" BorderThickness="1"  IsDateIconVisible="False" Margin="3"/>
+                    <dxe:TimeEdit BorderColor="CadetBlue" x:Name="begin_time"  TimeSpan="{Binding PartnerForm.BeginTime}"
+                                                
+                                                Grid.Column="3"
+                                                BorderThickness="1"  Margin="3"  IsTimeIconVisible="False" HorizontalOptions="FillAndExpand"/>
+                    <!--<dxe:TextEdit IsVisible="{Binding IsNotAdmin}"
+                                       
+                                        Text="{Binding PartnerForm.Begin_date,StringFormat='{0:dd/MM/yyyy HH:mm:ss}'}"
+                                        PlaceholderText="Event name"
+                                        Style="{StaticResource FormItemPrimaryContent-Entry}"
+                                        Grid.Column="2" IsReadOnly="True"/>-->
+
+                </Grid>
+
+                <!-- MARK: Status -->
+            
+
+                <StackLayout BackgroundColor="Gray" Margin="5" WidthRequest="2"></StackLayout>
+
+                <!-- MARK: end -->
+                <Grid Style="{DynamicResource FormItemStyle}"
+                              ColumnDefinitions="Auto,Auto,auto,auto" ColumnSpacing="0" >
+
+                    <ImageButton Margin="5" Source="Images/time_pichon.png"
+                                    Grid.Column="0"
+                                    Style="{StaticResource FormItemIcon}" 
+                                     />
+                    <Label Text="End :" TextColor="Black"
+                                    Grid.Column="1" 
+                                    Style="{StaticResource FormItemPrimaryContent-Label} "
+                                    VerticalOptions="Center"  />
+                    <dxe:DateEdit   x:Name="end_date" Date="{Binding PartnerForm.End_date }"
+                                               
+                                                Grid.Column="2" TextFontAttributes="Italic"
+                                                DisplayFormat="dd/MM/yyyy"
+                                                HorizontalOptions="CenterAndExpand" BorderThickness="1" BorderColor="CadetBlue" IsDateIconVisible="False" Margin="3"/>
+                    <dxe:TimeEdit  x:Name="end_time"  TimeSpan="{Binding PartnerForm.EndTime}" TextFontAttributes="Italic"
+                                                
+                                                Grid.Column="3"
+                                                BorderThickness="1"  Margin="3" BorderColor="CadetBlue"  IsTimeIconVisible="False" HorizontalOptions="FillAndExpand"/>
+                    <!--<dxe:TextEdit IsVisible="{Binding IsNotAdmin}"
+                                       
+                                        Text="{Binding PartnerForm.End_date,StringFormat='{0:dd/MM/yyyy HH:mm:ss}'}"
+                                        PlaceholderText="Event name"
+                                        Style="{StaticResource FormItemPrimaryContent-Entry}"
+                                        Grid.Column="2" IsReadOnly="True"/>-->
+
+                </Grid>
+
+
+
+                <!-- MARK: Status -->
+             
+
+                <StackLayout BackgroundColor="Gray" Margin="5" WidthRequest="2"></StackLayout>
+
+                <!-- MARK: Name -->
+                <Grid Style="{DynamicResource FormItemStyle}"
+                                      ColumnDefinitions="Auto,auto,auto">
+                    <ImageButton Margin="5" Source="Images/t_pichon.png"
+                                           Style="{StaticResource FormItemIcon}"
+                                           Grid.Column="0"/>
+                    <Label Text="Partner:" TextColor="Black"
+                                           Grid.Column="1"  
+                                               Style="{StaticResource FormItemPrimaryContent-Label}"
+                                           VerticalOptions="Center"  />
+                    <dxe:TextEdit 
+                                        x:Name="eventNameEntry" TextFontAttributes="Italic"
+                                        Text="{Binding Subject}"
+                                        PlaceholderText="Event name" 
+                                        Style="{StaticResource FormItemPrimaryContent-Entry}"
+                                        Grid.Column="2" IsReadOnly="True" TextFontSize="15"
+                        />
+                </Grid>
+
+                <!-- MARK: Status -->
+                
+
+                <StackLayout BackgroundColor="Gray" Margin="5" WidthRequest="2"></StackLayout>
+                <!-- MARK: agent -->
+                <Grid Style="{DynamicResource FormItemStyle}"
+                                  ColumnDefinitions="Auto,Auto,auto">
+
+                    <ImageButton Margin="5" Source="Images/t_pichon.png"
+                                       Style="{StaticResource FormItemIcon}"
+                                       Grid.Column="0"/>
+                    <Label Text="Agent:" TextColor="Black"
+                                       Grid.Column="1" 
+                                           Style="{StaticResource FormItemPrimaryContent-Label}"
+                                       VerticalOptions="Center"  />
+                    <dxe:TextEdit 
+                                    Text="{Binding PartnerForm.Agent_name}"
+                                    PlaceholderText="Event name" TextFontAttributes="Italic"
+                                    Style="{StaticResource FormItemPrimaryContent-Entry}"
+                                    Grid.Column="2" IsReadOnly="True"/>
+                </Grid>
+
+                <StackLayout BackgroundColor="Gray" Margin="5" WidthRequest="2"></StackLayout>
+                <!-- MARK: agent -->
+                <Grid IsVisible="false" Style="{DynamicResource FormItemStyle}"
+                       ColumnDefinitions="Auto,Auto,auto">
+
+                    <ImageButton Margin="5" Source="Images/t_pichon.png"
+                            Style="{StaticResource FormItemIcon}"
+                            Grid.Column="0"/>
+                    <Label Text="Contact:" TextColor="Black"
+                            Grid.Column="1" 
+                                Style="{StaticResource FormItemPrimaryContent-Label}"
+                            VerticalOptions="Center"  />
+                    <dxe:ComboBoxEdit 
+                         ItemsSource="{Binding }"
+                         PlaceholderText="Event name" TextFontAttributes="Italic"
+                         Style="{StaticResource FormItemPrimaryContent-Entry}"
+                         Grid.Column="2" IsReadOnly="True"/>
+                </Grid>
+                <!-- MARK: Label -->
+                <!--<Grid Style="{DynamicResource FormItemStyle}" 
+                                  ColumnDefinitions="Auto,Auto,*,Auto">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnLabelTapped"/>
+                                    </Grid.GestureRecognizers>
+                                    <dxschi:IconImage Source="palette.png"
+                                       Grid.Column="0"
+                                       Style="{StaticResource FormItemIcon}"/>
+                                    <Label Text="Color"
+                                       Grid.Column="1"
+                                       Style="{StaticResource FormItemPrimaryContent-Label}"/>
+                                    <Label Text="{Binding Label.Caption}"
+                                       Grid.Column="2"
+                                       Style="{StaticResource FormItemColorLabel}"/>
+                                    <BoxView Color="{Binding Label.Color}"
+                                         Grid.Column="3"
+                                         Style="{StaticResource FormItemColorIndicator}"/>
+                                </Grid>-->
+                <!-- MARK: Status -->
+                <Frame Style="{DynamicResource Wrapper}">
+                    <BoxView  Style="{StaticResource FormSeparator}"/>
+                </Frame>
+
+                <StackLayout BackgroundColor="Gray" Margin="5" WidthRequest="2"></StackLayout>
+                <!--<Frame Style="{DynamicResource Wrapper}">
+                                    <BoxView  Style="{StaticResource FormSeparator}"/>
+                                </Frame>
+
+                                <Grid HorizontalOptions="CenterAndExpand"
+                                            ColumnDefinitions="auto,auto,auto,auto" Padding="5">
+
+                                    <Label Text="* Begin date Cycle :"
+                                               Grid.Column="1"
+                                               FontSize="Caption" TextColor="OrangeRed" />
+                                <Label Text="{Binding Cycle.BeginDate,StringFormat='{0:dd/MM/yyyy}'}"
+                                                      Grid.Column="2"
+                                                      FontSize="Caption"
+                                       TextColor="#55575c"
+                                                      />
+                                    <Label Text="* End date Cycle :"
+                                                   Grid.Column="3"
+                                                   FontSize="Caption" TextColor="OrangeRed"/>
+                                <Label Text="{Binding Cycle.EndDate,StringFormat='{0:dd/MM/yyyy}'}"
+                                                          Grid.Column="4"
+                                                    FontSize="Caption" TextColor="#55575c" />
+
+                                </Grid>
+                                <Grid Style="{DynamicResource FormItemStyle}"
+                                            ColumnDefinitions="Auto,*,Auto">
+
+
+                        
+
+                                </Grid>-->
+                <!-- MARK: TimeZone -->
+                <!--<Grid 
+                            Style="{DynamicResource FormItemStyle}"
+                            IsVisible="{Binding ActualAllowTimeZone}"
+                            ColumnDefinitions="Auto,*">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTimeZoneTapped"/>
+                    </Grid.GestureRecognizers>
+                    <dxschi:IconImage Source="timezone.png"
+                                   Grid.Column="0"
+                                   Style="{StaticResource FormItemIcon}"/>
+                    <Label Text="{Binding TimeZone.DisplayName}"
+                                   Grid.Column="1"
+                                   Style="{StaticResource FormItemPrimaryContent-Label}"/>
+                </Grid>-->
+                <!--<Frame Style="{DynamicResource Wrapper}">
+                                <BoxView  Style="{StaticResource FormSeparator}"/>
+                            </Frame>-->
+                <!-- MARK: Reminders -->
+                <!--<dxcv:DXCollectionView x:Name="reminderContainer"
+                                               Margin="0"
+                                               ReduceSizeToContent="True"
+                                               Orientation="Vertical"
+                                               ItemsSource="{Binding Reminders}"
+                                               IsVisible="{Binding AllowReminders}">
+                    <dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Style="{DynamicResource FormItemStyle}"
+                                          ColumnDefinitions="Auto,*,Auto">
+                                <dxschi:IconImage Source="notification.png"
+                                               Style="{StaticResource FormItemIcon}"
+                                               Grid.Column="0"
+                                               IsVisible="{Binding IsFirst}"/>
+                                <Label Text="{Binding TimeBeforeStartText}"
+                                               Grid.Column="1"
+                                               Style="{StaticResource FormItemPrimaryContent-Label}"
+                                               Margin="{Binding IsFirst, Converter={StaticResource ReminderLabelMarginSelector}}"/>
+                                <StackLayout Grid.Column="2"
+                                                     Margin="0">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnRemoveReminderTapped" />
+                                    </StackLayout.GestureRecognizers>
+                                    <dxschi:IconImage Source="close.png"
+                                                             Margin="24,12"
+                                                             VerticalOptions="Center"
+                                                             HorizontalOptions="Center"
+                                                             TintColor="{DynamicResource SchedulerEditPageSecondaryIconColor}"/>
+                                </StackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+                <Grid Style="{DynamicResource FormItemStyle}"
+                              ColumnDefinitions="Auto,*"
+                              IsVisible="{Binding AllowReminders}">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAddReminderTapped"/>
+                    </Grid.GestureRecognizers>
+                    <dxschi:IconImage Source="notification.png"
+                                   Style="{StaticResource FormItemIcon}"
+                                   Grid.Column="0"
+                                   IsVisible="{Binding HasReminders, Converter={dxschi:InverseBoolConverter}}"/>
+                    <Label Text="{Binding HasReminders, Converter={StaticResource AddReminderButtonTextSelector}}"
+                                   Style="{StaticResource FormItemPrimaryContent-Label}"
+                                   Grid.Column="1"
+                                   Margin="{Binding HasReminders, Converter={StaticResource AddReminderButtonTextMarginSelector}}"/>
+                </Grid>
+                <Frame 
+                                Style="{DynamicResource Wrapper}" 
+                                IsVisible="{Binding AllowReminders}">
+                    <BoxView Style="{StaticResource FormSeparator}"/>
+                </Frame>
+                -->
+                <!-- MARK: Recurrence -->
+                <!--<Grid 
+                            Style="{DynamicResource FormItemStyle}"
+                            IsVisible="{Binding AllowRecurrence}"
+                            ColumnDefinitions="Auto,Auto,*">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRepeatTapped"/>
+                    </Grid.GestureRecognizers>
+                    <dxschi:IconImage Source="repeat.png"
+                                   Grid.Column="0"
+                                   Style="{StaticResource FormItemIcon}"/>
+                    <Label Text="Repeat"
+                                   Grid.Column="1"
+                                   Style="{StaticResource FormItemPrimaryContent-Label}"/>
+                    <Label Text="{Binding Recurrence.Name}"
+                                   Grid.Column="2"
+                                   TextColor="{DynamicResource SchedulerEditPagePrimaryTextColor}"
+                                   HorizontalOptions="End" 
+                                   VerticalOptions="Center"
+                                   BackgroundColor="Transparent"
+                                   Margin="0,0,24,0"/>
+                </Grid>-->
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

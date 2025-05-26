@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="SmartPharma5.View.CustomPopup"
+               xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+               xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView">
+
+    <Frame BackgroundColor="White"
+           WidthRequest="350" 
+           HeightRequest="400">
+        <VerticalStackLayout Spacing="10">
+            <Label Text="Enter File Details" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
+
+            <!-- Champ pour modifier le nom du document -->
+            <Entry x:Name="FileNameEntry" Placeholder="Enter File Name" />
+
+            <Editor x:Name="MemoEntry" 
+                    Placeholder="Enter Memo" 
+                    HeightRequest="100" 
+                    AutoSize="TextChanges" />
+
+            <Entry x:Name="DescriptionEntry" Placeholder="Enter Description" />
+           <!-- <Picker x:Name="TypePicker" Title="Select Document Type" />-->
+           <!-- <Picker x:Name="TypePicker"
+        Title="Select Document Type"
+        ItemsSource="{Binding DocumentTypes}"
+        SelectedItem="{Binding SelectedDocumentType, Mode=TwoWay}"
+        Focused="TypePicker_Focused"
+        SelectedIndex="-1" />-->
+            <dxe:ComboBoxEdit 
+                x:Name="TypeComboBox"
+                LabelText="Document Type" 
+                HeightRequest="50" 
+                TextHorizontalAlignment="Center" 
+                VerticalOptions="Center" 
+                ItemsSource="{Binding DocumentTypes}" 
+                SelectedItem="{Binding SelectedDocumentType, Mode=TwoWay}" 
+                
+                 />
+                <!-- Commande optionnelle -->
+
+
+
+                <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Padding="10">
+                <!-- Bouton Cancel -->
+                <Button Text="Cancel" 
+                        BackgroundColor="Red" 
+                        TextColor="White" 
+                        CornerRadius="10"
+                        Clicked="OnCancelClicked" 
+                        WidthRequest="120" />
+
+                <!-- Bouton Save -->
+                <Button Text="Save" 
+                        BackgroundColor="Green" 
+                        TextColor="White" 
+                        CornerRadius="10"
+                        Clicked="OnSaveClicked" 
+                        WidthRequest="120" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>

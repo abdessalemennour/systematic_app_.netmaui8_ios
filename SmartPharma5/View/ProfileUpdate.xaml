@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+          xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+            
+             x:Class="SmartPharma5.View.ProfileUpdate">
+    <NavigationPage.TitleView>
+        <Grid ColumnDefinitions="*,Auto" Padding="10" VerticalOptions="Center">
+            <!-- Titre centré -->
+            <Label Text="ProfileUpdate" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+            <!-- Bouton à droite -->
+            <ImageButton Grid.Column="1"
+                     Source="pichon_menu2.png"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     BackgroundColor="Transparent"
+                     HorizontalOptions="End"
+                     VerticalOptions="Center"
+                     Clicked="OnSwipeViewClicked"/>
+        </Grid>
+    </NavigationPage.TitleView>
+
+    <SwipeView x:Name="MainSwipeView">
+        <SwipeView.RightItems>
+            <SwipeItems  Mode="Reveal">
+                <SwipeItemView WidthRequest="100" IsVisible="{Binding IsMainButtonVisible}">
+                    <StackLayout Orientation="Vertical" 
+                             Spacing="20" 
+                             Padding="10"
+                             BackgroundColor="#F5F5F5">
+
+                        <!-- Activity Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="activity.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedactivity"/>
+                            <Label Text="Activité" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- Memo Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="note3.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedmemo"/>
+                            <Label Text="Note" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        
+                        <!-- Chat Button -->
+                        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Spacing="2">
+                            <Grid>
+                                <ImageButton 
+                                    Source="chat.png"
+                                    BackgroundColor="Transparent"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    CornerRadius="10"
+                                    Clicked="OnActionButtonClickedchat"/>
+                                <!-- Badge pour messages non lus -->
+                                <Frame 
+                                    IsVisible="False"
+                                    x:Name="UnreadBadgeFrame"
+                                    BackgroundColor="Red"
+                                    CornerRadius="10"
+                                    Padding="0"
+                                    HeightRequest="20"
+                                    WidthRequest="20"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start"
+                                    Margin="0,-5,-5,0"
+                                    HasShadow="False">
+                                    <Grid>
+                                        <Label 
+                                            x:Name="UnreadBadgeLabel"
+                                            Text="0"
+                                            TextColor="White"
+                                            FontSize="10"
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Chat" 
+                                   HorizontalOptions="Center"
+                                   FontSize="12"
+                                   TextColor="Black"
+                                   FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <!-- Document Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="document.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickeddocument"/>
+                            <Label Text="Document" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <!-- report Button -->
+                        
+                        <!--<StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="rapport.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedreport"/>
+                            <Label Text="Rapport" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>-->
+                        
+                        <!-- logs Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="logs.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedlogs"/>
+                            <Label Text="Logs" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        
+
+                    </StackLayout>
+                </SwipeItemView>
+            </SwipeItems>
+        </SwipeView.RightItems>
+        <Grid>
+            <ScrollView HorizontalOptions="FillAndExpand">
+                <StackLayout Margin="5,10,5,0" HorizontalOptions="FillAndExpand" Spacing="10">
+                    <Label FontSize="Large" HorizontalTextAlignment="Center" Text="GENERALE ATTRIBUTES" TextColor="Black" Margin="0,10,0,0" HorizontalOptions="CenterAndExpand"></Label>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <!-- Bouton Location -->
+                        <!--<Frame
+                            VerticalOptions="Center"
+                            WidthRequest="150"
+                            HeightRequest="60"
+                            CornerRadius="25"
+                            BorderColor="White"
+                            HasShadow="True">
+                            <Frame.Background>
+                                <LinearGradientBrush>
+                                    <GradientStop Color="#FFA726" Offset="0.0" />
+                                    <GradientStop Color="#FB8C00" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Frame.Background>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                                <Image Source="maps.png" WidthRequest="20" HeightRequest="20" />
+                                <Label Text="LOCATION" TextColor="White" FontSize="14" VerticalOptions="Center" />
+                            </StackLayout>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnButtonClicked" />
+                            </Frame.GestureRecognizers>
+                        </Frame>-->
+
+                        <Grid>
+                            <!-- Votre Frame existante -->
+                            <Frame
+                                VerticalOptions="Center"
+                                WidthRequest="150"
+                                HeightRequest="60"
+                                CornerRadius="25"
+                                BorderColor="White"
+                                HasShadow="True">
+                                <Frame.Background>
+                                    <LinearGradientBrush>
+                                        <GradientStop Color="#FFA726" Offset="0.0" />
+                                        <GradientStop Color="#FB8C00" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                                    <Image Source="maps.png" WidthRequest="20" HeightRequest="20" />
+                                    <Label Text="LOCATION" TextColor="White" FontSize="14" VerticalOptions="Center" />
+                                </StackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnButtonClicked" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+
+                            <!-- Overlay pour la carte et le picker (initialement caché) -->
+                            <!--<Grid x:Name="MapOverlay" 
+          IsVisible="False"
+          BackgroundColor="#80000000"
+                                VerticalOptions="FillAndExpand"
+          HorizontalOptions="FillAndExpand">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                --><!-- La carte --><!--
+                                <mapsui:MapView x:Name="SelectionMapView"
+                        Grid.Row="0"
+                        VerticalOptions="FillAndExpand"
+                        HorizontalOptions="FillAndExpand" />
+
+                               
+                                <Frame Grid.Row="1"
+               Padding="10"
+               Margin="20"
+               CornerRadius="10"
+               BackgroundColor="White">
+                                    <StackLayout>
+                                        <Picker x:Name="LocationTypePicker"
+                        Title="Sélectionnez un type">
+                                            <Picker.Items>
+                                                <x:String>Position actuelle</x:String>
+                                                <x:String>Position manuelle</x:String>
+                                                <x:String>Adresse spécifique</x:String>
+                                            </Picker.Items>
+                                        </Picker>
+
+                                        <Button Text="Confirmer"
+                        BackgroundColor="#FB8C00"
+                        TextColor="White"
+                        Clicked="ConfirmLocationSelection" />
+
+                                        <Button Text="Annuler"
+                        BackgroundColor="LightGray"
+                        Clicked="CancelLocationSelection" />
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>-->
+                        </Grid>
+
+                        <!-- Bouton Document -->
+                        <!--<Frame
+    VerticalOptions="Center"
+    WidthRequest="150"
+    HeightRequest="60"
+    CornerRadius="25"
+    BorderColor="White"
+    HasShadow="True">
+                        <Frame.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Color="#42A5F5" Offset="0.0" />
+                                <GradientStop Color="#1E88E5" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Frame.Background>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                            <Image Source="document.png" WidthRequest="20" HeightRequest="20" />
+                            <Label Text="DOCUMENT" TextColor="White" FontSize="14" VerticalOptions="Center" />
+                        </StackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnDocumentButtonClicked" />
+                        </Frame.GestureRecognizers>
+                    </Frame>-->
+
+                    </HorizontalStackLayout>
+
+
+
+                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Text"   HorizontalOptions="FillAndExpand" Text="{Binding Partner.Name}" LabelText="Name Partner"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" VerticalOptions="CenterAndExpand" HorizontalOptions="Center"  IsVisible="{Binding BtnUpdateName,Mode=TwoWay}" Margin="0,0,10,0" HeightRequest="40" TextColor="White" FontAttributes="Bold" CornerRadius="20" Text="Edit" Command="{Binding UpdateName}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleName,Mode=TwoWay}" Orientation="Vertical"  BackgroundColor="#efeff5">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit Text="{Binding InputName,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="Name Partner" BorderColor="Green"  IsLabelFloating="False" ></dxe:TextEdit>
+                                <Button BackgroundColor="Green"  VerticalOptions="CenterAndExpand" ImageSource="Images/done.png" CornerRadius="10"  FontAttributes="Bold" TextColor="White" FontSize="8"  WidthRequest="60" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"     Command="{Binding SaveName}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand" WidthRequest="30"   FontSize="8" HeightRequest="40"  Margin="0,0,10,0" Command="{Binding CloseName}"  TextColor="White" ></Button>
+                            </StackLayout>
+
+
+
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Text"   HorizontalOptions="FillAndExpand" LabelText="Category" Text="{Binding Partner.Category_Name , Mode=TwoWay}"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" CornerRadius="20" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateCategory,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateCategory }" TextColor="White" FontAttributes="Bold" ></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleCategory,Mode=TwoWay}" Orientation="Vertical"  BackgroundColor="#efeff5">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <Picker SelectedIndex="{Binding InputCategory,Mode=TwoWay}" SelectedItem="{Binding SelectedCategory,Mode=TwoWay}"  FontAttributes="Bold" HorizontalOptions="FillAndExpand" ItemsSource="{Binding Catgory_list,Mode=TwoWay}" ItemDisplayBinding="{Binding Name}" TextColor="Black" FontFamily="Lobster-Regular" Title="New Category"   FontSize="Medium"    Margin="10" TitleColor="Gray" >
+
+
+
+                                </Picker>
+                                <Button BackgroundColor="Green" VerticalOptions="CenterAndExpand" ImageSource="Images/done.png"   TextColor="White" FontSize="8"  WidthRequest="65"   HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveCategory}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand" WidthRequest="40"     Margin="0,0,10,0" FontSize="11" HeightRequest="40"   Command="{Binding CloseCategory}" TextColor="White" ></Button>
+                            </StackLayout>
+
+                        </StackLayout>
+                    </StackLayout>
+
+                    <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="Street" Text="{Binding Partner.Street , Mode=TwoWay}"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateStreet,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateStreet}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleStreet,Mode=TwoWay}" Orientation="Vertical" BackgroundColor="#efeff5">
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit  Keyboard="Text" Text="{Binding InputStreet,Mode=TwoWay}"  HorizontalOptions="FillAndExpand" LabelText="New street" BorderColor="Green"  IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                <Button BackgroundColor="Green"   ImageSource="Images/done.png" TextColor="White" FontSize="8"  WidthRequest="65" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveStreet}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   Command="{Binding CloseStreet}" TextColor="White" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="State"  Text="{Binding Partner.State , Mode=TwoWay}" IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateState,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateState}"></Button>
+
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleState,Mode=TwoWay}" Orientation="Vertical"  BackgroundColor="#efeff5">
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit Text="{Binding InputState,Mode=TwoWay}" Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="New state" BorderColor="Green"   IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                <Button BackgroundColor="Green" VerticalOptions="CenterAndExpand" ImageSource="Images/done.png" TextColor="White" FontSize="8"  WidthRequest="60" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveState}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30"  Margin="0,0,10,0" FontSize="11" HeightRequest="40" Command="{Binding CloseState}"   TextColor="White" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Numeric"   HorizontalOptions="FillAndExpand" LabelText="Postal Code" Text="{Binding Partner.PostalCode , Mode=TwoWay}" IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateCodePostal,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateCodePostale}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisisbleCodePostal,Mode=TwoWay}" Orientation="Vertical"  BackgroundColor="#efeff5">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit Text="{Binding InputCodePostal,Mode=TwoWay}" Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="New Postal Code"  BorderColor="Green"  IsLabelFloating="False"  Margin="10" ></dxe:TextEdit>
+                                <Button BackgroundColor="Green" VerticalOptions="CenterAndExpand"  ImageSource="Images/done.png" TextColor="White" FontSize="8" WidthRequest="60" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"    Command="{Binding SaveCodePostale}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   TextColor="White" Command="{Binding CloseCodePostale}" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+
+                    <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+
+                    <StackLayout IsVisible="true" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="Country" Text="{Binding Partner.Country , Mode=TwoWay}"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateCountry,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateCountry}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleCountry,Mode=TwoWay}" Orientation="Vertical" BackgroundColor="#efeff5">
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit  Keyboard="Text" Text="{Binding InputCountry,Mode=TwoWay}"  HorizontalOptions="FillAndExpand" LabelText="New Country" BorderColor="Green"  IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                <Button BackgroundColor="Green"   ImageSource="Images/done.png" TextColor="White" FontSize="8"  WidthRequest="65" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveCountry}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   Command="{Binding CloseCountry}" TextColor="White" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView HorizontalOptions="FillAndExpand" IsVisible="true" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+                    <StackLayout IsVisible="true" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Numeric" HorizontalOptions="FillAndExpand" LabelText="Adress Number" Text="{Binding Partner.Number , Mode=TwoWay}"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateNumber,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateNumber}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleNumber,Mode=TwoWay}" Orientation="Vertical" BackgroundColor="#efeff5">
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit  Keyboard="Numeric" Text="{Binding InputNumber,Mode=TwoWay}"  HorizontalOptions="FillAndExpand" LabelText="New Adress Number" BorderColor="Green"  IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                <Button BackgroundColor="Green"   ImageSource="Images/done.png" TextColor="White" FontSize="8"  WidthRequest="65" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveNumber}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   Command="{Binding CloseNumber}" TextColor="White" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView HorizontalOptions="FillAndExpand" IsVisible="true" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+
+                    <StackLayout  IsVisible="true" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Numeric"  HorizontalOptions="FillAndExpand" LabelText="Fax" Text="{Binding Partner.Fax , Mode=TwoWay}"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateFax,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateFax}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleFax,Mode=TwoWay}" Orientation="Vertical" BackgroundColor="#efeff5">
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit  Keyboard="Numeric" Text="{Binding InputFax,Mode=TwoWay}"  HorizontalOptions="FillAndExpand" LabelText="New Fax" BorderColor="Green"  IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                <Button BackgroundColor="Green"  ImageSource="Images/done.png" TextColor="White" FontSize="8"  WidthRequest="65" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveFax}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   Command="{Binding CloseFax}" TextColor="White" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+                    <BoxView HorizontalOptions="FillAndExpand" IsVisible="true"  BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+
+                    <StackLayout IsVisible="true" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <dxe:TextEdit Keyboard="Text"  HorizontalOptions="FillAndExpand" LabelText="Vat_Code" Text="{Binding Partner.VatCode , Mode=TwoWay}"  IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                            <Button BackgroundColor="Orange" TextColor="White" FontAttributes="Bold" CornerRadius="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="0,0,10,0" IsVisible="{Binding BtnUpdateVatCode,Mode=TwoWay}" HeightRequest="40"  Text="Edit" Command="{Binding UpdateVatCode}"></Button>
+                        </StackLayout>
+                        <StackLayout IsVisible="{Binding IsVisibleVatCode,Mode=TwoWay}" Orientation="Vertical" BackgroundColor="#efeff5">
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <dxe:TextEdit  Keyboard="Text" Text="{Binding InputVatCode,Mode=TwoWay}"  HorizontalOptions="FillAndExpand" LabelText="New VatCode" BorderColor="Green"  IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                <Button BackgroundColor="Green"   ImageSource="Images/done.png" TextColor="White" FontSize="8"  WidthRequest="65" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"   Command="{Binding SaveVatCode}"></Button>
+                                <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" VerticalOptions="CenterAndExpand"  WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   Command="{Binding CloseVatCode}" TextColor="White" ></Button>
+                            </StackLayout>
+
+
+                        </StackLayout>
+                    </StackLayout>
+
+
+
+                    <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="CadetBlue" HeightRequest="20"></BoxView>
+                    <Label FontSize="Large" Margin="0,10,0,0" Text="PROFILE ATTRIBUTES" TextColor="Black" HorizontalOptions="CenterAndExpand"></Label>
+
+                    <Button BackgroundColor="CadetBlue" IsVisible="true" HorizontalOptions="FillAndExpand" Text="Change/Create Profile"   TextColor="White" Margin="0,0,10,0" Command="{Binding ChangeProfile,Mode=TwoWay}"></Button>
+                    <StackLayout Orientation="Vertical" >
+                        <StackLayout  Orientation="Horizontal">
+                            <Label Margin="0,0,0,0" VerticalOptions="CenterAndExpand" FontSize="Medium" HorizontalOptions="Start" Text="PROFLIE : "></Label>
+                            <Label VerticalOptions="CenterAndExpand" FontSize="Medium" FontAttributes="Italic" HorizontalOptions="CenterAndExpand" TextColor="Black" Text="{Binding ProfileName,Mode=TwoWay}"></Label>
+
+                        </StackLayout>
+
+
+
+                    </StackLayout>
+
+
+                    <StackLayout x:Name="Update_fieldr" Orientation="Vertical" IsVisible="true">
+                        <dxcv:DXCollectionView  Margin="5,25,5,5"  Orientation="Vertical" ItemSpacing="10" VerticalOptions="FillAndExpand" 
+                        SelectionMode="None" ItemsSource="{Binding ListMyAttributes,Mode=TwoWay}"  >
+
+                            <dxcv:DXCollectionView.ItemTemplate >
+                                <DataTemplate  >
+                                    <StackLayout>
+                                        <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                                <dxe:TextEdit Keyboard="Text"  HorizontalOptions="FillAndExpand"  LabelText="{Binding labelAttribute,Mode=TwoWay}"  Text="{Binding value, Mode=TwoWay}" IsEnabled="False" IsLabelFloating="False" Margin="10"></dxe:TextEdit>
+                                                <Button BackgroundColor="Orange" CornerRadius="20" VerticalOptions="CenterAndExpand"  HorizontalOptions="Center" IsVisible="{Binding BtnUpdated,Mode=TwoWay}" Margin="0,0,10,0" HeightRequest="40" TextColor="White" FontAttributes="Bold" Command="{Binding Update,Mode=TwoWay}" Text="Edit"  ></Button>
+                                            </StackLayout>
+                                            <StackLayout  IsVisible="{Binding IsUpdated,Mode=TwoWay}" Orientation="Vertical"  BackgroundColor="#efeff5">
+                                                <StackLayout  Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                                                        <StackLayout   VerticalOptions="CenterAndExpand"  HorizontalOptions="FillAndExpand" Orientation="Vertical"  Margin="10">
+                                                            <dxe:TextEdit  Text="{Binding string_value , Mode=TwoWay}"  IsVisible="{Binding HasText}"  HorizontalOptions="FillAndExpand"  LabelText="{Binding labelAttribute, StringFormat='New  {0} '}" IsLabelFloating="False"></dxe:TextEdit>
+                                                            <dxe:NumericEdit Value="{Binding numeric_value , Mode=TwoWay}"  IsVisible="{Binding HasNumber}" LabelText="{Binding labelAttribute, StringFormat='New  {0} '}" IsLabelFloating="False"></dxe:NumericEdit>
+                                                            <dxe:NumericEdit Value="{Binding numeric_value , Mode=TwoWay}"  IsVisible="{Binding HasDecimal}" LabelText="{Binding labelAttribute, StringFormat='New  {0} '}" IsLabelFloating="False"></dxe:NumericEdit>
+                                                            <dxe:TextEdit  Text="{Binding string_value , Mode=TwoWay}"  IsVisible="{Binding HasMemo}" HeightRequest="100" LabelText="{Binding labelAttribute, StringFormat='New  {0} '}" IsLabelFloating="False"></dxe:TextEdit>
+                                                            <Picker SelectedItem="{Binding selected_element , Mode=TwoWay}" Title="Pick Item"  ItemsSource="{Binding listOfTypeElement, Mode=TwoWay}" ItemDisplayBinding="{Binding name}" WidthRequest="200" IsVisible="{Binding HasList}" ></Picker>
+                                                            <dxe:DateEdit Date="{Binding date_value, Mode=TwoWay}"   IsVisible="{Binding HasDate}" LabelText="{Binding labelAttribute, StringFormat='New  {0} '}" IsLabelFloating="False"></dxe:DateEdit>
+
+                                                            <StackLayout IsVisible="{Binding HasCheck}" >
+                                                                <Label Text="Check It Here " TextColor="Gray"></Label>
+                                                                <CheckBox   IsChecked="{Binding check_value , Mode=TwoWay}" WidthRequest="120" ></CheckBox>
+                                                            </StackLayout>
+                                                        </StackLayout>
+
+                                                    </StackLayout>
+                                                    <Button BackgroundColor="Green" VerticalOptions="CenterAndExpand" ImageSource="/Images/done.png"  TextColor="White" FontSize="8"  HorizontalOptions="Center" Margin="5,0,10,0" HeightRequest="40"    Command="{Binding getTemp,Mode=TwoWay}" CommandParameter="{Binding Source={x:Reference Update_fieldr}, Path=BindingContext.Instance}"></Button>
+                                                    <Button BackgroundColor="Gray" ImageSource="/assets/up1.png" CornerRadius="10" VerticalOptions="CenterAndExpand" WidthRequest="30" Margin="0,0,10,0" FontSize="11" HeightRequest="40"   TextColor="White" Command="{Binding closeCommand,Mode=TwoWay}"  ></Button>
+                                                </StackLayout>
+                                                <StackLayout HorizontalOptions="FillAndExpand" Spacing="10" >
+
+
+                                                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                                                        <Label  Text="Current Temp Values :" FontAttributes="Bold" TextColor="Black" Opacity="0.5" HorizontalOptions="StartAndExpand"  BackgroundColor="#efeff5" FontSize="12" Margin="20,0"/>
+                                                        <ImageButton Source="assets/down.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="End" BackgroundColor="#efeff5" IsVisible="{Binding BtnDown}" Command="{Binding ShowTempValues,Mode=TwoWay}"></ImageButton>
+                                                        <ImageButton Source="assets/sort_up.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="End" BackgroundColor="#efeff5"  IsVisible="{Binding BtnUp}" Command="{Binding CloseTempValues,Mode=TwoWay}"></ImageButton>
+                                                    </StackLayout>
+                                                    <CollectionView  HeightRequest="200" IsVisible="{Binding TempValuesList,Mode=TwoWay}" ItemsSource="{Binding tempValues}">
+                                                        <CollectionView.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackLayout Orientation="Vertical">
+                                                                    <Label HorizontalTextAlignment="Center" Text="{Binding create_date , StringFormat='Create date : {0}'}"></Label>
+                                                                    <Label HorizontalTextAlignment="Center" Text="{Binding value , StringFormat='Temp Value : {0}'}"></Label>
+                                                                    <Label HorizontalTextAlignment="Center" Text="{Binding user , StringFormat='Created By : {0}'}" ></Label>
+                                                                    <Label HorizontalTextAlignment="Center" TextColor="Black" Text="--------------------------------------------------"></Label>
+
+
+                                                                </StackLayout>
+                                                            </DataTemplate>
+                                                        </CollectionView.ItemTemplate>
+                                                    </CollectionView>
+                                                </StackLayout>
+
+
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                        <BoxView HorizontalOptions="FillAndExpand" BackgroundColor="LightGray" HeightRequest="1"></BoxView>
+                                    </StackLayout>
+
+
+
+                                </DataTemplate>
+                            </dxcv:DXCollectionView.ItemTemplate>
+                        </dxcv:DXCollectionView>
+                    </StackLayout>
+
+
+
+                    <dxco:DXPopup HorizontalOptions="FillAndExpand" x:Name="PopupConfig"  IsOpen="{Binding ChangeProfileBool,Mode=TwoWay}"  CornerRadius="20"  AllowShadow="True">
+                        <Frame VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" CornerRadius="20" Padding="20,25,20,25">
+                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                <Label FontAttributes="Bold" Text="PICK THE NEW PROFILE" HorizontalOptions="CenterAndExpand"></Label>
+                                <StackLayout IsVisible="true" HorizontalOptions="FillAndExpand" Orientation="Vertical">
+                                    <Picker  HorizontalOptions="FillAndExpand" SelectedItem="{Binding Selected_profile,Mode=TwoWay}" Title="PICK PROFILE" ItemsSource="{Binding Profiles,Mode=TwoWay}" ItemDisplayBinding="{Binding Name}">
+                                        <Picker.Behaviors >
+                                            <xct:EventToCommandBehavior EventName="SelectedIndexChanged"     >
+
+                                            </xct:EventToCommandBehavior>
+                                        </Picker.Behaviors>
+                                    </Picker>
+                                    <Button VerticalOptions="CenterAndExpand" Grid.Column="3" TextColor="White" Text="Choose"  HeightRequest="40" HorizontalOptions="CenterAndExpand" Margin="0,10,0,0"  BackgroundColor="Green"  Command="{Binding changeSearsh}" ></Button>
+
+                                </StackLayout>
+
+                                <dxcv:DXCollectionView IsVisible="false" HeightRequest="150"  ItemsSource="{Binding ListAttributes,Mode=TwoWay}" Margin="5,25,5,5"  Orientation="Vertical" ItemSpacing="10" VerticalOptions="FillAndExpand" 
+                        SelectionMode="None">
+                                    <dxcv:DXCollectionView.ItemTemplate>
+                                        <DataTemplate>
+
+                                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" BackgroundColor="#e0e0eb">
+                                                <Label HorizontalOptions="Start"  IsVisible="{Binding HasBool}" Text="{Binding LabelName,Mode=TwoWay}"></Label>
+                                                <dxe:TextEdit HorizontalOptions="FillAndExpand"  WidthRequest="120" IsVisible="{Binding HasString}"    LabelText="{Binding LabelName}" IsLabelFloating="False"></dxe:TextEdit>
+                                                <dxe:NumericEdit HorizontalOptions="FillAndExpand" WidthRequest="120" IsVisible="{Binding HasNumber}" LabelText="{Binding LabelName}"  IsLabelFloating="False"></dxe:NumericEdit>
+                                                <dxe:CheckEdit  HorizontalOptions="FillAndExpand" IsVisible="{Binding HasBool}"></dxe:CheckEdit>
+                                                <Picker  HorizontalOptions="FillAndExpand" WidthRequest="120" Title="{Binding LabelName}" IsVisible="{Binding HasMultiple}" ></Picker>
+                                                <dxe:DateEdit HorizontalOptions="FillAndExpand" LabelText="{Binding LabelName}"    IsVisible="{Binding HasDate}" IsLabelFloating="False"></dxe:DateEdit>
+                                                <Button HorizontalOptions="End" BackgroundColor="Green" HeightRequest="40" Text="Create" TextColor="White" VerticalOptions="CenterAndExpand"  ></Button>
+                                            </StackLayout>
+
+                                        </DataTemplate>
+                                    </dxcv:DXCollectionView.ItemTemplate>
+                                </dxcv:DXCollectionView>
+                            </StackLayout>
+                        </Frame>
+
+                    </dxco:DXPopup>
+
+                </StackLayout>
+
+
+            </ScrollView>
+            <!-- Indicateur de swipe -->
+            <Image Source="rotate.png"
+               x:Name="swipeHint"
+               HorizontalOptions="End"
+               VerticalOptions="Center"
+               WidthRequest="40"
+               HeightRequest="60"
+               Margin="0,0,10,0"
+               Opacity="0.3"/>
+        </Grid>
+    </SwipeView>
+</ContentPage>

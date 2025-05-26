@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+              xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.ChartView"
+               NavigationPage.HasBackButton="false"
+             Title="ChartView"
+             x:Name="grid">
+    <NavigationPage.TitleView>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+            <Label HorizontalOptions="EndAndExpand" TextColor="White" FontAttributes="Bold" Text="Parametrage >"></Label>
+            <ImageButton   HorizontalOptions="EndAndExpand" Clicked="ImageButton_Clicked"   Source="Images/parametrage.png"  WidthRequest="40" ></ImageButton>
+
+
+
+
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <Grid x:Name="scroll">
+
+        <dxco:DXPopup  x:Name="Popup2" BackgroundColor="LightGray" CornerRadius="20" Margin="10"   AllowShadow="True">
+            <StackLayout  Padding="10" BackgroundColor="LightGray">
+                <ScrollView>
+                    <CollectionView   ItemsSource="{Binding List_Paramettre_final,Mode=TwoWay}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+
+                                <StackLayout Margin="5">
+
+
+                                    <dxe:TextEdit HorizontalOptions="FillAndExpand"   IsVisible="{Binding IsString}"  Text="{Binding StringValue,Mode=TwoWay}"  LabelText="{Binding Name}" IsLabelFloating="False"></dxe:TextEdit>
+
+                                    <dxe:NumericEdit HorizontalOptions="FillAndExpand"  IsVisible="{Binding IsInt,Mode=TwoWay}" Value="{Binding IntValue}" LabelText="{Binding Name}"  IsLabelFloating="False"></dxe:NumericEdit>
+
+                                    <Label HorizontalOptions="Start"  IsVisible="{Binding IsBool}" Text="{Binding Name,Mode=TwoWay}"></Label>
+                                    <dxe:CheckEdit  HorizontalOptions="FillAndExpand" IsChecked="{Binding BoolValue,Mode=TwoWay}" IsVisible="{Binding IsBool}"></dxe:CheckEdit>
+
+                                    <dxe:DateEdit HorizontalOptions="FillAndExpand" LabelText="{Binding Name}"  Date="{Binding DateValue,Mode=TwoWay}"  IsVisible="{Binding IsDate}" IsLabelFloating="False"></dxe:DateEdit>
+
+
+                                </StackLayout>
+
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+                </ScrollView>
+                <Button Clicked="Button_Clicked" Text="Config"></Button>
+            </StackLayout>
+
+
+        </dxco:DXPopup>
+
+
+
+    </Grid>
+
+</ContentPage>

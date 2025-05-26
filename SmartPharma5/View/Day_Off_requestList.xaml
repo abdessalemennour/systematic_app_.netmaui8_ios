@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.Day_Off_requestList"
+               xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Request day off"
+             BackgroundColor="White">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem  Text=" Home page   >"></ToolbarItem>
+        <ToolbarItem Text="Avance"  IconImageSource="home.png"  Command="{Binding changeToHome}" ></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <Grid BackgroundColor="#F3F5F9" RowSpacing="-5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+
+
+        <StackLayout HorizontalOptions="FillAndExpand" Grid.Row="2" Orientation="Vertical" Spacing="10">
+
+            <Frame  HasShadow="True"     BackgroundColor="LightGray"  Margin="5,0,5,0"  HorizontalOptions="FillAndExpand">
+               
+                <StackLayout   Orientation="Horizontal" Spacing="20"  VerticalOptions="StartAndExpand"  Margin="0,0,0,10"  HorizontalOptions="CenterAndExpand">
+                    <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" WidthRequest="150" VerticalOptions="CenterAndExpand">
+                        <Label TextColor="Black"  FontSize="10" FontAttributes="Bold"  Text="{Binding name_user1 ,StringFormat='Name of user : {0}',Mode=TwoWay}"></Label>
+                        <Label TextColor="Black"  FontSize="12" FontAttributes="Bold"  Text="{Binding day_off_use ,StringFormat='Day off use : {0} jour'}"></Label>
+                        <Label TextColor="Black"  FontSize="12" FontAttributes="Bold"  Text="{Binding day_off_rest ,StringFormat='Day off rest : {0} jour'}"></Label>
+
+                    </StackLayout>
+                    <StackLayout>
+                        <BoxView WidthRequest="1" HeightRequest="65" BackgroundColor="Black"  HorizontalOptions="CenterAndExpand"></BoxView>
+                    </StackLayout>
+
+
+
+                    <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand"  WidthRequest="150"  VerticalOptions="CenterAndExpand">
+                        <Label TextColor="Black" FontSize="11" FontAttributes="Bold"  Text="{Binding name_exercice ,StringFormat='Name of exercice : {0}'}"></Label>
+                        <Label TextColor="Black"  FontSize="12" FontAttributes="Bold"  Text="{Binding day_off_number ,StringFormat='Day off number : {0} jour'}"></Label>
+
+                    </StackLayout>
+
+                </StackLayout>
+
+
+            </Frame>
+            <StackLayout  Orientation="Vertical" Spacing="-10">
+
+                <StackLayout Orientation="Horizontal" Spacing="-10">
+                    <Frame HeightRequest="60  " CornerRadius="30"  HorizontalOptions="CenterAndExpand"  IsVisible="{Binding IsStringShearsh ,Mode=TwoWay}" BackgroundColor="LightGray"  Padding="-1" Margin="20,-18,20,-7">
+
+                        <SearchBar  HorizontalOptions="StartAndExpand"  Margin="0" x:Name="srcBar" TextColor="White" PlaceholderColor="White" FontSize="12" Placeholder="Shearch ..." 
+                        >
+                            <SearchBar.Behaviors>
+                                <xct:EventToCommandBehavior EventName="TextChanged"  Command="{Binding CommandSearch}" CommandParameter="{Binding Text, Source={x:Reference srcBar}}"/>
+                            </SearchBar.Behaviors>
+
+                        </SearchBar>
+
+
+
+
+                    </Frame>
+
+
+
+
+
+
+
+                    <Frame IsVisible="{Binding IsDateShearsh,Mode=TwoWay}" HorizontalOptions="FillAndExpand"  HeightRequest="50" Margin="-5" BackgroundColor="Transparent">
+                        <StackLayout  Orientation="Horizontal">
+                            <dxe:DateEdit IsVisible="{Binding IsDateStartShearsh,Mode=TwoWay}" Date="{Binding StartShearshDate}"   IsLabelFloating="False" TextFontSize="10"  LabelText="start date" HorizontalOptions="FillAndExpand" DisplayFormat="dd/MM/yy" HeightRequest="120"></dxe:DateEdit>
+                            <dxe:DateEdit IsVisible="{Binding IsDateEndShearsh,Mode=TwoWay}" MinDate="{Binding StartShearshDate}" Date="{Binding EndShearshDate}" IsLabelFloating="False"  TextFontSize="10" LabelText="end date" HorizontalOptions="FillAndExpand" DisplayFormat="dd/MM/yy" HeightRequest="120"></dxe:DateEdit>
+
+                        </StackLayout>
+                    </Frame>
+
+                    <Button IsVisible="{Binding IsDateShearsh,Mode=TwoWay}" Command="{Binding ShaershWithDate}" HorizontalOptions="CenterAndExpand"  ImageSource="shearsh2.png" BackgroundColor="Transparent" CornerRadius="10" WidthRequest="50" VerticalOptions="CenterAndExpand"  HeightRequest="30"></Button>
+
+
+
+
+
+
+
+
+                </StackLayout>
+                <Picker  IsVisible="false" HorizontalOptions="FillAndExpand" Margin="0,0,0,-8  " ItemsSource="{Binding ListItemsShearch}" HeightRequest="60" x:Name="pickSearch" ItemDisplayBinding="{Binding Name,StringFormat='Shearch With : {0}'}"  FontSize="15" Title="Shearch With"  SelectedItem="{Binding SelectItem,Mode=TwoWay}"   WidthRequest="110"  HorizontalTextAlignment="Center"    VerticalOptions="CenterAndExpand" TextColor="Black" >
+                    <Picker.Behaviors>
+                        <xct:EventToCommandBehavior EventName="SelectedIndexChanged"   Command="{Binding changeSearsh}" >
+
+                        </xct:EventToCommandBehavior>
+                    </Picker.Behaviors>
+                </Picker>
+            </StackLayout>
+
+
+
+
+
+        </StackLayout>
+
+        <StackLayout Grid.Row="3" Orientation="Vertical" Margin="10">
+            <Label Text="Agenda of request day off" FontAttributes="Bold" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
+            <!--<Button IsVisible="{Binding insertCongé}" BackgroundColor="Transparent" HorizontalOptions="End" ImageSource="add2.PNG" VerticalOptions="CenterAndExpand" HeightRequest="30" WidthRequest="60" Command="{Binding InsertCongé}" >
+
+                </Button>-->
+            <StackLayout   IsVisible="{Binding TestCon , Mode=TwoWay}" Padding="5" WidthRequest="150" Margin="0,20,0,0" Orientation="Vertical" >
+                <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+            </StackLayout>
+
+        </StackLayout>
+
+
+
+
+
+        <RefreshView Grid.Row="4"  Margin="5" HorizontalOptions="FillAndExpand"  Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy,Mode=TwoWay}" RefreshColor="#455399">
+
+            <dxcv:DXCollectionView   Orientation="Vertical" ItemSpacing="10" VerticalOptions="FillAndExpand" 
+                   HorizontalOptions="FillAndExpand"     SelectionMode="None" ItemsSource="{Binding List_day_off}"  >
+
+                <dxcv:DXCollectionView.ItemTemplate  >
+                    <DataTemplate  >
+
+                        <Frame  BorderColor="{Binding color,Mode=TwoWay}"  CornerRadius="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                
+                                <xct:Expander HorizontalOptions="FillAndExpand"  VerticalOptions="FillAndExpand">
+                                    <xct:Expander.Header>
+
+                                        <Grid HorizontalOptions="FillAndExpand">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <StackLayout Grid.Column="0" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" >
+                                                <Label Text="{Binding state_name,StringFormat='{0}'}"  TextColor="{Binding color,Mode=TwoWay}"  HorizontalTextAlignment="Center" TextDecorations="Underline" HorizontalOptions="CenterAndExpand" FontSize="10"></Label>
+                                                <Label Text="{Binding create_date, StringFormat='{0:dd}'}" TextColor="Black" FontSize="18" 
+                                                   HorizontalOptions="Center"/>
+                                                <Label Text="{Binding create_date, StringFormat='{0:MMM}'}" TextColor="Black" FontSize="12" 
+                                                   HorizontalOptions="Center" Margin="0,0,0,0"/>
+                                                <Label Text="{Binding create_date, StringFormat='{0:yyyy}'}" FontSize="11" 
+                                                   HorizontalOptions="Center" Margin="0,0,0,0" TextColor="Gray" />
+                                            </StackLayout>
+
+                                            <BoxView Grid.Column="1" Margin="5"  BackgroundColor="{Binding color,Mode=TwoWay}"  WidthRequest="2" 
+                                                 VerticalOptions="CenterAndExpand"/>
+
+                                            <StackLayout Grid.Column="2"  Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                                                <Label Text="{Binding type_congé}" TextColor="Black" FontAttributes="Bold" Margin="2" FontSize="15"/>
+                                                <Label Text="{Binding nom_employe}" FontAttributes="Bold" TextColor="#2F3246" FontSize="12" Margin="0,0,0,0"/>
+                                                <StackLayout  Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                                    <Label   HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" TextColor="Gray" FontSize="12" Text="{Binding start_date ,StringFormat='Request Start :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+
+                                                    <Label   HorizontalOptions="CenterAndExpand"   HorizontalTextAlignment="Center" TextColor="Gray"  FontSize="12" Text="{Binding end_date ,StringFormat=' Request End  :{0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                    <Label HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding day_off_created }" Text="**********************************"></Label>
+                                                </StackLayout>
+                                                <StackLayout IsVisible="{Binding day_off_created }" Orientation="Vertical" VerticalOptions="CenterAndExpand">
+                                                    <Label TextColor="Green"  HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"  FontSize="12" Text="{Binding start_date_finale ,StringFormat='Day off Start :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+
+                                                    <Label TextColor="Green"  HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"   FontSize="12" Text="{Binding end_date_finale ,StringFormat='Day off End  :{0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                </StackLayout>
+                                            </StackLayout>
+
+                                            <StackLayout Padding="10" Grid.Column="4" HorizontalOptions="EndAndExpand">
+
+                                                <Button   IsVisible="{Binding decision_notvalidated}" Text="Editer"  CornerRadius="5" FontSize="15" BackgroundColor="#fcba03" FontAttributes="Bold" TextColor="White" Command="{Binding getDétails}" CommandParameter="{Binding id}"    HorizontalOptions="EndAndExpand"  >
+                                                </Button>
+                                                <Button  IsVisible="{Binding decision_validate}" BackgroundColor="{Binding color}" Text="Decision" CornerRadius="5" FontSize="11" FontAttributes="Bold"  BorderColor="White" TextColor="White" Command="{Binding getDécision}" CommandParameter="{Binding id}"     HorizontalOptions="EndAndExpand"  >
+                                                </Button>
+                                            </StackLayout>
+
+
+
+                                        </Grid>
+                                        
+                                        
+                                        <!--<StackLayout IsVisible="false" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                            <StackLayout  HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Margin="5">
+
+
+                                                <Label Text="{Binding state_name,StringFormat='{0}'}"  TextColor="{Binding color,Mode=TwoWay}"  HorizontalTextAlignment="Center" TextDecorations="Underline" HorizontalOptions="CenterAndExpand" FontSize="10"></Label>
+                                                <Label Text="{Binding create_date, StringFormat='{0:dd}'}" TextColor="Black" FontSize="18" 
+                                                   HorizontalOptions="Center"/>
+                                                <Label Text="{Binding create_date, StringFormat='{0:MMM}'}" TextColor="Black" FontSize="12" 
+                                                   HorizontalOptions="Center" Margin="0,0,0,0"/>
+                                                <Label Text="{Binding create_date, StringFormat='{0:yyyy}'}" FontSize="11" 
+                                                   HorizontalOptions="Center" Margin="0,0,0,0" TextColor="Gray" />
+                                            </StackLayout>
+                                            <BoxView  Margin="10" BackgroundColor="{Binding color,Mode=TwoWay}"  WidthRequest="3" HorizontalOptions="Start" 
+                                                 VerticalOptions="CenterAndExpand"/>
+                                            <StackLayout  Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                                                <Label Text="{Binding type_congé}" TextColor="Black" FontAttributes="Bold" Margin="2" FontSize="15"/>
+                                                <Label Text="{Binding nom_employe}" FontAttributes="Bold" TextColor="#2F3246" FontSize="12" Margin="0,0,0,0"/>
+                                                <StackLayout  Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                                    <Label   HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" TextColor="Gray" FontSize="12" Text="{Binding start_date ,StringFormat='Request Start :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+                                                    
+                                                    <Label   HorizontalOptions="CenterAndExpand"   HorizontalTextAlignment="Center" TextColor="Gray"  FontSize="12" Text="{Binding end_date ,StringFormat=' Request End  :{0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                    <Label HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding day_off_created }" Text="**********************************"></Label>
+                                                </StackLayout>
+                                                <StackLayout IsVisible="{Binding day_off_created }" Orientation="Vertical" VerticalOptions="CenterAndExpand">
+                                                    <Label TextColor="Green"  HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"  FontSize="12" Text="{Binding start_date_finale ,StringFormat='Day off Start :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+
+                                                    <Label TextColor="Green"  HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center"   FontSize="12" Text="{Binding end_date_finale ,StringFormat='Day off End  :{0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                </StackLayout>
+                                            </StackLayout>
+                                            <StackLayout>
+
+                                                <Button  IsVisible="{Binding decision_notvalidated}" Text="Editer"  CornerRadius="5" FontSize="15" BackgroundColor="#fcba03" FontAttributes="Bold" TextColor="White" Command="{Binding getDétails}" CommandParameter="{Binding id}"    HorizontalOptions="FillAndExpand"  >
+                                                </Button>
+                                                <Button  IsVisible="{Binding decision_validate}" BackgroundColor="{Binding color}" Text="Decision" CornerRadius="5" FontSize="11" FontAttributes="Bold"  BorderColor="White" TextColor="White" Command="{Binding getDécision}" CommandParameter="{Binding id}"     HorizontalOptions="FillAndExpand"  >
+                                                </Button>
+                                            </StackLayout>
+                                            
+
+                                            --><!--<BoxView   BackgroundColor="{Binding color,Mode=TwoWay}"  WidthRequest="3" HorizontalOptions="Start" 
+                                                 VerticalOptions="CenterAndExpand"/>
+                                            <StackLayout  HorizontalOptions="FillAndExpand"   VerticalOptions="FillAndExpand">
+                                             
+                                                
+                                                <StackLayout Orientation="Vertical"  HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand">
+                                                    
+                                                        <StackLayout  Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                                            <Label   HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" TextColor="Gray" FontSize="12" Text="{Binding start_date ,StringFormat='Request Start :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+                                                            <Label Text="->"></Label>
+                                                            <Label   HorizontalOptions="EndAndExpand"   HorizontalTextAlignment="Center" TextColor="Gray"  FontSize="12" Text="{Binding end_date ,StringFormat=' Request End  :{0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                        </StackLayout>
+                                                        <StackLayout >
+                                                            <Label HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding day_off_created }" Text="**********************************"></Label>
+                                                        </StackLayout>
+                                                        <StackLayout IsVisible="{Binding day_off_created }" Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+                                                            <Label TextColor="Green"  HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"  FontSize="12" Text="{Binding start_date_finale ,StringFormat='Day off Start :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+                                                            <Label Text="->"></Label>
+                                                            <Label TextColor="Green"  HorizontalOptions="EndAndExpand"  HorizontalTextAlignment="Center"   FontSize="12" Text="{Binding end_date_finale ,StringFormat='Day off End  :{0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                        </StackLayout>
+
+
+                                                        <Label IsVisible="{Binding day_off_created}"  HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center" TextColor="Green"  FontSize="10" Text="*Day off succefuly created" FontAttributes="Bold"></Label>
+
+                                                   
+                                                    <Button  IsVisible="{Binding decision_notvalidated}" Text="Editer" CornerRadius="5" FontSize="15" BackgroundColor="#fcba03" FontAttributes="Bold" TextColor="White" Command="{Binding getDétails}" CommandParameter="{Binding id}" BorderWidth="1"    HorizontalOptions="CenterAndExpand"  >
+                                                    </Button>
+                                                    <Button  IsVisible="{Binding decision_validate}" BackgroundColor="{Binding color}" Text="Decision" CornerRadius="5" FontSize="11" FontAttributes="Bold"  BorderColor="White" TextColor="White" Command="{Binding getDécision}" CommandParameter="{Binding id}" BorderWidth="1"    HorizontalOptions="CenterAndExpand"  >
+                                                    </Button>
+                                                </StackLayout>
+                                                
+                                            </StackLayout>--><!--
+                                           
+                                        </StackLayout>-->
+
+                                    </xct:Expander.Header>
+                                    <Grid HorizontalOptions="FillAndExpand">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="3.5*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <BoxView Grid.Column="1" BackgroundColor="#F2F4F8" WidthRequest="1" HorizontalOptions="Start" 
+                                             VerticalOptions="FillAndExpand"/>
+                                        <StackLayout Grid.Column="2" Spacing="10">
+                                            <Label Text="Description :" TextColor="Black" Opacity="0.5" FontSize="10" Margin="20,0"/>
+                                            <Label Text="{Binding description}"  TextColor="Black" Opacity="0.5" FontSize="15" Margin="20,0"/>
+                                        </StackLayout>
+
+                                    </Grid>
+                                </xct:Expander>
+                            </StackLayout>
+                        </Frame>
+                       
+                       
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+            </dxcv:DXCollectionView>
+        </RefreshView>
+
+
+
+
+
+
+    </Grid>
+</ContentPage>

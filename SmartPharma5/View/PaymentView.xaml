@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.PaymentView"
+            xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             xmlns:local1="clr-namespace:SmartPharma5.View"
+             Title="PaymentView">
+    <TabbedPage.BindingContext>
+        <local:PaymentViewModel/>
+    </TabbedPage.BindingContext>
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+
+    </TabbedPage.ToolbarItems>
+
+
+    <local1:TypePaymentView Title="To Pay" IsVisible="{Binding IsVisibleSaveButton}"/>
+    <local1:PayView Title="Pay"/>
+
+</TabbedPage>

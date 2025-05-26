@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+          xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+                xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             x:Class="SmartPharma5.View.ChangeProfile"
+             Title="ChangeProfile">
+    <ScrollView>
+        <StackLayout HorizontalOptions="FillAndExpand">
+
+            <Label  x:Name="Title_page" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" FontAttributes="Bold" FontSize="20" Text="Profile Attributes"></Label>
+            <ScrollView>
+
+                <CollectionView IsVisible="true"   ItemsSource="{Binding ListAttributes,Mode=TwoWay}" HorizontalOptions="FillAndExpand"   VerticalOptions="FillAndExpand" >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Margin="5" Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                                <dxe:TextEdit  Text="{Binding String_value,Mode=TwoWay}"   WidthRequest="300"  IsVisible="{Binding HasString}"    LabelText="{Binding LabelName}" IsLabelFloating="False"></dxe:TextEdit>
+                                <dxe:NumericEdit Value="{Binding Number_value,Mode=TwoWay}"   WidthRequest="300" IsVisible="{Binding HasNumber}" LabelText="{Binding LabelName}"  IsLabelFloating="False"></dxe:NumericEdit>
+                                <dxe:NumericEdit Value="{Binding Number_value,Mode=TwoWay}"  WidthRequest="300"  IsVisible="{Binding HasDecimal}" LabelText="{Binding LabelName}"  IsLabelFloating="False"></dxe:NumericEdit>
+                                <StackLayout Orientation="Horizontal"  WidthRequest="300" IsVisible="{Binding HasBool}">
+                                    <Label Text="{Binding LabelName,Mode=TwoWay}"></Label>
+                                    <dxe:CheckEdit IsChecked="{Binding Bool_value,Mode=TwoWay}" HorizontalOptions="CenterAndExpand" ></dxe:CheckEdit>
+                                </StackLayout>
+                                <dxe:DateEdit Date="{Binding Date_value,Mode=TwoWay}"  LabelText="{Binding LabelName}"    IsVisible="{Binding HasDate}" IsLabelFloating="False"></dxe:DateEdit>
+                                <dxe:ComboBoxEdit   Tap="ComboBoxEdit_Tap" BindingContextChanged="ComboBoxEdit_BindingContextChanged"  WidthRequest="300"  ItemsSource="{Binding List_item,Mode=TwoWay}" DisplayMember="name" SelectedItem="{Binding Selected_item , Mode=TwoWay}"   LabelText="{Binding LabelName}" SelectionChanged="picker_SelectedIndexChanged"  IsVisible="{Binding HasMultiple}"></dxe:ComboBoxEdit>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </ScrollView>
+            <StackLayout HorizontalOptions="FillAndExpand"  Orientation="Horizontal">
+                <Button TextColor="White" Text="Refuse" HorizontalOptions="FillAndExpand" BackgroundColor="Red" Command="{Binding DeleteInstance,Mode=TwoWay}" ></Button>
+                <Button TextColor="White" Text="Save" HorizontalOptions="FillAndExpand" BackgroundColor="Green"  Command="{Binding saveData,Mode=TwoWay}"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

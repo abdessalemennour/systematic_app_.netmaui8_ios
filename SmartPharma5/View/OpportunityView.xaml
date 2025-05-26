@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SmartPharma5.View"
+             x:Class="SmartPharma5.View.OpportunityView"
+              xmlns:view="clr-namespace:SmartPharma5.View.FloatingActionButton"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:SmartPharma5.ViewModel"
+             x:Name="Shopping"
+             Title="OpportunityView">
+
+    <ContentPage.BindingContext>
+        <vm:DocumentViewModel />
+    </ContentPage.BindingContext>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="plus.png"
+                     Clicked="OnMenuClicked"
+                     Order="Primary"
+                     Priority="0"/>
+    </ContentPage.ToolbarItems>-->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:NumericValidationBehavior x:Key="NumericValidationBehavior"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}" />
+    </Shell.BackButtonBehavior>
+
+    <NavigationPage.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackLayout VerticalOptions="Center">
+            <Label Text="{Binding Title }" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+
+        </StackLayout>
+            <ImageButton Source="pichon_menu2.png"
+             Grid.Column="1"
+             WidthRequest="35"
+             HeightRequest="35"
+             BackgroundColor="Transparent"
+             Clicked="OnSwipeViewClicked"
+             HorizontalOptions="End"
+             VerticalOptions="Center"
+             IsVisible="{Binding IsMainButtonVisible}"/>
+        </Grid>
+    </NavigationPage.TitleView>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>-->
+
+
+    <!--<Grid>
+        --><!-- Votre SwipeView comme premier élément --><!--
+        <SwipeView>
+            <SwipeView.RightItems>
+                <SwipeItems Mode="Reveal">
+                    <SwipeItem Text="Menu"
+                       BackgroundColor="#3897f0"
+                       Command="{Binding OpenMenuCommand}"/>
+                    <SwipeItem Text="Supprimer"
+                       BackgroundColor="Red"
+                       Command="{Binding DeleteCommand}"/>
+                </SwipeItems>
+            </SwipeView.RightItems>
+
+            --><!-- Contenu à swiper --><!--
+            <Frame Padding="15"
+           BackgroundColor="White"
+           CornerRadius="10"
+           Margin="10">
+                <Label Text="Swipez-moi vers la gauche ➡️" 
+               FontSize="16"
+               VerticalOptions="Center"/>
+            </Frame>
+        </SwipeView>-->
+    <SwipeView x:Name="MainSwipeView">
+        <SwipeView.RightItems>
+            <SwipeItems  Mode="Reveal">
+                <SwipeItemView WidthRequest="100" IsVisible="{Binding IsMainButtonVisible}">
+                    <StackLayout Orientation="Vertical" 
+                             Spacing="20" 
+                             Padding="10"
+                             BackgroundColor="#F5F5F5">
+
+                        <!-- Activity Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="activity.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedactivity"/>
+                            <Label Text="Activité" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- Memo Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="note3.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedmemo"/>
+                            <Label Text="Note" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- Chat Button -->
+                        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Spacing="2">
+                            <Grid>
+                                <ImageButton 
+                                    Source="chat.png"
+                                    BackgroundColor="Transparent"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    CornerRadius="10"
+                                    Clicked="OnActionButtonClickedchat"/>
+                                <!-- Badge pour messages non lus -->
+                                <Frame 
+                                    IsVisible="False"
+                                    x:Name="UnreadBadgeFrame"
+                                    BackgroundColor="Red"
+                                    CornerRadius="10"
+                                    Padding="0"
+                                    HeightRequest="20"
+                                    WidthRequest="20"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start"
+                                    Margin="0,-5,-5,0"
+                                    HasShadow="False">
+                                    <Grid>
+                                        <Label 
+                                            x:Name="UnreadBadgeLabel"
+                                            Text="0"
+                                            TextColor="White"
+                                            FontSize="10"
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Chat" 
+                                   HorizontalOptions="Center"
+                                   FontSize="12"
+                                   TextColor="Black"
+                                   FontAttributes="Bold"/>
+                        </StackLayout>
+
+                        <!-- Document Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="document.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickeddocument"/>
+                            <Label Text="Document" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+
+
+                        <!-- report Button -->
+                        <!--<StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="rapport.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedreport"/>
+                            <Label Text="Rapport" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>-->
+
+                        <!-- logs Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="logs.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedlogs"/>
+                            <Label Text="Logs" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+
+                    </StackLayout>
+                </SwipeItemView>
+            </SwipeItems>
+        </SwipeView.RightItems>
+
+        <!--contenu principal de la page-->
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+
+            <StackLayout Grid.Row="0" Spacing="0" Margin="0" Padding="0">
+
+
+
+                <!--<Frame Padding="1,1,1,5"   BackgroundColor="#3897f0">
+                <ScrollView  Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                    <StackLayout  Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                        <dxco:SimpleButton Margin="3" Text="SaleQuotation"   BackgroundColor="DarkSlateBlue" ></dxco:SimpleButton>
+                        -->
+                <!--<dxco:SimpleButton Margin="3" Text="SaleQuotation"  Command ="{Binding GetQuotation}"  BackgroundColor="DarkSlateBlue" ></dxco:SimpleButton>-->
+                <!--
+                        <dxco:SimpleButton Margin="3" Text="Forms"  Command ="{Binding GetForms}"  BackgroundColor="CadetBlue" ></dxco:SimpleButton>
+                    </StackLayout>
+                </ScrollView>
+
+            </Frame>-->
+
+                <StackLayout>
+                    <Frame Padding="1,1,1,5" IsVisible="{Binding ButtonStateIsVisible}"  BackgroundColor="#3897f0">
+                        <ScrollView   Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                            <StackLayout  Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                <!--<dxco:SimpleButton Margin="3" Text="Add Quotation"  Command ="{Binding QuotationCommand}"  BackgroundColor="Grey" ></dxco:SimpleButton>-->
+                                <dxco:SimpleButton Margin="3" Text="Attente" Command="{Binding EnAttenteCommand}" IsVisible="{Binding EnAttenteIsEnabled,Mode=TwoWay}" BackgroundColor="#F3BA04"></dxco:SimpleButton>
+                                <dxco:SimpleButton Margin="3" Text="Gagnée" Command="{Binding GangneCommand}" IsVisible="{Binding GangneIsEnabled,Mode=TwoWay}" BackgroundColor="#4DBF49"></dxco:SimpleButton>
+                                <dxco:SimpleButton Margin="3" Text="Bon commande" Command="{Binding BcCommand}" IsVisible="{Binding BcIsEnabled, Mode=TwoWay}" BackgroundColor="#F59132"></dxco:SimpleButton>
+                                <dxco:SimpleButton Margin="3" Text="Perdue" Command="{Binding PerduCommand}" IsVisible="{Binding PerduIsEnabled, Mode=TwoWay}" BackgroundColor="#ED1416"></dxco:SimpleButton>
+                            </StackLayout>
+                        </ScrollView>
+
+                    </Frame>
+                    <StackLayout IsVisible="{Binding IsNotLoaded,Mode=TwoWay}" Orientation="Horizontal">
+                        <Label VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" >WAITING FOR LOADING PRODUCTS ...</Label>
+                        <ActivityIndicator IsRunning="True" VerticalOptions="CenterAndExpand" BackgroundColor="White" Color="#6CC5DE" WidthRequest="30" HeightRequest="30" Margin="5,5"></ActivityIndicator>
+                    </StackLayout>
+
+                </StackLayout>
+
+
+                <Frame Padding="1,1,1,5" IsVisible="true" BackgroundColor="#3897f0">
+                    <ScrollView Orientation="Horizontal">
+                        <StackLayout x:Name="TimeLine" Spacing="0" Orientation="Horizontal" Margin="0"/>
+                    </ScrollView>
+                </Frame>
+                <Frame Margin="0" Padding="0">
+
+                    <Label Grid.Column="0" Padding="8" BackgroundColor="#4DBF49" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand" Text="{Binding Opportunity.partnerName,StringFormat='Client: {0}'}" TextColor="White"  FontSize="16"></Label>
+
+
+
+
+
+
+                </Frame>
+
+                <Frame Margin="0" Padding="0" IsVisible="{Binding WholesalerTitleVisible}" Background="#F3BA04" >
+                    <StackLayout Margin="0" Orientation="Horizontal" Spacing="0">
+                        <Label HorizontalOptions="StartAndExpand" VerticalTextAlignment="Center"  Padding="10"   Text="{Binding Opportunity.dealerName,StringFormat='Wholesaler: {0}'}" TextColor="Black"  FontSize="16"></Label>
+                        <ImageButton HorizontalOptions="End" Padding="8" BackgroundColor="#ED1416" Source="personremove.png" Command="{Binding WholeSalerRemoveCommand}" IsVisible="{Binding WholeSalerRemoveIsvisible}"></ImageButton>
+                    </StackLayout>
+                </Frame>
+
+
+                <Frame x:Name="ConfirmationFrame"
+       Margin="0"
+       Padding="0"
+       BackgroundColor="MediumSeaGreen"
+       CornerRadius="0"
+       IsVisible="False">
+
+                    <StackLayout Margin="0"
+                 Orientation="Horizontal"
+                 Spacing="0">
+
+                        <!-- Label pour le message de confirmation -->
+                        <Label x:Name="ConfirmationLabel"
+               HorizontalOptions="StartAndExpand"
+               VerticalTextAlignment="Center"
+               Padding="10"
+               Text="The document has been saved successfully."
+               TextColor="Black"
+               FontSize="16" />
+
+                        <!-- Image pour le bouton de fermeture -->
+                        <Image Source="cancel.png"
+               HorizontalOptions="End"
+               Margin="8"
+               WidthRequest="24"
+               HeightRequest="24">
+                            <Image.GestureRecognizers>
+                                <!-- Lier l'événement Tapped à la méthode OnCloseConfirmationClicked -->
+                                <TapGestureRecognizer Tapped="OnCloseConfirmationClicked" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </StackLayout>
+                </Frame>
+                <CollectionView ItemsSource="{Binding TemporaryDocuments}"
+                Margin="0,10,0,10">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#F5F5F5"
+                   CornerRadius="10"
+                   Padding="10"
+                   Margin="0,5,0,5">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding name}"
+                           FontSize="14"
+                           TextColor="#2C3E50" />
+                                    <Label Text="{Binding description}"
+                           FontSize="12"
+                           TextColor="#95A5A6" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+
+            </StackLayout>
+
+
+            <dxcv:DXCollectionView x:Name="CollectionV"   Grid.Row="1"  ItemsSource="{Binding Opportunity.Opportunity_lines, Mode=TwoWay}" BackgroundColor="#E6E6E6" Margin="0" >
+
+                <dxcv:DXCollectionView.ItemTemplate>
+
+
+                    <DataTemplate>
+
+                        <Frame HorizontalOptions="FillAndExpand"  BorderColor="CadetBlue" Margin="0" Padding="5,5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="10"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <StackLayout Grid.Row="0" Orientation="Horizontal" Margin="5" Padding="5">
+                                    <Label VerticalOptions="Center"  HorizontalOptions="StartAndExpand" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" Text="{Binding description}" TextColor="#55575c"  FontSize="Medium" FontAttributes="Bold"  Margin="0,0,0,0"/>
+
+                                    <ImageButton Grid.Column="1" BackgroundColor="#EEF5FF" VerticalOptions="Center"  HorizontalOptions="End" WidthRequest="40" HeightRequest="40" Source="trash.png" Padding="3" Command="{Binding Source={x:Reference Shopping} ,Path=BindingContext.RemoveCommand}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference Shopping} ,Path=BindingContext.RemoveVisible}" />
+
+                                </StackLayout>
+
+
+                                <StackLayout Grid.Row="1"  HorizontalOptions="CenterAndExpand"  Orientation="Horizontal" Spacing="7">
+
+                                    <Label  VerticalOptions="Center" FontSize="13" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="{Binding PUTTC,Mode=OneWay,StringFormat='{0:F3}'}"/>
+                                    <Label  VerticalOptions="Center" FontSize="13" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="*"/>
+
+                                    <Label  VerticalOptions="Center" FontSize="13" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="{Binding discount,Mode=OneWay,StringFormat='{0:p}'}"/>
+                                    <Label  VerticalOptions="Center" FontSize="13" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="="/>
+
+                                    <Label  VerticalOptions="Center" FontSize="13" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="{Binding PUARTTC,Mode=OneWay,StringFormat='{0:F3}'}"/>
+                                    <Label  VerticalOptions="Center" FontSize="13" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="*"/>
+
+
+                                    <dxe:NumericEdit  VerticalOptions="Start"  TextHorizontalAlignment="Center" HorizontalOptions="Center" WidthRequest="50" HeightRequest="40" TextFontSize="14" TextVerticalAlignment="Center"   TextColor="#55575c" MaxDecimalDigitCount="0" DisplayFormat="N0" IsReadOnly="{Binding Source={x:Reference Shopping},Path=BindingContext.QuantityEdit}"  Value="{Binding quantity}" >
+                                        <dxe:NumericEdit.Behaviors>
+                                            <xct:EventToCommandBehavior
+                                                                        EventName="Unfocused"
+                                                                        Command="{Binding Source={x:Reference Shopping} ,Path=BindingContext.QuantityChangeCommand}"
+                                                                        CommandParameter="{Binding .}">
+                                            </xct:EventToCommandBehavior>
+                                        </dxe:NumericEdit.Behaviors >
+                                    </dxe:NumericEdit>
+
+
+                                    <Label  VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="="/>
+
+                                    <Label VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center" Text="{Binding PTARTTC,StringFormat='{0:F3}'}"  TextColor="#3897f0" FontSize="13" />
+
+
+                                </StackLayout>
+                                <StackLayout Grid.Row="2" >
+
+                                </StackLayout>
+
+                            </Grid>
+
+                        </Frame>
+
+
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+            </dxcv:DXCollectionView>
+
+
+
+
+            <ImageButton Grid.Row="1" Source="editregular.png" Margin="0,-180,-1,0" Opacity="1"  VerticalOptions="Center" HorizontalOptions="End" HeightRequest="50" WidthRequest="50" Padding="5"  CornerRadius="6" BackgroundColor="#4DBF49" Command="{Binding EditCommand}" IsVisible="{Binding EditActive,Mode=TwoWay}" ZIndex="1"/>
+            <ImageButton Grid.Row="1" Source="baselineadd.png" Margin="0,-180,-1,0" Opacity="10" VerticalOptions="Center" HorizontalOptions="End" HeightRequest="50" WidthRequest="50" Padding="5"  CornerRadius="6" BackgroundColor="#4DBF49" Command="{Binding AddCommand}" IsVisible="{Binding AddActive,Mode=TwoWay}" ZIndex="1"/>
+            <!--<ImageButton x:Name="MainButton"
+                 Source="plus.png"
+                 BackgroundColor="Transparent"
+                 WidthRequest="40"
+                 HeightRequest="40"
+                 CornerRadius="20"
+                 HorizontalOptions="End"
+                 VerticalOptions="End"
+                 Margin="0,-130,-1,0"
+                 Clicked="OnMainButtonClicked"
+                 IsVisible="{Binding IsMainButtonVisible}">
+                <ImageButton.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                </ImageButton.GestureRecognizers>
+                </ImageButton>
+
+                <ImageButton x:Name="ActionButton1"
+                 Source="circle.png"
+                 BackgroundColor="Transparent"
+                 WidthRequest="30"
+                 HeightRequest="30"
+                 CornerRadius="15"
+                 HorizontalOptions="End"
+                 VerticalOptions="End"
+                 IsVisible="False"
+                 Clicked="OnActionButtonClickedchat"/>
+
+                <ImageButton x:Name="ActionButton2"
+                 Source="restore.png"
+                 BackgroundColor="Transparent"
+                 WidthRequest="30"
+                 HeightRequest="30"
+                 CornerRadius="15"
+                 HorizontalOptions="End"
+                 VerticalOptions="End"
+                 IsVisible="False"
+                 Clicked="OnActionButtonClickedactivity"/>
+
+                <ImageButton x:Name="ActionButton3"
+                 Source="note3.png"
+                 BackgroundColor="Transparent"
+                 WidthRequest="30"
+                 HeightRequest="30"
+                 CornerRadius="15"
+                 HorizontalOptions="End"
+                 VerticalOptions="End"
+                 IsVisible="False"
+                 Clicked="OnActionButtonClickedmemo"/>
+
+                <ImageButton x:Name="ActionButton4"
+                        Source="document2.png"  
+                        BackgroundColor="Transparent"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        CornerRadius="15"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        IsVisible="False"
+                        Clicked="OnActionButtonClickeddocument"/>-->
+
+            <Grid Grid.Row="2" Padding="10,0" Margin="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+
+                </Grid.RowDefinitions>
+
+
+
+                <StackLayout Grid.Row="0" Orientation="Horizontal" HeightRequest="50" Margin="0">
+                    <Label VerticalOptions="Center" HorizontalOptions="EndAndExpand" Text="{Binding Opportunity.totalAmount,StringFormat='{0:F3} TTC',Mode=TwoWay}" FontSize="30" TextColor="#3C7CF6" Padding="8,8,8,8" ></Label>
+                </StackLayout>
+
+                <StackLayout  Grid.Row="1" Orientation="Horizontal"  >
+                    <Label VerticalTextAlignment="Center" Margin="0,0,10,0" Text="Discount" TextColor="Black" FontSize="16"></Label>
+                    <dxe:NumericEdit  VerticalOptions="CenterAndExpand" WidthRequest="80" BoxPadding="2,-5,2,-5"  TextVerticalAlignment="Center" TextHorizontalAlignment="Center" HeightRequest="40" Prefix="%" Value="{Binding DiscountValue}" IsReadOnly="{Binding Source={x:Reference Shopping},Path=BindingContext.DiscountEdit}">
+                        <dxe:NumericEdit.Behaviors>
+                            <xct:EventToCommandBehavior
+                                                EventName="Unfocused"
+                                                Command="{Binding Source={x:Reference Shopping} ,Path=BindingContext.DiscountChangeCommand}"
+                                                CommandParameter="{Binding DiscountValue}">
+                            </xct:EventToCommandBehavior>
+                        </dxe:NumericEdit.Behaviors >
+                    </dxe:NumericEdit>
+
+                    <dxco:SimpleButton VerticalOptions="Center" HorizontalOptions="EndAndExpand" Text="More details" BackgroundColor="White" TextColor="#4DBF49" Command="{Binding MoreDetailCommand}" IsVisible="{Binding MoreDetailActive,Mode=TwoWay}"   ></dxco:SimpleButton>
+
+                </StackLayout>
+                <StackLayout Grid.Row="0" Orientation="Horizontal" HorizontalOptions="Start" >
+                    <Label VerticalTextAlignment="Center"  Text="To invoice" TextColor="Black" FontSize="16"></Label>
+                    <dxe:CheckEdit VerticalOptions="Center" HeightRequest="50" WidthRequest="50" IsChecked="{Binding Opportunity.toinvoice, Mode=TwoWay}" IsEnabled="{Binding Source={x:Reference Shopping},Path=BindingContext.ToinvoiceEdit}" />
+                </StackLayout>
+
+            </Grid>
+
+
+            <Grid Margin="0,0,0,0" Grid.Row="3" Padding="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <dxco:SimpleButton Margin="3" Grid.Row="0"  Grid.Column="1" Text="VALIDATE" CornerMode = "Round" HeightRequest="45" CornerRadius="5" BackgroundColor="#3897f0" TextColor="White" Command="{Binding ValidateCommand}" IsVisible="{Binding ValidateActive,Mode=TwoWay}" VerticalOptions="Start" />
+                <dxco:SimpleButton  Grid.Row="1" Margin="3" Grid.Column="1" Text="GRATUITE SUPP" CornerMode = "Round" HeightRequest="45" CornerRadius="5" BackgroundColor="#4DBF49" TextColor="White" Command="{Binding GratuiteCommand}" IsVisible="{Binding GratuiteActive,Mode=TwoWay}"  VerticalOptions="Start"/>
+                <dxco:SimpleButton  Grid.Row="1" Margin="3" Grid.Column="1" Text="WHOLESALERS" CornerMode = "Round" HeightRequest="45" CornerRadius="5" BackgroundColor="#F3BA04" TextColor="White" Command="{Binding ValidateWithWholeSalerCommand}" IsVisible="{Binding WholesalerActive,Mode=TwoWay}" VerticalOptions="Start" />
+                <dxco:SimpleButton  Grid.Row="1" Grid.Column="0" Margin="3" Text="EXIT"  HeightRequest="45" CornerMode = "Round" CornerRadius="5"  Command="{Binding CancelCommand}" BackgroundColor="#ED1416" TextColor="White"  VerticalOptions="Start"/>
+                <!--<dxco:SimpleButton Grid.Row="2" Grid.Column="0" Margin="3" Text="Save Document" HeightRequest="45" CornerRadius="5" BackgroundColor="MediumSeaGreen" TextColor="White" Command="{Binding SaveDocumentCommand}" VerticalOptions="Start" />-->
+
+
+
+
+                <dxco:SimpleButton Grid.Row="2" Grid.Column="0" Margin="3" Text="Quotation" x:Name="quotation" HeightRequest="45" CornerRadius="5"  Command ="{Binding GetQuotation}"  BackgroundColor="DarkSlateBlue" VerticalOptions="Start"></dxco:SimpleButton>
+
+                <!--<dxco:SimpleButton Margin="3" Text="SaleQuotation"  Command ="{Binding GetQuotation}"  BackgroundColor="DarkSlateBlue" ></dxco:SimpleButton>-->
+                <dxco:SimpleButton Grid.Row="2" Grid.Column="1" Margin="3" 
+                   Text="Forms"  
+                   Command="{Binding GetForms}" 
+                   HeightRequest="45" 
+                   CornerRadius="5"  
+                   BackgroundColor="CadetBlue" 
+                   VerticalOptions="Start" 
+                   IsVisible="{Binding IsFormsButtonVisible}" />
+                <!--<dxco:SimpleButton Grid.Row="0" Grid.Column="0" Margin="3" 
+                   Text="Document"
+                   HeightRequest="45" 
+                   CornerRadius="5" 
+                   BackgroundColor="MediumSeaGreen"
+                   TextColor="White" 
+                   VerticalOptions="Start" 
+                   Clicked="OnSaveDocumentClicked" 
+                   IsVisible="{Binding IsSaveDocumentButtonVisible}" />-->
+
+                <!--<ImageButton Grid.Row="3" Grid.Column="1" x:Name="MainButton"
+                        Source="plus.png"
+                        BackgroundColor="Transparent"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        CornerRadius="20"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        IsVisible="{Binding IsMainButtonVisible}"
+                        Clicked="OnMainButtonClicked">
+                    <ImageButton.GestureRecognizers>
+                        <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                    </ImageButton.GestureRecognizers>
+                </ImageButton>
+
+
+            <Grid Grid.Row="3" Grid.Column="1" ZIndex="1" 
+                      HorizontalOptions="End" VerticalOptions="End"
+                      IsVisible="False" x:Name="ActionButton1Container">
+                <ImageButton x:Name="ActionButton1"
+                        Source="circle.png"
+                        BackgroundColor="Transparent"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        CornerRadius="15"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        Clicked="OnActionButtonClickedchat"/>
+                <Label Text="Chat" 
+                       HorizontalOptions="Center"
+                       VerticalOptions="Start"
+                       Margin="0,-13,0,0"
+                       FontSize="10"
+                       TextColor="Black"
+                       FontAttributes="Bold"/>
+            </Grid>
+
+            <Grid Grid.Row="3" Grid.Column="1" ZIndex="1" 
+                      HorizontalOptions="End" VerticalOptions="End"
+                      IsVisible="False" x:Name="ActionButton2Container">
+                <ImageButton x:Name="ActionButton2"
+                        Source="restore.png"
+                        BackgroundColor="Transparent"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        CornerRadius="15"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        Clicked="OnActionButtonClickedactivity"/>
+                <Label Text="Activity" 
+                       HorizontalOptions="Center"
+                       VerticalOptions="Start"
+                       Margin="0,-13,0,0"
+                       FontSize="10"
+                       TextColor="Black"
+                       FontAttributes="Bold"/>
+            </Grid>
+
+            <Grid Grid.Row="3" Grid.Column="1" ZIndex="1" 
+                  HorizontalOptions="End" VerticalOptions="End"
+                  IsVisible="False" x:Name="ActionButton3Container">
+                <ImageButton x:Name="ActionButton3"
+                    Source="note3.png"
+                    BackgroundColor="Transparent"
+                    WidthRequest="30"
+                    HeightRequest="30"
+                    CornerRadius="15"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Clicked="OnActionButtonClickedmemo"/>
+                <Label Text="Memo" 
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="0,-13,0,0"
+                   FontSize="10"
+                   TextColor="Black"
+                   FontAttributes="Bold"/>
+            </Grid>
+            <Grid Grid.Row="3" Grid.Column="1" ZIndex="1" 
+          HorizontalOptions="End" VerticalOptions="End"
+          IsVisible="False" x:Name="ActionButton4Container">    
+                <ImageButton x:Name="ActionButton4"
+        Source="document2.png"  
+                    BackgroundColor="Transparent"
+        WidthRequest="30"
+        HeightRequest="30"
+        CornerRadius="15"
+        HorizontalOptions="End"
+        VerticalOptions="End"
+        Clicked="OnActionButtonClickeddocument"/>
+                    <Label Text="Document" 
+           HorizontalOptions="Center"
+           VerticalOptions="Start"
+           Margin="0,-13,0,0"
+           FontSize="10"
+           TextColor="Black"
+           FontAttributes="Bold"/>
+            </Grid>-->
+                <!-- Place l'AbsoluteLayout après tous les autres éléments -->
+
+
+
+            </Grid>
+
+
+
+
+
+            <dxco:DXPopup  IsOpen="{Binding SuccessPopup}" AllowScrim="True" >
+
+                <StackLayout HorizontalOptions="FillAndExpand" WidthRequest="200">
+                    <Label Text="Success" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontSize="17"/>
+                    <Image Source="circlecheck.png" HorizontalOptions="CenterAndExpand" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" HorizontalOptions="CenterAndExpand" Margin="10, 10" VerticalOptions="Center"  FontSize="15"/>
+                </StackLayout>
+            </dxco:DXPopup>
+            <dxco:DXPopup  BackgroundColor="White" IsOpen="{Binding FieldPopup}" AllowScrim="True" >
+
+                <StackLayout HorizontalOptions="Fill"  WidthRequest="200">
+                    <Label Text="Warning" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontSize="17"/>
+                    <Image HorizontalOptions="CenterAndExpand" Source="circlexmark.png" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="{Binding Message}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontSize="15"/>
+                    <Button Text="Try again" Command="{Binding Tryagain}" HorizontalOptions="CenterAndExpand" FontSize="Default" VerticalOptions="Center" BackgroundColor="White" TextColor="#3D79F8" Margin="0,20"/>
+                </StackLayout>
+            </dxco:DXPopup>
+
+            <dxco:DXPopup  BackgroundColor="White" IsOpen="{Binding SavingPopup}" AllowScrim="True" >
+                <StackLayout WidthRequest="200" HorizontalOptions="FillAndExpand">
+                    <ActivityIndicator HorizontalOptions="CenterAndExpand" IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+                    <Label HorizontalTextAlignment="Center" Text="Saving..." Margin="10, 10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontSize="15"/>
+                </StackLayout>
+            </dxco:DXPopup>
+
+
+            <dxco:DXPopup  IsOpen="{Binding WholesalerPopup}" AllowScrim="True" >
+                <Grid Padding="10" Margin="10" >
+
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <!--TextChanged="AutoCompleteEdit_TextChanged"-->
+                    <dxco:SimpleButton Text="X" TextColor="White" FontSize="Small" Margin="0" Padding="0" WidthRequest="30" MinimumWidthRequest="30" VerticalOptions="End" HorizontalOptions="End" BackgroundColor="#ED1416" Command="{Binding ClosePopupWholesalerCommand}"/>
+                    <dxe:AutoCompleteEdit Grid.Row="1" TextChanged="AutoCompleteEdit_TextChanged"
+                                      ItemsSource="{Binding WholesalerList}"
+                                      LoadingProgressMode="Manual"
+                                      SubmitIconVisibility="Always" SubmitIconColor="#4B9EE8" BorderColor="#4B9EE8" CornerRadius="27" Margin="20,0,8,0"  />
+                    <Label Grid.Row="2" Text="Choose your Wholesaler" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="16"/>
+
+                    <StackLayout Grid.Row="3">
+                        <dxcv:DXCollectionView  ItemSpacing="8" ItemsSource="{Binding WholesalerList}"  x:Name="WholeCollectionView" SelectionMode="Single" >
+                            <!--Define the item template.-->
+                            <dxcv:DXCollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BorderColor="#CCCCCC" HasShadow="True">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                        </Frame.GestureRecognizers>
+                                        <Grid RowSpacing="20" >
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Frame Grid.Column="0"
+                                       BackgroundColor="#EEF5FF"
+                                       HasShadow="False"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand">
+                                                <Image Source="userregular.png" VerticalOptions="Start" HorizontalOptions="Start" HeightRequest="50"/>
+                                            </Frame>
+
+                                            <StackLayout Grid.Column="1"
+                                         Padding="18,1,18,7"
+                                         Orientation="Vertical">
+                                                <Label FontSize="20" Text="{Binding Name}"
+                                       Margin="0,2"
+                                       TextColor="#55575c"/>
+                                                <Label Text="{Binding Phone,Mode=OneWay,StringFormat='Phone: {0}'}"   
+                                           TextColor="#959aa0"/>
+                                                <Label Text="{Binding Email,Mode=OneWay,StringFormat='Email: {0}'}"   
+                                           TextColor="#959aa0"/>
+                                                <Label Text="{Binding Reference,Mode=OneWay,StringFormat='Reference: {0}'}"   
+                                           TextColor="#959aa0"/>
+                                                <Label Text="{Binding Country,Mode=OneWay,StringFormat='Country: {0}'}"   
+                                           TextColor="#959aa0"/>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </dxcv:DXCollectionView.ItemTemplate>
+
+                            <!--Specify margins.-->
+                            <!--<dxcv:DXCollectionView.Margin>
+                            <OnIdiom x:TypeArguments="Thickness" Phone="16,0,0,0" Tablet="71,0,0,0"/>
+                        </dxcv:DXCollectionView.Margin>-->
+
+                        </dxcv:DXCollectionView>
+                    </StackLayout>
+                </Grid>
+            </dxco:DXPopup>
+
+            <dxco:DXPopup BackgroundColor="White" IsOpen="{Binding MoreDetailPopup}" AllowScrim="True">
+                <Grid Padding="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Frame Grid.Row="0" >
+                        <StackLayout>
+                            <Label Text="NOTE" TextColor="Black" FontSize="16"></Label>
+                            <dxe:MultilineEdit HeightRequest="200" WidthRequest="300" VerticalOptions="Start" TextHorizontalAlignment="Start" Text="{Binding Opportunity.memo,Mode=TwoWay}"></dxe:MultilineEdit>
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame Grid.Row="1" >
+                        <StackLayout>
+                            <Label Text="PURCHASE PROBABLITE %" TextColor="Black" FontSize="16"></Label>
+                            <dxe:NumericEdit  WidthRequest="300" VerticalOptions="Start" TextHorizontalAlignment="Start" Value="{Binding Opportunity.purchase_probability,Mode=TwoWay}"></dxe:NumericEdit>
+                        </StackLayout>
+                    </Frame>
+                    <Frame Grid.Row="2">
+                        <StackLayout>
+                            <Label Text="Currency" TextColor="Black" FontSize="16"/>
+
+                            <Picker Title="Select Currency"
+                ItemsSource="{Binding Currencies}"
+                ItemDisplayBinding="{Binding Item2}"
+                SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" />
+                        </StackLayout>
+                    </Frame>
+
+
+
+
+                    <Grid Grid.Row="2" VerticalOptions="CenterAndExpand" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <dxco:SimpleButton VerticalOptions="CenterAndExpand" Grid.Column="0" Text="CANCEL" CornerMode = "Round" CornerRadius="5" BackgroundColor="#E6E6E6" TextColor="#4D4D4D"   Command="{Binding CancelMoreDetailCommand}"/>
+                        <dxco:SimpleButton VerticalOptions="CenterAndExpand"  Grid.Column="1" Text="SAVE" CornerMode = "Round" CornerRadius="5" BackgroundColor="#3897f0" TextColor="White" Command="{Binding SaveMoreDetailCommand}"/>
+                    </Grid>
+                </Grid>
+            </dxco:DXPopup>
+
+
+
+            <dxco:DXPopup  x:Name="Popup" IsOpen="{Binding TestCon,Mode=TwoWay}" CornerRadius="20"  AllowShadow="True">
+                <Frame CornerRadius="20">
+                    <StackLayout Padding="5" WidthRequest="150" BackgroundColor="White" Orientation="Vertical" >
+                        <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                        <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+                    </StackLayout>
+                </Frame>
+
+            </dxco:DXPopup>
+
+
+            <Image Source="rotate.png" 
+           x:Name="swipeHint"
+           HorizontalOptions="End"
+           VerticalOptions="Center"
+           WidthRequest="40"
+           HeightRequest="60"
+           Margin="0,0,10,0"
+           Opacity="0.3"
+           IsVisible="{Binding IsMainButtonVisible}"/>
+
+        </Grid>
+
+    </SwipeView>
+
+    <!--<Frame x:Name="SidePanel"
+               HorizontalOptions="Start"
+               VerticalOptions="Fill"
+               WidthRequest="300"
+               TranslationX="-300"
+               IsVisible="False">
+            -->
+    <!-- Contenu du menu -->
+    <!--
+        </Frame>
+    </Grid>-->
+
+
+
+<!--<Frame x:Name="SidePanel"
+               HorizontalOptions="Start"
+               VerticalOptions="Fill"
+               WidthRequest="300"
+               TranslationX="-300"
+               IsVisible="False">
+            --><!-- Contenu du menu --><!--
+        </Frame>
+    </Grid>-->
+
+</ContentPage>

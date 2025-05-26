@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.FloatingActionButton.MemoView"
+             Title="MemoView">
+    <Grid>
+        <!-- Main Content -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+
+        <!-- Main Content -->
+        <ContentView Grid.Row="0">
+            <ContentView.Triggers>
+                <DataTrigger TargetType="ContentView" Binding="{Binding CurrentViewIndex}" Value="0">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <!-- Memo View -->
+                            <StackLayout Spacing="10" Padding="10">
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Spacing="5">
+                                    <CheckBox x:Name="addMemoCheckBox" IsChecked="{Binding IsMemoFormVisible, Mode=TwoWay}" />
+                                    <Label Text="Ajouter une note" VerticalOptions="Center" FontSize="16" />
+                                </StackLayout>
+
+                                <StackLayout x:Name="memoFormLayout" IsVisible="{Binding IsMemoFormVisible}" Spacing="10" Padding="10" BackgroundColor="#F8F8F8">
+                                    <!--<Label Text="Nom" FontAttributes="Bold" />
+                                    <Entry Placeholder="Entrez le nom" Text="{Binding NewMemoName, Mode=TwoWay}" />-->
+                                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                                        <!-- Label de description -->
+                                        <Label Text="Description" 
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center" 
+                                           Grid.Column="0" />
+
+                                        <!-- Conteneur des boutons -->
+                                                            <StackLayout Grid.Column="1" 
+                                         Orientation="Horizontal"
+                                         Spacing="10"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="End">
+
+                                            <!-- Bouton d'écriture -->
+                                            <ImageButton x:Name="DrawingButton"
+                                                     Source="drawing.png"
+                                                     HeightRequest="24"
+                                                     WidthRequest="24"
+                                                     BackgroundColor="Transparent"
+                                                     Margin="0,0,10,0"
+                                                     Clicked="OnDrawingClicked" />
+
+                                            <!-- Bouton microphone avec animation -->
+                                            <Grid>
+                                                <ImageButton x:Name="MicButton"
+                                                     Source="microphone.png"
+                                                     HeightRequest="24"
+                                                     WidthRequest="24"
+                                                     BackgroundColor="Transparent"
+                                                     Clicked="OnListenClicked" />
+
+                                                <Frame x:Name="RecordingIndicator"
+                                                       BackgroundColor="Red"
+                                                       Opacity="0"
+                                                       CornerRadius="12"
+                                                       HeightRequest="8"
+                                                       WidthRequest="8"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"
+                                                       IsVisible="False"/>
+                                            </Grid>
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!-- Overlay de dessin (à ajouter au niveau racine de votre page) -->
+                                    <AbsoluteLayout x:Name="DrawingOverlay" 
+                                                   IsVisible="False"
+                                                   BackgroundColor="#80000000"
+                                                   HorizontalOptions="Fill"
+                                                   VerticalOptions="Fill">
+
+                                        <Frame BackgroundColor="White"
+                                               CornerRadius="20"
+                                               Padding="20"
+                                               WidthRequest="500"
+                                               HeightRequest="400"
+                                               AbsoluteLayout.LayoutBounds="0.5,0.5,300,400"
+                                               AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                                            <StackLayout>
+                                                <Label Text="Dessinez votre texte"
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"/>
+
+                                            <GraphicsView x:Name="DrawingView"
+                                                          BackgroundColor="White"
+                                                          Drawable="{Binding DrawingDrawable}"
+                                                          HorizontalOptions="FillAndExpand"
+                                                          VerticalOptions="FillAndExpand" />
+
+
+
+                                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                                                    <Button Text="↩️" 
+                                                        Grid.Column="0"
+                                                        Clicked="OnUndoClicked"
+                                                        BackgroundColor="#FF9800"
+                                                        TextColor="White"
+                                                        CornerRadius="20"/>
+
+                                                        <Button Text="Effacer"
+                                                                Grid.Column="1"
+                                                                Clicked="OnClearDrawing"
+                                                                BackgroundColor="#FF5722"
+                                                                TextColor="White"
+                                                                CornerRadius="20"/>
+
+                                                        <Button Text="Valider"
+                                                        Grid.Column="2"
+                                                        Clicked="OnValidateDrawing"
+                                                        BackgroundColor="#2196F3"
+                                                        TextColor="White"
+                                                        CornerRadius="20"/>
+                                                </Grid>
+                                            </StackLayout>
+                                        </Frame>
+                                    </AbsoluteLayout>
+                                    <Editor x:Name="note" Placeholder="Entrez la description"
+                                        Text="{Binding NewMemoDescription, Mode=TwoWay}"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="120" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+                                        <!--<Button Text="Annuler" BackgroundColor="Red" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120"  />-->
+                                        <Button Text="Sauvegarder" BackgroundColor="Green" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Command="{Binding AddMemoCommand}" />
+                                    </StackLayout>
+                                </StackLayout>
+
+                                <StackLayout x:Name="editMemoLayout" IsVisible="False" Spacing="10" Padding="10" BackgroundColor="#F8F8F8">
+                                    <!--<Label Text="Edit Name" FontAttributes="Bold" />
+                                    <Entry x:Name="editNameEntry" Placeholder="Enter Name" Text="{Binding SelectedMemo.Name, Mode=TwoWay}" />-->
+                                    <Label Text="Edit Description" FontAttributes="Bold" />
+                                    <Entry x:Name="editDescriptionEntry" Placeholder="Enter Description" Text="{Binding SelectedMemo.Description, Mode=TwoWay}" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+                                        <Button Text="Annuler" BackgroundColor="Red" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Clicked="OnCancelEditClicked" />
+                                        <Button Text="Sauvegarder" BackgroundColor="Green" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Clicked="OnSaveEditClicked" />
+                                    </StackLayout>
+                                </StackLayout>
+                                <Label Text="Liste des notes" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,5" />
+
+                                <ScrollView Grid.Row="0" VerticalOptions="FillAndExpand">
+                                    <StackLayout Spacing="10" Padding="10" BindableLayout.ItemsSource="{Binding Memos}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate>
+                                                <Frame Margin="5" Padding="10" CornerRadius="10" HasShadow="True" BackgroundColor="#F0F0F0">
+                                                    <Grid>
+                                                        <!-- Définition des colonnes et lignes -->
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <!-- Contenu -->
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <!-- Bouton suppression -->
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <!-- Ajuste à la taille du contenu -->
+                                                        </Grid.RowDefinitions>
+
+                                                        <!-- Contenu du mémo -->
+                                                        <StackLayout Grid.Column="0">
+                                                            <!--<Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />-->
+                                                            <Label Text="{Binding CreateDate, StringFormat='Date: {0:yyyy-MM-dd}'}" FontSize="14" />
+                                                            <Label Text="{Binding Description}" FontSize="14" />
+                                                            <StackLayout Orientation="Horizontal">
+                                                                <Label Text="Créé par: " FontSize="14" />
+                                                                <Label Text="{Binding CreateUserLogin}" FontSize="14" FontAttributes="Bold" />
+                                                            </StackLayout>
+                                                        </StackLayout>
+
+                                                        <!-- Bouton de suppression en haut à droite -->
+                                                        <StackLayout Grid.Column="1" Spacing="5">
+                                                            <ImageButton 
+                                                                HorizontalOptions="End"
+                                                                VerticalOptions="Start"
+                                                                Source="delete_icon.png"
+                                                                HeightRequest="30"
+                                                                WidthRequest="30"
+                                                                BackgroundColor="Transparent"
+                                                                Clicked="OnDeleteMemoClicked"
+                                                                CommandParameter="{Binding Id}" />
+
+                                                            <!-- Nouveau bouton d'édition -->
+                                                            <ImageButton 
+                                                                HorizontalOptions="End"
+                                                                VerticalOptions="Start"
+                                                                Source="edit.png"
+                                                                HeightRequest="30"
+                                                                WidthRequest="30"
+                                                                BackgroundColor="Transparent"
+                                                                Clicked="OnEditMemoClicked"
+                                                                CommandParameter="{Binding Id}" />
+                                                        </StackLayout>
+                                                    </Grid>
+                                                </Frame>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+
+                                    </StackLayout>
+
+
+                                </ScrollView>
+
+                                <StackLayout  IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Margin="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                                    <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
+                                    <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+
+                                </StackLayout>
+                            </StackLayout>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </ContentView.Triggers>
+        </ContentView>
+       
+    </Grid>
+</ContentPage>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SmartPharma5.Model"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             x:Class="SmartPharma5.View.FloatingActionButton.ActivityView"
+             Title="ActivityView">
+    <Grid>
+        <!-- Main Content -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <!-- Main Content -->
+        <ContentView Grid.Row="0">
+            <ContentView.Triggers>
+                <DataTrigger TargetType="ContentView" Binding="{Binding CurrentViewIndex}" Value="0">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <!-- Activity View -->
+                            <StackLayout Spacing="10" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Colonne pour le CheckBox -->
+                                        <ColumnDefinition Width="Auto" />
+                                        <!-- Colonne pour le Picker -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- CheckBox et Label dans la première colonne -->
+                                    <StackLayout Grid.Column="0" Orientation="Horizontal" HorizontalOptions="Start" Spacing="5">
+                                        <CheckBox x:Name="addActivityCheckBox" IsChecked="{Binding IsActivityFormVisible, Mode=TwoWay}" />
+                                        <Label Text="Ajouter une activité" VerticalOptions="Center" FontSize="16" />
+                                    </StackLayout>
+ 
+
+                                    <!--<dxe:ComboBoxEdit
+                                                                    Grid.Column="1"
+                                                                    x:Name="FilterPicker"
+                                                                    LabelText="Select State"
+                                                                    WidthRequest="200"
+                                                                    TextHorizontalAlignment="Center"
+                                                                    VerticalOptions="Center"
+                                                                    ItemsSource="{Binding States}"
+                                                                    SelectedItem="{Binding SelectedState, Mode=TwoWay}"
+                                                                    DisplayMember="Name" />-->
+
+                                    <dxe:ComboBoxEdit
+                                       Grid.Column="1"
+                                       x:Name="StateComboBox"
+                                       LabelText="Sélectionnez l'État"
+                                       HeightRequest="50"
+                                       TextHorizontalAlignment="Center"
+                                       VerticalOptions="Center"
+                                       ItemsSource="{Binding Source={x:Static local:Activity.selectStates}}" 
+                                       SelectedItem="{Binding SelectedStateActivity}"
+                                       DisplayMember="Name" 
+                                       WidthRequest="180"
+                                       />
+
+                                    <!-- Marge pour l'espacement -->
+                                </Grid>
+
+                                <StackLayout x:Name="activityFormLayout" IsVisible="{Binding IsActivityFormVisible}" Spacing="10" Padding="10" BackgroundColor="#F8F8F8">
+                                    <Label Text="Type d'activité" FontAttributes="Bold" />
+                                    <dxe:ComboBoxEdit 
+                                        ItemsSource="{Binding ActivityTypes}"
+                                        DisplayMember="Name"
+                                        ValueMember="Id"
+                                        SelectedItem="{Binding SelectedActivityType, Mode=TwoWay}"
+                                        HeightRequest="50"
+                                        TextHorizontalAlignment="Center"
+                                        VerticalOptions="Center" />
+
+                                    <Label Text="Résumé" FontAttributes="Bold" />
+                                    <Entry Placeholder="Entrer le résumé" Text="{Binding Summary, Mode=TwoWay}" IsEnabled="True" />
+                                    <Label Text="Date d'échéance" FontAttributes="Bold" />
+                                    <DatePicker Date="{Binding DueDate, Mode=TwoWay}" />
+                                    <Label Text="Note" FontAttributes="Bold" />
+                                    <Editor Placeholder="Ajouter une note" Text="{Binding ActivityMemo, Mode=TwoWay}" HeightRequest="100" />
+                                    <Label Text="Attribuer à" FontAttributes="Bold" />
+                                    <dxe:ComboBoxEdit 
+                                       ItemsSource="{Binding Employees}"
+                                       DisplayMember="NameEmployee"
+                                       LabelText="Attribuer à"
+                                       ValueMember="Id"
+                                       SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
+                                       HeightRequest="50"
+                                       TextHorizontalAlignment="Center"
+                                       VerticalOptions="Center" />
+
+
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+                                        <!--<Button Text="Annuler" BackgroundColor="Red" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" />-->
+                                        <Button Text="Sauvegarder" BackgroundColor="Green" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Command="{Binding AddActivityCommand}" />
+                                    </StackLayout>
+                                </StackLayout>
+
+
+                                <StackLayout x:Name="editactivityLayout" IsVisible="False" Spacing="10" Padding="10" BackgroundColor="#F8F8F8">
+                                    <Label Text="Modifier le résumé" FontAttributes="Bold" />
+                                    <Entry x:Name="editSummaryEntry" Placeholder="Enter Summary" Text="{Binding C.Name, Mode=TwoWay}" />
+                                    <Label Text="Modifier la note" FontAttributes="Bold" />
+                                    <Editor x:Name="editMemoEntry"  Placeholder="Enter Memo" Text="{Binding SelectedActivity.Memo, Mode=TwoWay}" HeightRequest="100" />
+                                    <Label Text="Attribuer à" FontAttributes="Bold" />
+                                    <dxe:ComboBoxEdit 
+                                    ItemsSource="{Binding Employees}"
+                                    DisplayMember="NameEmployee"
+                                    ValueMember="Id"
+                                    SelectedItem="{Binding SelectedActivityEmployee, Mode=TwoWay}"
+                                    LabelText="Sélectionnez un employé"
+                                    HeightRequest="50"
+                                    TextHorizontalAlignment="Center"
+                                    VerticalOptions="Center" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="20">
+                                        <Button Text="Annuler" BackgroundColor="Red" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Clicked="OnCancelEditActivityClicked"  />
+                                        <Button Text="Sauvegarder" BackgroundColor="Green" TextColor="#FFFFFFFF" CornerRadius="10" WidthRequest="120" Clicked="OnSaveEditActivityClicked"  />
+                                    </StackLayout>
+                                </StackLayout>
+
+
+
+                                <Label Text="Activités" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,5" />
+                                <StackLayout  IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Margin="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                                    <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
+                                    <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+
+                                </StackLayout>
+                                <ScrollView Grid.Row="0" VerticalOptions="FillAndExpand">
+                                    <!--<StackLayout Spacing="10" Padding="10" BindableLayout.ItemsSource="{Binding FilteredActivities}">-->
+                                    <StackLayout Spacing="10" Padding="10" BindableLayout.ItemsSource="{Binding Activities}">
+
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate>
+                                                <Frame Margin="5" Padding="0" CornerRadius="10" HasShadow="True" BorderColor="{Binding StateColor}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Frame Grid.Column="0"
+                                                               BackgroundColor="{Binding StateColor}"
+                                                               HasShadow="False"
+                                                               Padding="10">
+                                                        </Frame>
+
+                                                        <StackLayout Grid.Column="1" Padding="10">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="auto"/>
+                                                                    <RowDefinition Height="auto"/>
+                                                                    <RowDefinition Height="auto"/>
+                                                                    <RowDefinition Height="auto"/>
+                                                                    <RowDefinition Height="auto"/>
+                                                                    <RowDefinition Height="auto"/>
+
+                                                                </Grid.RowDefinitions>
+
+                                                                <ImageButton 
+                                                                    Grid.Row="0"
+                                                                    Grid.Column="1"
+                                                                    HorizontalOptions="End"
+                                                                    VerticalOptions="Start"
+                                                                    Margin="5"
+                                                                    Source="delete_icon.png"
+                                                                    HeightRequest="30"
+                                                                    WidthRequest="30"
+                                                                    BackgroundColor="Transparent"
+                                                                    Clicked="OnDeleteActivityClicked"
+                                                                    CommandParameter="{Binding Id}" 
+                                                                    ZIndex="1"/>
+
+                                                                <Label Grid.Row="0" Grid.Column="0" 
+                                                                   Text="{Binding Summary}" 
+                                                                   FontAttributes="Bold" 
+                                                                   FontSize="16" 
+                                                                   TextColor="#55575c" />
+
+                                                                <Label Grid.Row="1" Grid.Column="0" FontSize="14" TextColor="#959aa0">
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Créé: " FontAttributes="Bold"/>
+                                                                            <Span Text="{Binding CreateDate, StringFormat='{0:yyyy-MM-dd HH:mm}'}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+                                                                <ImageButton 
+                                                                    Grid.Row="1"
+                                                                    Grid.Column="1"
+                                                                    HorizontalOptions="End"
+                                                                    VerticalOptions="Start"
+                                                                    Source="edit.png"
+                                                                    HeightRequest="30"
+                                                                    WidthRequest="30"
+                                                                    BackgroundColor="Transparent"
+                                                                    Clicked="OnEditActivityClicked"
+                                                                    CommandParameter="{Binding Id}" />
+
+
+                                                                <Label Grid.Row="2" Grid.Column="0" FontSize="14" TextColor="#959aa0">
+                                                                <Label.FormattedText>
+                                                                    <FormattedString>
+                                                                            <Span Text="Date d'échéance: " FontAttributes="Bold"/>
+                                                                        <Span Text="{Binding DueDate, StringFormat='{0:yyyy-MM-dd}'}"/>
+                                                                    </FormattedString>
+                                                                </Label.FormattedText>
+                                                                </Label>
+
+                                                                <Label Grid.Row="3" Grid.Column="0"  FontSize="14" TextColor="#959aa0">
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Note: " FontAttributes="Bold"/>
+                                                                            <Span Text="{Binding Memo}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+
+                                                                <Label Grid.Row="4" Grid.Column="0" FontSize="14" TextColor="#959aa0">
+                                                                    <Label.FormattedText>
+                                                                        <FormattedString>
+                                                                            <Span Text="Attribuer à: " FontAttributes="Bold"/>
+                                                                            <Span Text="{Binding AssignedEmployeeName}"/>
+                                                                        </FormattedString>
+                                                                    </Label.FormattedText>
+                                                                </Label>
+                                                                <!-- Picker pour modifier le State -->
+                                                                <dxe:ComboBoxEdit
+                                                                    Grid.Row="5"
+                                                                    x:Name="StateComboBox"
+                                                                    LabelText="Sélectionnez l'État"
+                                                                    HeightRequest="50"
+                                                                    TextHorizontalAlignment="Center"
+                                                                    VerticalOptions="Center"
+                                                                    ItemsSource="{Binding Source={x:Static local:Activity.States}}"
+                                                                    SelectedItem="{Binding SelectedState, Mode=TwoWay}"
+                                                                    DisplayMember="Name" />
+                                                            </Grid>
+                                                        </StackLayout>
+                                                    </Grid>
+                                                </Frame>
+                                            </DataTemplate>
+
+                                        </BindableLayout.ItemTemplate>
+                                    </StackLayout>
+                                </ScrollView>
+                            </StackLayout>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </ContentView.Triggers>
+        </ContentView>
+
+    </Grid>
+</ContentPage>

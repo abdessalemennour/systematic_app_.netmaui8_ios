@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.décision_avance_request"
+             Title="décision_avance_request">
+    <ScrollView>
+        <Grid BackgroundColor="#F3F5F9" RowSpacing="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="120"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+            <!--<Image Grid.Row="0" Source="back7.jpg" Aspect="Fill" VerticalOptions="StartAndExpand" HeightRequest="120" ></Image>-->
+            <Grid Margin="5" Grid.Row="0" BackgroundColor="{Binding color}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout Margin="0,0,0,0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                    <Label TextColor="White" FontSize="40" HorizontalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <FormattedString.Spans >
+                                    <Span Text="Deposit" FontSize="35" FontAttributes="Bold" />
+
+
+                                </FormattedString.Spans>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Text="Deposit décision" TextColor="White"   FontSize="20" HorizontalTextAlignment="Center" Margin="0,-10,0,0"/>
+                </StackLayout>
+            </Grid>
+
+            <ScrollView  Grid.Row="1" HorizontalOptions="FillAndExpand"  Orientation="Vertical"  BackgroundColor="White"  >
+                <StackLayout Orientation="Vertical" Spacing="10" Margin="20" HorizontalOptions="FillAndExpand">
+
+                    <StackLayout Orientation="Vertical" Margin="0,-10,0,0" >
+
+                        <Label FontSize="Title" TextColor="{Binding color}" TextDecorations="Underline" FontAttributes="Bold" Text="{Binding state_name , StringFormat=' STATE : {0}'}" HorizontalOptions="CenterAndExpand"  Margin="10"></Label>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Vertical" >
+                        <Label Text=" Décision date :" TextColor="Black"  FontSize="20" FontAttributes="Bold" ></Label>
+                        <Label FontSize="22" Text="{Binding date_decision,StringFormat='{0}'}"  HorizontalOptions="CenterAndExpand" TextColor="Black"></Label>
+                    </StackLayout>
+                    <BoxView BackgroundColor="LightGray" HeightRequest="1" Margin="10"></BoxView>
+
+                    <StackLayout Orientation="Vertical">
+                        <Label Text=" déscription of décision :" TextColor="Black"  FontSize="20" FontAttributes="Bold" ></Label>
+                        <Label FontSize="22" Text="{Binding decision_description,StringFormat='{0}'}"  HorizontalOptions="CenterAndExpand" TextColor="Black"></Label>
+                    </StackLayout>
+
+
+
+                    <BoxView BackgroundColor="LightGray" HeightRequest="1" IsVisible="{Binding accepted}" Margin="10"></BoxView>
+
+                    <StackLayout Orientation="Vertical"  IsVisible="{Binding accepted}">
+                        <Label Text=" Total amount :" TextColor="Black"  FontSize="20" FontAttributes="Bold" ></Label>
+                        <Label FontSize="22" Text="{Binding amount,StringFormat='{0 : 0.000}'}"  HorizontalOptions="CenterAndExpand"  TextColor="Black"></Label>
+                    </StackLayout>
+
+                    <BoxView BackgroundColor="LightGray" HeightRequest="1" Margin="10"></BoxView>
+
+
+
+                    <StackLayout Orientation="Vertical" >
+                        <Label Text=" Créated date :" TextColor="Black"  FontSize="20" FontAttributes="Bold" ></Label>
+                        <Label FontSize="22" Text="{Binding create_date,StringFormat='{0}'}"  HorizontalOptions="CenterAndExpand" TextColor="Black" FontFamily=""></Label>
+                    </StackLayout>
+
+                    <BoxView BackgroundColor="LightGray" HeightRequest="1" Margin="10"></BoxView>
+
+                    <StackLayout Orientation="Vertical" >
+                        <Label Text=" Type of deposit :" TextColor="Black"  FontSize="20" FontAttributes="Bold" ></Label>
+                        <Label FontSize="22" Text="{Binding type_avance,StringFormat='{0}'}"  HorizontalOptions="CenterAndExpand" TextColor="Black" ></Label>
+                    </StackLayout>
+
+                    <BoxView BackgroundColor="LightGray" HeightRequest="1" Margin="10"></BoxView>
+
+                    <StackLayout Orientation="Vertical">
+                        <Label Text=" Déscription of réquest :" TextColor="Black"  FontSize="20" FontAttributes="Bold" ></Label>
+                        <Label FontSize="22" Text="{Binding description,StringFormat='{0}'}"  HorizontalOptions="CenterAndExpand" TextColor="Black"></Label>
+                    </StackLayout>
+
+                    
+                   <StackLayout HorizontalOptions="FillAndExpand" IsVisible="{Binding accepted}"  Margin="0,10,0,0">
+                            <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+                                <Label HorizontalOptions="CenterAndExpand" Text="Deposit Lines" FontSize="30" TextColor="Green" TextDecorations="Underline" FontAttributes="Bold"></Label>
+                               
+                                <CollectionView  ItemsSource="{Binding List_avance_line}" HorizontalOptions="FillAndExpand">
+
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                                                <Label Margin="0,5,0,0" Text="{Binding period_name ,StringFormat=' Period Name  : {0}'}" TextColor="Black" FontAttributes="Bold" FontSize="15"/>
+                                                <Label Text="{Binding amount ,StringFormat=' Amount  :{0 :0.000}'}" FontAttributes="Bold" TextColor="#2F3246" FontSize="12" Margin="0,0,0,0"/>
+                                                <StackLayout Orientation="Horizontal" >
+                                                    <StackLayout Orientation="Vertical">
+                                                        <Label   HorizontalTextAlignment="Center" HorizontalOptions="StartAndExpand" TextColor="Gray" FontSize="12" Text="{Binding start_period ,StringFormat='Beginning period :{0 : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold" ></Label>
+                                                        <Label   HorizontalOptions="StartAndExpand"  HorizontalTextAlignment="Center" TextColor="Gray"  FontSize="12" Text="{Binding end_period ,StringFormat='End period : {0  : dd/MM/yy HH:mm:ss}'}" FontAttributes="Bold"></Label>
+                                                    <StackLayout Margin="0,10,0,10"  HeightRequest="2"  BackgroundColor="LightGray"></StackLayout>
+                                                    </StackLayout>
+                                                </StackLayout>
+
+                                            </StackLayout>
+
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
+
+                        </StackLayout>
+
+                  
+
+
+                </StackLayout>
+            </ScrollView>
+
+
+
+
+
+
+        </Grid>
+    </ScrollView>
+   
+</ContentPage>

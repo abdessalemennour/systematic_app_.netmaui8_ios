@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             x:Class="SmartPharma5.View.FormListView"
+             Title="List of form">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label  Text="Choose your form" Padding="5" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="16"/>
+
+            <Frame Padding="5">
+                <StackLayout>
+                    <Label HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="{Binding NoForm,Mode=TwoWay}" Text="NO FORM FOR THIS PARTNER"></Label>
+
+                    <dxcv:DXCollectionView  TapCommand="{Binding ITapCommand,Mode=TwoWay}" ItemsSource="{Binding FormList}" SelectionMode="Single" HorizontalOptions="FillAndExpand"  ItemSpacing="10" >
+                        <dxcv:DXCollectionView.ItemTemplate>
+                            <DataTemplate>
+                               
+
+                                <Frame  HorizontalOptions="FillAndExpand" HasShadow="True" Padding="0">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnItemTapped" />
+                                    </Frame.GestureRecognizers>
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Frame Grid.Column="0"
+                                            BackgroundColor="#0FB0FC"
+                                            HasShadow="False"
+                                            VerticalOptions="CenterAndExpand"
+                                            HorizontalOptions="StartAndExpand" CornerRadius="50" Margin="10" Padding="5" HeightRequest="40" WidthRequest="40">
+                                            <Image Source="fileform.png" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="30"  />
+                                        </Frame>
+                                        <StackLayout Grid.Column="1"  Orientation="Horizontal">
+                                            <Label Text="{Binding Name}"
+                                            Margin="0,2"
+                                            TextColor="#55575c"
+                                            
+                                            FontSize="Body" FontAttributes="Bold" HorizontalOptions="StartAndExpand" VerticalOptions="Center"  />
+
+                                           
+                                        </StackLayout>
+                                        
+
+                                    </Grid>
+                                </Frame>
+
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+                    </dxcv:DXCollectionView>
+                </StackLayout>
+            </Frame>
+
+            <dxco:DXPopup x:Name="SavingPopup" IsOpen="False" AllowScrim="True" >
+                <StackLayout WidthRequest="200">
+                    <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+                    <Label HorizontalTextAlignment="Center" Text="Saving..." Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                </StackLayout>
+            </dxco:DXPopup>
+            <dxco:DXPopup x:Name="SuccessPopup" IsOpen="False" AllowScrim="True" >
+                <StackLayout WidthRequest="200">
+                    <Label Text="Success" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                    <Image Source="circlecheck.png" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="Saved with Success" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                        <Label HorizontalTextAlignment="Center" Text="Loading your form ..."  VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                        <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="15" HeightRequest="15" Margin="5,5"></ActivityIndicator>
+                    </StackLayout>
+
+
+                </StackLayout>
+            </dxco:DXPopup>
+            <dxco:DXPopup  x:Name="Popup"  IsOpen="False" AllowScrim="True" CornerRadius="20"  AllowShadow="True">
+                <Frame CornerRadius="20" Padding="20,25,20,25">
+                    <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                        <Label HorizontalTextAlignment="Center" Text="LOADING YOUR FORM" FontAttributes="Bold" TextColor="#6CC5DE" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                        <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="30" HeightRequest="30" Margin="5,5"></ActivityIndicator>
+                    </StackLayout>
+                </Frame>
+
+            </dxco:DXPopup>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

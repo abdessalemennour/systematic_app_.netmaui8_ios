@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             x:Class="SmartPharma5.View.AllPartnerView"
+             Title="AllPartnerView">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Home" Order="Primary" Priority="1" IconImageSource="home.png"  IsEnabled="{Binding HomeEnabled ,Mode=TwoWay}" Clicked="ToolbarItem_Clicked"  />
+    </ContentPage.ToolbarItems>
+    <NavigationPage.TitleView>
+        <StackLayout VerticalOptions="Center" Orientation="Horizontal">
+            <Label Text="Commercial Partners" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+            <Label BackgroundColor="{Binding StateColor,Mode=TwoWay}"  Padding="15,10,15,10" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Text="{Binding StateString,Mode=TwoWay}" HorizontalTextAlignment="Center"    TextColor="White" FontAttributes="Bold"></Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <StackLayout>
+        <!--<dxe:AutoCompleteEdit Grid.Row="0" TextChanged="AutoCompleteEdit_TextChanged"   
+                              ItemsSource="{Binding ClientList}"
+                              LoadingProgressMode="Manual"
+                              SubmitIconVisibility="Always" SubmitIconColor="#4B9EE8" BorderColor="#4B9EE8" CornerRadius="27" Margin="20,0,8,0"  />
+        <Label Grid.Row="1" Text="Choose your Customer" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="16"/>-->
+        <StackLayout Grid.Row="0" Margin="5,7,5,5">
+
+            <Button IsVisible="{Binding IsBtnFilter,Mode=TwoWay}" BackgroundColor="#4B9EE8" Text="Filtrer" TextColor="White" FontAttributes="Bold"  HeightRequest="35"  CornerRadius="25" Command="{Binding FilterCommand}"/>
+            <Frame WidthRequest="300"   Margin="0,-5,0,0" HasShadow="True" Padding="2" IsVisible="{Binding Filtred}">
+                <StackLayout WidthRequest="200" Margin="0" BackgroundColor="White" Padding="2" Orientation="Vertical"  >
+
+                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                        <dxe:TextEdit x:Name="PartnerSearch" LabelText="Partner Name" TextFontSize="12" ClearIconVisibility="Auto" HorizontalOptions="FillAndExpand" CornerMode="Round" CornerRadius="25" TextChanged="Search_Changed"></dxe:TextEdit>
+                        <dxe:TextEdit x:Name="EmailSearch" LabelText="Email" ClearIconVisibility="Auto" TextFontSize="12" CornerMode="Round" Keyboard="Email" HorizontalOptions="FillAndExpand"  CornerRadius="25" TextChanged="Search_Changed"></dxe:TextEdit>
+                    </StackLayout>
+
+                    <!--<dxe:ComboBoxEdit x:Name="StatesSearch" LabelText="State" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" SelectionChanged="Search_Changed" FilterMode="Contains" IsFilterEnabled="True"  ItemsSource="{Binding State_liste,Mode=TwoWay}"></dxe:ComboBoxEdit>-->
+
+                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                        <dxe:ComboBoxEdit  HorizontalOptions="FillAndExpand" x:Name="StateShearch" LabelText="State" ClearIconVisibility="Auto" TextFontSize="12" CornerMode="Round" CornerRadius="25" SelectionChanged="Search_Changed" FilterMode="Contains" IsFilterEnabled="True"  ItemsSource="{Binding State_list,Mode=TwoWay}" Keyboard="Text"></dxe:ComboBoxEdit>
+                        <dxe:ComboBoxEdit  HorizontalOptions="FillAndExpand" x:Name="CategorySearch" LabelText="Category" ClearIconVisibility="Auto" TextFontSize="12" CornerMode="Round" CornerRadius="25" SelectionChanged="Search_Changed" FilterMode="Contains" IsFilterEnabled="True"  ItemsSource="{Binding Category_list,Mode=TwoWay}" Keyboard="Text"></dxe:ComboBoxEdit>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Margin="0,-5,0,0" HorizontalOptions="FillAndExpand">
+                        <dxco:SimpleButton HorizontalOptions="FillAndExpand" HeightRequest="50"  Text="Apply" TextColor="#3897f0" BackgroundColor="White" Command="{Binding NoFilterCommand}"></dxco:SimpleButton>
+
+                        <dxco:SimpleButton  HeightRequest="50" HorizontalOptions="FillAndExpand" Text="Clear all filter" TextColor="#3897f0" BackgroundColor="White" Clicked="SimpleButton_Clicked" ></dxco:SimpleButton>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+        </StackLayout>
+
+
+
+
+
+
+        <StackLayout IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
+            <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+
+        </StackLayout>
+
+        <StackLayout Grid.Row="1" IsVisible="false">
+            <Label Text="LOADING PLEASE WAIT ..." FontSize="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextColor="#4B9EE8"></Label>
+        </StackLayout>
+
+        <StackLayout Margin="0,-5,0,0" Grid.Row="1">
+            <RefreshView BackgroundColor="Bisque"  IsRefreshing="{Binding ActPopup}" HorizontalOptions="CenterAndExpand" RefreshColor="#4B9EE8">
+                <dxcv:DXCollectionView  ItemSpacing="10" ItemsSource="{Binding Partners,Mode=TwoWay}"  x:Name="ClientCollectionView" SelectionMode="Single"    Tap="ClientCollectionView_Tap"  
+                                          PullToRefreshCommand="{Binding RefreshCommand}" IsPullToRefreshEnabled="{Binding IsPullToRefreshEnabled,Mode=TwoWay}" IsRefreshing="{Binding IsBusy,Mode=TwoWay}">
+                    <dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="5" Margin="10,0,10,0" Padding="1" BorderColor="#CCCCCC" HasShadow="True">
+                                <Grid RowSpacing="20" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Frame Grid.Column="0" CornerRadius="50"
+                                            BackgroundColor="#EEF5FF"
+                                            HasShadow="False"
+                                            VerticalOptions="CenterAndExpand"
+                                            HorizontalOptions="CenterAndExpand">
+                                        <Image Source="userregular.png" VerticalOptions="Start" HorizontalOptions="Start" HeightRequest="50"/>
+                                    </Frame>
+
+                                    <StackLayout Grid.Column="1" Padding="18,0,18,7" Orientation="Vertical">
+                                        <Label  FontSize="20" Text="{Binding Name}" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" TextDecorations="Underline"  TextColor="#4B9EE8"  FontAttributes="Bold" />
+                                        <Label FontSize="15" Text="{Binding Category_Name,StringFormat='Category :{0}'}"  FontAttributes="Bold" TextColor="#55575c"/>
+                                        <Label Text="{Binding Phone,Mode=OneWay,StringFormat='Phone: {0}'}" TextColor="#959aa0"/>
+                                        <Label Text="{Binding Email,Mode=OneWay,StringFormat='Email: {0}'}" TextColor="#959aa0"/>
+                                        <Label Text="{Binding FullAdress,StringFormat='Adresse: {0}'}" TextColor="#959aa0"/>
+                                        <Label Text="{Binding State,StringFormat='State: {0}'}" TextColor="#959aa0"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+
+
+
+
+                    <!--Specify margins.
+                        <dxcv:DXCollectionView.Margin>
+                        <OnIdiom x:TypeArguments="Thickness" Phone="16,0,0,0" Tablet="71,0,0,0"/>
+                    </dxcv:DXCollectionView.Margin>-->
+
+                </dxcv:DXCollectionView>
+            </RefreshView>
+
+        </StackLayout>
+
+
+        <!--<dxp:DXPopup IsOpen="{Binding ActPopup }"  AllowScrim="True" >
+                <StackLayout WidthRequest="200">
+                    <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+                    <Label HorizontalTextAlignment="Center" Text="Trying to connect..." Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                </StackLayout>
+            </dxp:DXPopup>-->
+
+
+    </StackLayout>
+</ContentPage>

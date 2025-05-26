@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.TransferPaymentView"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="TransferPaymentView">
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout>
+                <StackLayout  Spacing="5" Margin="0" Padding="10,10,10,2">
+                    <dxe:NumericEdit  LabelText="Amount" Value="{Binding Transfer.amount , Mode=TwoWay}" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" IsReadOnly="True" DisplayFormat="n3"  BorderColor="AliceBlue"/>
+                    <dxe:ComboBoxEdit LabelText="Cash Desk In" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" ItemsSource="{Binding Cash_deskList, Mode=TwoWay}" SelectedItem="{Binding Cash_deskListselecteditem, Mode=TwoWay}" DisplayMember="Name"></dxe:ComboBoxEdit>
+                    <dxe:NumericEdit IsVisible="{Binding IsVisibleAmount, Mode=TwoWay}" HeightRequest="50" LabelText="Affected Amount" Value="{Binding Amount, Mode=TwoWay}" DisplayFormat="F3">
+                        <dxe:NumericEdit.Behaviors>
+                            <xct:EventToCommandBehavior
+                                                EventName="Unfocused"
+                                                Command="{Binding AmountChangeCommand}">
+                            </xct:EventToCommandBehavior>
+                        </dxe:NumericEdit.Behaviors >
+                    </dxe:NumericEdit>
+                    <dxe:MultilineEdit HeightRequest="100" LabelText="Note" Text="{Binding Transfer.memo, Mode=TwoWay}" TextFontSize="Small"></dxe:MultilineEdit>
+                </StackLayout>
+
+                <StackLayout>
+                    <dxcv:DXCollectionView x:Name="PaymentCollectionView" ItemsSource="{Binding PaymentList}" SelectionMode="{Binding SelectionModePiece}" SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"  ItemSpacing="5"  Margin="5,8,8,0"  TapCommand="{Binding SelectedChangedCommand}" IsVisible="{Binding IsVisiblePayment}">
+
+                        <dxcv:DXCollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame  HasShadow="True" BorderColor="#1B7D6A" CornerRadius="5" BackgroundColor="#EEEAEA">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"  ></TapGestureRecognizer>
+                                    </Frame.GestureRecognizers>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="0.45*"/>
+                                            <ColumnDefinition Width="0.45*"/>
+                                            <ColumnDefinition Width="0.1*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions >
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding Partner, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="{Binding stateColor}" VerticalOptions="Center"/>
+                                        <Label Grid.Row="0" Grid.Column="0"  Text="{Binding MethodeDePayement, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="{Binding stateColor}" VerticalOptions="Center"/>
+                                        <Label Grid.Row="1" Grid.Column="0"  Text="{Binding code, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>
+                                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Montant, Mode=OneWay,StringFormat=Amount :    '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                                        <Label Grid.Row="2" Grid.Column="0" Text="{Binding date,StringFormat='Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="Black"/>
+                                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding DateEcheance,StringFormat='Due Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="Black"/>
+                                        <dxe:CheckEdit  Grid.Row="0" Grid.Column="2" IsEnabled="False" IsChecked="{Binding Is_checked, Mode=TwoWay}" VerticalOptions="Start" HorizontalOptions="Center"></dxe:CheckEdit>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+
+                    </dxcv:DXCollectionView>
+                </StackLayout>
+                <dxco:DXPopup IsOpen="{Binding VerifPopup}" AllowScrim="True" >
+                    <StackLayout WidthRequest="200">
+                        <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+                        <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                    </StackLayout>
+                </dxco:DXPopup>
+                <dxco:DXPopup IsOpen="{Binding SuccessPopup}" AllowScrim="True" >
+                    <StackLayout WidthRequest="200">
+                        <Image Source="circlecheck.png" HeightRequest="50" Margin="0,20"/>
+                        <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                    </StackLayout>
+                </dxco:DXPopup>
+                <dxco:DXPopup IsOpen="{Binding FieldPopup}" AllowScrim="True" >
+
+                    <StackLayout WidthRequest="200">
+                        <Image Source="circlexmark.png" HeightRequest="50" Margin="0,20"/>
+                        <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                    </StackLayout>
+                </dxco:DXPopup>
+            </StackLayout>
+            <!--<StackLayout BackgroundColor="#3897f0">
+                <Label x:Name="total" Text="{Binding Total_unpaied, Mode=OneWay, StringFormat=Total Unpaied : '{0:F3}'}" Margin="0,0,0,0" TextColor="White" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Padding="0,0,0,0"/>
+            </StackLayout>-->
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

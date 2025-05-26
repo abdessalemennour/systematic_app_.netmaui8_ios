@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.TypePaymentView"
+                 xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             Title="TypePaymentView">
+
+    <ScrollView  VerticalOptions="FillAndExpand">
+
+        <StackLayout>
+            <StackLayout HorizontalOptions="FillAndExpand" BackgroundColor="CadetBlue">
+                <Label x:Name="total"  HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="{Binding Total_unpaied, Mode=OneWay, StringFormat=Total Unpaied : '{0:F3}'}" Margin="0,0,0,0" TextColor="White" FontSize="Large" FontAttributes="Bold"  VerticalOptions="Center" Padding="0,0,0,0"/>
+
+            </StackLayout>
+            <StackLayout Padding="10">
+                <dxe:NumericEdit  LabelText="Amount" Value="{Binding Payment.amount , Mode=TwoWay}" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" IsReadOnly="True" DisplayFormat="n3"  BorderColor="AliceBlue"/>
+                <dxe:ComboBoxEdit LabelText="Payment Method" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" ItemsSource="{Binding Payment_methodList, Mode=TwoWay}" SelectedItem="{Binding Payment_methodListSelectedItem, Mode=TwoWay}" DisplayMember="name" SelectionChangedCommand="{Binding Payment_methodChangedCommand}"></dxe:ComboBoxEdit>
+                <!-- <dxe:ComboBoxEdit LabelText="Cash Desk" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" ItemsSource="{Binding Cash_deskList, Mode=TwoWay}" SelectedItem="{Binding Cash_deskListselecteditem, Mode=TwoWay}" DisplayMember="name"></dxe:ComboBoxEdit>-->
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+
+                    </Grid.ColumnDefinitions>
+                   <!-- <dxe:ComboBoxEdit LabelText="Cash Desk" SelectionChangedCommand="{Binding ChnageCurrency,Mode=TwoWay}" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" ItemsSource="{Binding Cash_deskList}" SelectedItem="{Binding Cash_deskListselecteditem, Mode=TwoWay}" DisplayMember="name"></dxe:ComboBoxEdit>
+                 -->
+                    <dxe:ComboBoxEdit 
+                    LabelText="Cash Desk" 
+                    HeightRequest="50" 
+                    TextHorizontalAlignment="Center" 
+                    VerticalOptions="Center" 
+                    ItemsSource="{Binding Cash_deskList}" 
+                    SelectedItem="{Binding Cash_deskListselecteditem, Mode=TwoWay}" 
+                    DisplayMember="name"/>
+                    <!-- <dxe:ComboBoxEdit 
+                    Grid.Column="1" 
+                    LabelText="Currency" 
+                    HeightRequest="50" 
+                    TextHorizontalAlignment="Center" 
+                    VerticalOptions="Center" 
+                    ItemsSource="{Binding CurrencyList}" 
+                    SelectedItem="{Binding NameCurrency, Mode=TwoWay}" 
+                    DisplayMember="Name" />-->
+                  <!-- <Label Text="{Binding NameCurrency,Mode=TwoWay}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center"></Label>-->
+
+                    <!--     <dxe:ComboBoxEdit 
+                    Grid.Column="1" 
+                    LabelText="Currency" 
+                    HeightRequest="45" 
+                    TextHorizontalAlignment="Center" 
+                    VerticalOptions="Center" 
+                    ItemsSource="{Binding CurrencyList, Mode=TwoWay}" 
+                    BorderColor="Black" 
+                    SelectedItem="{Binding NameCurrency, Mode=TwoWay}" 
+                     />-->
+                    <!--<Label Text="{Binding NameCurrency,Mode=TwoWay}" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center"></Label>-->
+                  <!--  <dxe:ComboBoxEdit 
+                    Grid.Column="1" 
+                    LabelText="Currency" 
+                    HeightRequest="50" 
+                    TextHorizontalAlignment="Center" 
+                    VerticalOptions="Center" 
+                    ItemsSource="{Binding CurrencyList}" 
+                    SelectedItem="{Binding CurrencyListselecteditem, Mode=TwoWay}" 
+                    DisplayMember="Name"/>
+                    -->
+                    <dxe:ComboBoxEdit 
+                    Grid.Column="1" 
+                    LabelText="Currency" 
+                    HeightRequest="50" 
+                    TextHorizontalAlignment="Center" 
+                    VerticalOptions="Center" 
+                    ItemsSource="{Binding CurrencyList}" 
+                    SelectedItem="{Binding CurrencyListselecteditem, Mode=TwoWay}" 
+                    DisplayMember="Name"
+                    SelectionChangedCommand="{Binding CurrencySelectionChangedCommand}"/>
+                    <!--   <dxe:ComboBoxEdit 
+                    DisplayMember="Name"
+                    Grid.Column="1" 
+                    LabelText="Currency" 
+                    HeightRequest="50" 
+                    TextHorizontalAlignment="Center" 
+                    VerticalOptions="Center" 
+                    ItemsSource="{Binding CurrencyList}" 
+                    SelectedItem="{Binding CurrencyListselecteditem, Mode=TwoWay}" 
+                    DisplayMember="Name" />-->
+                    <!-- <dxe:ComboBoxEdit Grid.Column="0" LabelText="Cash Desk" HeightRequest="45" TextHorizontalAlignment="Center" VerticalOptions="Center" ItemsSource="{Binding Cash_deskList, Mode=TwoWay}" BorderColor="Black" SelectedItem="{Binding Cash_deskListselecteditem, Mode=TwoWay}" DisplayMember="name" IsReadOnly="True"/>
+                    -->
+                    <!--<Entry
+                    Grid.Column="1"
+                    Text="{Binding SelectedCurrency.Name, Mode=OneWay}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    IsReadOnly="True"
+                    TextColor="Black"
+                    BackgroundColor="Transparent" />-->
+                </Grid>
+
+                <dxe:ComboBoxEdit LabelText="Sale Bank" IsFilterEnabled="True"  FilterCondition="Contains" IsVisible="{Binding IsVisibleBankAccount, Mode=TwoWay}" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center"  ItemsSource="{Binding BankList}" SelectedItem="{Binding BankListSelectedItem}" DisplayMember="name"></dxe:ComboBoxEdit>
+                <dxe:ComboBoxEdit HeightRequest="50" LabelText="Payment Type" TextHorizontalAlignment="Center" ItemsSource="{Binding PaymentTypeList}" SelectedItem="{Binding PaymentTypeListSelectedItem}" DisplayMember="name" SelectionChangedCommand="{Binding Payment_typeChangedCommand}"></dxe:ComboBoxEdit>
+                <dxe:NumericEdit IsVisible="{Binding IsVisibleEffectedAmount, Mode=TwoWay}" HeightRequest="50" LabelText="Affected Amount" Value="{Binding Effected_Amount, Mode=TwoWay}" DisplayFormat="F3">
+                    <dxe:NumericEdit.Behaviors>
+                        <xct:EventToCommandBehavior
+                                                        EventName="Unfocused"
+                                                        Command="{Binding AmountChangeCommand}">
+                        </xct:EventToCommandBehavior>
+                    </dxe:NumericEdit.Behaviors >
+                </dxe:NumericEdit>
+                <dxe:DateEdit LabelText="Due Date" UseNativePicker="True" IsVisible="{Binding IsVisibledue_date}" DisplayFormat="dd/MM/yyyy" Date="{Binding Due_date, Mode=TwoWay}"></dxe:DateEdit>
+                <dxe:TextEdit HeightRequest="50" LabelText="Reference" Text="{Binding Payment.reference, Mode=TwoWay}" IsVisible="{Binding IsVisiblereference}"></dxe:TextEdit>
+            </StackLayout>
+
+            <dxcv:DXCollectionView VerticalOptions="FillAndExpand" x:Name="UnpaiedCollectionView" ItemsSource="{Binding UnpaiedList}" SelectionMode="{Binding SelectionModePiece}" SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"  ItemSpacing="5"  Margin="5,8,8,0"  >
+
+                <dxcv:DXCollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame  HasShadow="True" BorderColor="#1B7D6A" CornerRadius="5" BackgroundColor="#EEEAEA">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"   ></TapGestureRecognizer>
+                            </Frame.GestureRecognizers>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.45*"/>
+                                    <ColumnDefinition Width="0.45*"/>
+                                    <ColumnDefinition Width="0.1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0"  Text="{Binding piece_type_name, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="{Binding stateColor}" VerticalOptions="Center"/>
+                                <!--                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay, StringFormat='Total : {0:{Binding DisplayFormat}}'}"  FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+--> 
+                                <!--<Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay,StringFormat=Total :'{0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
+                               -->
+                                <FlexLayout Grid.Row="1" Grid.Column="0" 
+                                            Direction="Row" 
+                                            Wrap="Wrap" 
+                                            AlignItems="Start" 
+                                            VerticalOptions="Center">
+
+                                    <Label Text="{Binding total_amount, Mode=OneWay, StringFormat='Total : {0}'}" 
+                                           FontSize="Subtitle" 
+                                           FontAttributes="Bold" 
+                                           TextColor="Black"/>
+
+                                    <Label Text="{Binding currencySymbol, Mode=OneWay}" 
+                                           FontSize="Subtitle" 
+                                           FontAttributes="Bold" 
+                                           TextColor="Black"/>
+                                </FlexLayout>
+                                <Label Grid.Row="0" Grid.Column="1"  Text="{Binding code, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>
+                               <!-- <Label Grid.Row="1" Grid.Column="1" Text="{Binding rest_amount, Mode=OneWay,StringFormat=Rest :'{0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
+                             -->
+                                <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalOptions="Center">
+                                    <Label Text="{Binding rest_amount, Mode=OneWay, StringFormat='Rest : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
+                                    <Label Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
+                                </StackLayout>
+                                <Label Grid.Row="2" Grid.Column="0" Text="{Binding date,StringFormat='Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="Black"/>
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding due_date,StringFormat='Due Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="{Binding due_dateColor}"/>
+                                <dxe:CheckEdit IsEnabled="False" Grid.Row="0" Grid.Column="2"  IsChecked="{Binding Is_checked, Mode=TwoWay}" VerticalOptions="Start" HorizontalOptions="Center"></dxe:CheckEdit>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+
+            </dxcv:DXCollectionView>
+
+
+            <dxco:DXPopup IsOpen="{Binding VerifPopup}" AllowScrim="True" >
+                <StackLayout WidthRequest="200">
+                    <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+
+                    <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                </StackLayout>
+            </dxco:DXPopup>
+            <dxco:DXPopup IsOpen="{Binding SuccessPopup}" AllowScrim="True" >
+                <StackLayout WidthRequest="200">
+                    <Image Source="circlecheck.png" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                </StackLayout>
+            </dxco:DXPopup>
+            <dxco:DXPopup IsOpen="{Binding FieldPopup}" AllowScrim="True" >
+
+                <StackLayout WidthRequest="200">
+                    <Image Source="circlexmark.png" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                </StackLayout>
+            </dxco:DXPopup>
+
+        </StackLayout>
+    </ScrollView>
+
+
+
+
+
+
+
+</ContentPage>

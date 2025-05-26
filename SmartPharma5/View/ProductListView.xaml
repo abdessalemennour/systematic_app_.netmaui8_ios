@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.ProductListView"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="ProductListView"
+            
+             
+             >
+    <NavigationPage.TitleView>
+
+        <StackLayout VerticalOptions="Center">
+            <Label Text="Products" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+
+        </StackLayout>
+
+    </NavigationPage.TitleView>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+
+        <Grid Padding="10" RowSpacing="10" >
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0,6*"/>
+                    <ColumnDefinition Width="0,4*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid HeightRequest="50" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                    <dxe:AutoCompleteEdit Grid.Column="0"
+                          x:Name="ProductAutoComplete"
+                          TextChanged="AutoCompleteEdit_TextChanged"
+                          BoxMode="Filled"
+                          BackgroundColor="#F3BA04"
+                          IconColor="Transparent"  
+                        SubmitIconVisibility="Never"
+                        BorderColor="#4B9EE8"
+                          CornerMode="Round"
+                          ItemsSource="{Binding ProductList}"
+                          LoadingProgressMode="Manual"
+                          Margin="8,0,8,0" />
+
+                        <ImageButton Source="microphone.png"
+                             HeightRequest="24"
+                             WidthRequest="24"
+                             BackgroundColor="Transparent"
+                             Clicked="OnListenClicked"
+                             VerticalOptions="Center"
+                             HorizontalOptions="End"
+                             Margin="0,0,20,0" />
+                            </Grid>
+
+
+                <dxe:AutoCompleteEdit Grid.Column="1"  TextChanged="AutoCompleteEdit_TextChanged2" 
+                              IconColor="White"
+                              BoxMode="Filled"
+                              BackgroundColor="#4DBF49"
+                              ItemsSource="{Binding ProductList}"
+                              LoadingProgressMode="Manual"
+                              SubmitIconVisibility="Always" SubmitIconColor="White" BorderColor="#4B9EE8"  />
+
+            </Grid>
+            <StackLayout Grid.Row="1">
+
+                <dxcv:DXCollectionView ItemSpacing="10"  Orientation="Vertical" ItemsSource="{Binding ProductList}" x:Name="ProductCollectionView"  SelectionMode="Single"  IsRefreshing="{Binding IsBusy ,Mode=TwoWay}">
+
+                    <!--Define the item template.-->
+                    <dxcv:DXCollectionView.ItemTemplate >
+                        <DataTemplate>
+
+
+                            <Frame BorderColor="BlueViolet" BackgroundColor="#D0FFFFFF" CornerRadius="10" Margin="0,0,0,0" >
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnSpacing="8" >
+                                   
+
+
+                                    
+
+                                    <StackLayout HorizontalOptions="CenterAndExpand" >
+
+                                        <StackLayout HorizontalOptions="FillAndExpand" >
+                                            <Label HorizontalOptions="CenterAndExpand" Text="{Binding name}" Margin="0,2" TextColor="Black" FontAttributes="Bold"/>
+                                        </StackLayout>
+
+                                        <Grid >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition ></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+
+                                            </Grid.ColumnDefinitions>
+
+                                            <Label  Grid.Row="0" Grid.Column="0" Text="{Binding reference,Mode=OneWay,StringFormat='RF: {0}'}" TextColor="#959aa0"/>
+                                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding price_sale,Mode=OneWay,StringFormat='PHT: {0:F3}'}" TextColor="#959aa0"/>
+                                            <Label  Grid.Row="2" Grid.Column="0" Text="{Binding sale_price_tax_included,Mode=OneWay,StringFormat='PTTC: {0:F3}'}" TextColor="#959aa0" FontAttributes="Bold"/>
+
+
+                                            <Label   Grid.Row="0" Grid.Column="1" Text="{Binding Discount,Mode=OneWay,StringFormat='Discount: {0:p}'}" TextColor="#959aa0"/>
+
+                                            <Label  Grid.Row="1" Grid.Column="1" Text="{Binding Price_sale_ht_discount,Mode=OneWay,StringFormat='PHT/D: {0:F3}'}" TextColor="#959aa0"/>
+                                            <Label  Grid.Row="2" Grid.Column="1" Text="{Binding PUTTC,Mode=OneWay,StringFormat='PTTC/D: {0:F3}'}" TextColor="#4DBF49" FontAttributes="Bold"/>
+                                        </Grid>
+
+                                    </StackLayout>
+
+                                </Grid>
+                            </Frame>
+
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+
+
+
+
+                    <!--Specify margins.-->
+                    <!--<dxcv:DXCollectionView.Margin>
+                        <OnIdiom x:TypeArguments="Thickness" Phone="16,0,0,0" Tablet="71,0,0,0"/>
+                    </dxcv:DXCollectionView.Margin>-->
+
+                </dxcv:DXCollectionView>
+            </StackLayout>
+
+            <dxco:DXPopup x:Name="DexPoop" MinimumWidthRequest="400"  IsOpen="{Binding ProductPopup,Mode=TwoWay}" HorizontalOptions="FillAndExpand" AllowScrim="True">
+                <Grid HorizontalOptions="FillAndExpand" RowSpacing="15" ColumnSpacing="13" 
+                    
+                    Margin="15, 15">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+
+                    </Grid.RowDefinitions>
+
+
+                    <Label Grid.Row="0" x:Name="NameLabel" FontSize="Subtitle" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" TextColor="Black" HorizontalTextAlignment="Center"   Text="{Binding Product.name}" Padding="10"/>
+
+                    <Frame CornerRadius="20" Grid.Row="1" BackgroundColor="#EEF5FF" HasShadow="False">
+                        <Image Source="Emptyimage.png" WidthRequest="50" HorizontalOptions="Center"/>
+                    </Frame>
+
+                    <Label Grid.Row="2" FontSize="16" x:Name="ReferenceLabel" HorizontalOptions="Start" Text="{Binding Product.reference, StringFormat='Reference: {0}'}" />
+                    <Label Grid.Row="3" FontSize="16" x:Name="SalePriceeLabel" HorizontalOptions="Start" Text="{Binding Product.sale_price_tax_included,StringFormat='Price: {0:F3} HT'}" />
+
+                    <StackLayout Grid.Row="4">
+                        <dxe:NumericEdit x:Name="QuantityLabel" HeightRequest="50" WidthRequest="80" HorizontalOptions="Center"  BorderColor="White"   LabelFontSize="12" DisplayFormat="n0" AllowNullValue="False" IsLabelFloating="False" Value="{Binding Quantity}" TextColor="#3F7EF6" TextFontSize="Title" TextHorizontalAlignment="Center"  />
+                        <Slider  Maximum="100" Minimum="1" Value="1" Grid.Row="4" VerticalOptions="Center" MaximumTrackColor="#3F7EF6" MinimumTrackColor="#3F7EF6" ThumbColor="#3F7EF6" ValueChanged="Slider_ValueChanged" ></Slider>
+                    </StackLayout>
+                    <Grid Grid.Row="5" Padding="0,30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <dxco:SimpleButton Grid.Column="1" Text="ADD" CornerMode = "Round" CornerRadius="5" BackgroundColor="#3897f0" TextColor="White" HeightRequest="50" FontSize="14" VerticalOptions="Start" Command="{Binding AddProductCommand}"/>
+                        <dxco:SimpleButton Grid.Column="0" Text="CANCEL" CornerMode = "Round" CornerRadius="5" BackgroundColor="#E6E6E6" TextColor="#4D4D4D" HeightRequest="50" FontSize="14" VerticalOptions="Start" Command="{Binding CancelProductCommand}"/>
+                    </Grid>
+
+                </Grid>
+            </dxco:DXPopup>
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>

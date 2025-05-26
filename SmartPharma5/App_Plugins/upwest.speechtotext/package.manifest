@@ -1,0 +1,23 @@
+{
+  "name": "Upwest Speech to text",
+  "version": "1.13.22",
+  "allowPackageTelemetry": true,
+  "propertyEditors": [
+    {
+      "alias": "upwest.speechtotext",
+      "name": "Speech to text",
+      "group": "Upwest",
+      "icon": "icon-radio-alt",
+      "editor": {
+        "view": "~/App_Plugins/upwest.speechtotext/upwest.html"
+      }
+    }
+  ],
+  "javascript": [
+    "~/App_Plugins/upwest.speechtotext/dependencies/speechtotext.js",
+    "~/App_Plugins/upwest.speechtotext/upwest.controller.js"
+  ],
+  "css": [
+    "~/App_Plugins/upwest.speechtotext/dependencies/speechtotext.css"
+  ]
+}

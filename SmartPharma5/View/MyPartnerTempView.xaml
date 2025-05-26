@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.MyPartnerTempView"
+                 xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+   xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+   xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             Title="PARTNER">
+    <ContentPage.Content>
+
+        <StackLayout>
+            <dxe:AutoCompleteEdit  x:Name="AutoComp" PlaceholderText="Partner" TextChanged="AutoCompleteEdit_TextChanged" 
+   ItemsSource="{Binding OpportunityList}"               
+   LoadingProgressMode="Manual"
+   SubmitIconVisibility="Always" SubmitIconColor="#4B9EE8" BorderColor="#4B9EE8" CornerRadius="27" Margin="20,5,8,0"  />
+            <StackLayout  Orientation="Horizontal" Margin="10,20,10,10">
+                <Label Text="Agenda of Notifications" FontAttributes="Bold" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
+
+            </StackLayout>
+        
+            <StackLayout Grid.Row="4" Spacing="5" Orientation="Horizontal" Margin="10,20,10,10">
+                <Button Text="Pending" BackgroundColor="Orange" WidthRequest="100" Clicked="Button_Clicked"  ></Button>
+                <Button Text="Accepted" BackgroundColor="Green" WidthRequest="100" Clicked="Button_Clicked_1" ></Button>
+                <Button Text="Refused" BackgroundColor="Red" WidthRequest="100" Clicked="Button_Clicked_2"  ></Button>
+
+            </StackLayout>
+            <RefreshView Grid.Row="4"  Margin="5,20,5,5" HorizontalOptions="FillAndExpand"  Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy,Mode=TwoWay}" RefreshColor="#455399">
+
+                <dxcv:DXCollectionView  x:Name="OpportunitytCollectionView"  Orientation="Vertical" ItemSpacing="10" VerticalOptions="FillAndExpand" 
+                     SelectionMode="None" ItemsSource="{Binding ListPartnerTemp}"  >
+
+                    <dxcv:DXCollectionView.ItemTemplate  >
+                        <DataTemplate  >
+
+                            <Frame BackgroundColor="White"
+       CornerRadius="10"
+       HasShadow="True"
+       Padding="10"
+       Margin="5">
+                                <Grid HorizontalOptions="FillAndExpand">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Empty space for alignment -->
+                                    <StackLayout HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Margin="5"/>
+
+                                    <!-- Vertical separator -->
+                                    <BoxView Grid.Column="1" BackgroundColor="Black" WidthRequest="1" HorizontalOptions="Start" VerticalOptions="FillAndExpand"/>
+
+                                    <!-- Main content column -->
+                                    <StackLayout Grid.Column="2" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Margin="10,0">
+                                        <Label Text="{Binding Name_Partner_Temp, StringFormat='New Partner: {0}'}" 
+                   FontAttributes="Bold" 
+                   TextColor="DarkCyan" 
+                   FontSize="16" 
+                   Margin="0,0,0,5"/>
+                                        <Label Text="{Binding Name_User, StringFormat='Created By: {0}'}" 
+                   TextColor="Gray" 
+                   FontAttributes="Italic" 
+                   FontSize="13" 
+                   Margin="0,0,0,2"/>
+                                        <Label Text="{Binding created_date, StringFormat='Created: {0}'}" 
+                   TextColor="Gray" 
+                   FontAttributes="Italic" 
+                   FontSize="13" 
+                   Margin="0,0,0,10"/>
+                                        <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+                                            <Label Text="{Binding Current_profile, StringFormat='From {0} =>'}" 
+                       FontAttributes="Italic" 
+                       FontSize="13" 
+                       TextColor="Black"/>
+                                            <Label Text="{Binding Profile, StringFormat='To {0}'}" 
+                       FontAttributes="Italic" 
+                       FontSize="13" 
+                       TextColor="Black"/>
+                                        </StackLayout>
+                                    </StackLayout>
+
+                                    <!-- Status column -->
+                                    <StackLayout Grid.Column="3" Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
+                                        <Button BackgroundColor="Green" 
+
+HeightRequest="40" 
+CornerRadius="10" 
+Margin="0,10" 
+Text="Attributes" 
+FontSize="13" 
+FontAttributes="Italic" 
+TextColor="White" 
+Command="{Binding ShowMyAttributes, Mode=TwoWay}"/>
+                                        <StackLayout HorizontalOptions="CenterAndExpand">
+
+                                            <Image IsVisible="{Binding Current, Mode=TwoWay}" Source="pending1.png" WidthRequest="50" HeightRequest="50"/>
+                                            <Label IsVisible="{Binding Current, Mode=TwoWay}" FontAttributes="Bold" TextColor="Orange" Text="Pending"/>
+                                            <Image IsVisible="{Binding Réfused, Mode=TwoWay}" 
+                       Source="Notif_Refused.png" 
+                       WidthRequest="40" 
+                       HeightRequest="40"/>
+                                            <Image IsVisible="{Binding Validated, Mode=TwoWay}" 
+                       Source="Notif_Accepted.png" 
+                       WidthRequest="40" 
+                       HeightRequest="40"/>
+                                            <Label IsVisible="{Binding Validated}" 
+                       FontAttributes="Bold" 
+                       TextColor="Green" 
+                       Text="Accepted" 
+                       HorizontalOptions="Center"/>
+                                            <Label IsVisible="{Binding Réfused}" 
+                       FontAttributes="Bold" 
+                       TextColor="Red" 
+                       Text="Refused" 
+                       HorizontalOptions="Center"/>
+                                        </StackLayout>
+                                        
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+
+
+
+
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </RefreshView>
+        </StackLayout>
+
+    </ContentPage.Content>
+ 
+</ContentPage>

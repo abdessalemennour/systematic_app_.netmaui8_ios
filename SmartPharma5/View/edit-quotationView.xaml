@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 x:Class="SmartPharma5.View.edit_quotationView"
+                xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+                xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+                xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+                xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="quotationLine"
+             Title="Quotation"
+             >
+
+        <ScrollView>
+        <StackLayout>
+            
+
+            <Label Margin="10" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"  FontAttributes="Bold"  Text="{Binding Quotation.Code, StringFormat='QUOTATION-CODE : {0} '}"></Label>
+           
+            <Label Margin="10"  Text="QUTATION LINES :"></Label>
+            <Button Text="SAVE CHANGES" Clicked="Button_Clicked" Background="GreenYellow" IsVisible="{Binding Savebtn,Mode=TwoWay}" ></Button>
+            <StackLayout Orientation="Horizontal" IsVisible="{Binding IsUpdated,Mode=TwoWay}" HorizontalOptions="FillAndExpand"               AbsoluteLayout.LayoutBounds="1, 1, AutoSize, AutoSize"
+                    
+               AbsoluteLayout.LayoutFlags="PositionProportional">
+                <Button  x:Name="AddButton" Clicked="AddButton_Clicked_1" Text="ADD LINE"
+           HorizontalOptions="FillAndExpand" Margin="2"  BackgroundColor="Green" CornerRadius="10"
+           >
+                </Button>
+                <Button  
+                    Clicked="AddButton_Clicked"
+HorizontalOptions="FillAndExpand" CornerRadius="10" Margin="2" Text="UPDATE" BackgroundColor="Orange"
+>
+                </Button>
+
+
+            </StackLayout>
+            <StackLayout Background="CadetBlue" HorizontalOptions="FillAndExpand" HeightRequest="1"></StackLayout>
+
+            <dxcv:DXCollectionView x:Name="CollectionV" HeightRequest="500"  Grid.Row="1"  ItemsSource="{Binding SelectedListQuotation, Mode=TwoWay}" BackgroundColor="#E6E6E6" Margin="0" >
+
+                <dxcv:DXCollectionView.ItemTemplate>
+
+
+                    <DataTemplate>
+
+                        <Frame HorizontalOptions="FillAndExpand" BorderColor="CadetBlue" Margin="0" Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Product Name and Remove Button -->
+                                <StackLayout Grid.Row="0" Orientation="Horizontal" Margin="5" Padding="5">
+                                    <Label VerticalOptions="Center" HorizontalOptions="StartAndExpand" LineBreakMode="WordWrap" HorizontalTextAlignment="Start" 
+         Text="{Binding NameProduct}" TextColor="#55575c" FontSize="Medium" FontAttributes="Bold"/>
+                                    <ImageButton Clicked="ImageButton_Clicked" IsVisible="{Binding EnabledChange,Mode=TwoWay}"
+             BackgroundColor="#EEF5FF" 
+             VerticalOptions="Center" 
+             HorizontalOptions="End" 
+             WidthRequest="40" 
+             HeightRequest="40" 
+             Source="trash.png" 
+             Padding="3" />
+                                </StackLayout>
+
+                                <!-- Price, Discount, and Quantity Details -->
+                                <StackLayout Grid.Row="1" HorizontalOptions="CenterAndExpand" Orientation="Horizontal" Spacing="10" Padding="5">
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="{Binding Price, Mode=OneWay, StringFormat='{0:F3}'}"/>
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="*"/>
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="{Binding Discount, Mode=OneWay, StringFormat='{0:p}'}"/>
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="="/>
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="{Binding Price_with_discount, Mode=OneWay, StringFormat='{0:F3}'}"/>
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="*"/>
+
+                                    <dxe:NumericEdit VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="50" HeightRequest="40" TextFontSize="14" 
+                               TextHorizontalAlignment="Center" ValueChangedCommand="{Binding changeQuantity, Mode=TwoWay}" TextColor="#55575c" MaxDecimalDigitCount="0" DisplayFormat="N0" 
+                                
+                               Value="{Binding Quantity, Mode=TwoWay}"   IsEnabled="{Binding EnabledChange,Mode=TwoWay}">
+
+                                    </dxe:NumericEdit>
+
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="="/>
+                                    <Label VerticalOptions="Center" FontSize="13" HorizontalTextAlignment="Center" Text="{Binding TotalAmount, StringFormat='{0:F3}', Mode=TwoWay}" TextColor="#3897f0"/>
+                                </StackLayout>
+
+                                <!-- Additional Content Placeholder -->
+                                <StackLayout Grid.Row="2"/>
+                            </Grid>
+                        </Frame>
+
+
+
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+            </dxcv:DXCollectionView>
+            <StackLayout Background="CadetBlue" HorizontalOptions="FillAndExpand" HeightRequest="1"></StackLayout>
+            <Label TextColor="CadetBlue" Margin="10" FontSize="Large"  HorizontalOptions="EndAndExpand" HorizontalTextAlignment="Center"  Text="{Binding Quotation.TotalAmount, StringFormat=' {0} TTC'}"></Label>
+        </StackLayout>
+
+
+    </ScrollView>
+
+        <!-- Circular Button with "+" image -->
+
+      
+
+</ContentPage>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.opportunity_formView"
+             Title="LIST OF FORMS">
+    <VerticalStackLayout>
+        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Button Text="+"
+                        
+                        FontSize="Large"
+                        TextColor="White"
+                        BackgroundColor="DodgerBlue"
+                        CornerRadius="30"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        VerticalOptions="End"
+                        HorizontalOptions="End"
+                        AbsoluteLayout.LayoutBounds="0.95, 4, 60, 60"
+                        AbsoluteLayout.LayoutFlags="PositionProportional"
+                        Command="{Binding GoToContact}"/>
+        </AbsoluteLayout>
+    </VerticalStackLayout>
+</ContentPage>

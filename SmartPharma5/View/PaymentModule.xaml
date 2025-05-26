@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.PaymentModule"
+             Title="PaymentModule">
+    <ScrollView>
+        <VerticalStackLayout>
+            <StackLayout x:Name="comptabilite_add_payment" Grid.Row="0" Grid.Column="0" >
+                <ImageButton BackgroundColor="#77A1F7" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/circledollar.png"
+                        
+                                Command="{Binding CommandAddPayment}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Payment" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+            <StackLayout x:Name="comptabilite_my_payment" Grid.Row="0" Grid.Column="1">
+                <ImageButton BackgroundColor="#66D4CA" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/paid.png"
+                        
+                                Command="{Binding CommandMyPayment}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Payment" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+            <StackLayout x:Name="comptabilite_all_payment" Grid.Row="0" Grid.Column="2" >
+                <ImageButton BackgroundColor="#7CEB88" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/paid.png"
+                        
+                                Command="{Binding CommandAllPayment}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Payment" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+
+            <StackLayout x:Name="comptabilite_add_transfer" Grid.Row="1" Grid.Column="0" >
+                <ImageButton BackgroundColor="#41C1F2" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/moneytransfer.png"
+                        
+                                Command="{Binding CommandAddTransfer}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add Transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+            <StackLayout x:Name="comptabilite_my_cashdesk" Grid.Row="1" Grid.Column="1" >
+                <ImageButton BackgroundColor="#7983D4" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/cashregister.png"
+                        
+                                Command="{Binding CommandMyCashDesk}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My CashDesk" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+            <StackLayout  x:Name="comptabilite_all_cashdesk" Grid.Row="1" Grid.Column="2" >
+                <ImageButton BackgroundColor="#95DCF5" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/cashregister.png"
+                        
+                                Command="{Binding CommandAllCashDesk}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All CashDesk" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+
+
+            <StackLayout x:Name="comptabilite_my_transfer" Grid.Row="2" Grid.Column="1" >
+                <ImageButton BackgroundColor="#FA927F" 
+                                CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/moneytransfer.png"
+                        
+                                Command="{Binding CommandMyTransfer}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+            <StackLayout x:Name="comptabilite_all_transfer" Grid.Row="2" Grid.Column="2" >
+                <ImageButton BackgroundColor="#D973A0" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="moneytransfer.png"
+                        
+                                Command="{Binding CommandAllTransfer}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All Transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+            <StackLayout x:Name="comptabilite_my_waiting_transfer" Grid.Row="2" Grid.Column="0" IsVisible="{Binding MyWaitingTransferIsVisible, Mode=TwoWay}">
+                <ImageButton BackgroundColor="#D973A0" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/moneytransfer.png"
+                        
+                                Command="{Binding CommandMyWaitingTransfer}">
+                </ImageButton>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Waiting transfer" TextColor="#274476" FontAttributes="Italic" FontSize="12" ></Label>
+
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+   
+</ContentPage>

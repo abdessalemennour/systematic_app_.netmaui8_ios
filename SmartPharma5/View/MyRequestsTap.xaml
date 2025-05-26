@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.MyRequestsTap"
+             xmlns:local="clr-namespace:SmartPharma5.View"
+            Title="My Requests"
+     
+        >
+
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem Text="Home" Order="Primary" Priority="1" IconImageSource="home.png" />
+
+    </TabbedPage.ToolbarItems>
+
+
+    <local:MyNotificationsProfilePartner  x:Name="first"  IconImageSource="update_temp.png"></local:MyNotificationsProfilePartner>
+    <local:MyValidateUpdateOfProfile  x:Name="second" IsVisible="true"    IconImageSource="update_temp.png"></local:MyValidateUpdateOfProfile>
+    <local:MyPartnerTempView  IsVisible="true"  x:Name="third"   IconImageSource="add_partner_temp.png"></local:MyPartnerTempView>
+</TabbedPage>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.ShowMenuItemPages"
+                      xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             
+             Title="Info Session" MenuItem.Accelerator="true" NavigationPage.HasNavigationBar="True">
+
+    <ContentPage.Content>
+       
+        <Grid>
+            <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand">
+                <Frame CornerRadius="10">
+                    <Image x:Name="Image"    WidthRequest="110" HeightRequest="90"></Image> 
+                </Frame>
+               
+                <Label Margin="10" HorizontalOptions="CenterAndExpand"  Text="Welcome To  Systematic - ERP Application"></Label>
+                <Label  Margin="10" HorizontalOptions="CenterAndExpand" x:Name="UserName" ></Label>
+                <Label Margin="10" HorizontalOptions="CenterAndExpand" x:Name="DataBaseName" ></Label>
+                <Label Margin="10" HorizontalOptions="CenterAndExpand" Text="Version : Systematic - ERP 9.7.9" ></Label>
+                <Label HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Margin="10" HorizontalOptions="CenterAndExpand" x:Name="ListModules" ></Label>
+                <Label Margin="10" HorizontalOptions="CenterAndExpand" x:Name="ListGroups" ></Label>
+
+
+
+            </StackLayout>
+
+
+           
+        </Grid>
+
+        
+       
+           
+
+       
+
+
+
+    </ContentPage.Content>
+   
+    
+
+
+
+  
+</ContentPage>

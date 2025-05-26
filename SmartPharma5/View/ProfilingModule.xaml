@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.ProfilingModule"
+             xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             
+             Title="ProfilingModule">
+    <ContentPage.BindingContext>
+        <local:HomeViewModel/>
+    </ContentPage.BindingContext>
+    <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        <StackLayout  x:Name="marketing_add_partner_form" Grid.Row="0" Grid.Column="0" >
+            <ImageButton BackgroundColor="#FFC769" 
+                                CornerRadius="5" 
+                                HeightRequest="130" 
+                                WidthRequest="130" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/fileform.png"
+                        
+                                Command="{Binding CommandAddPartnerForms}">
+            </ImageButton>
+            <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Add parnter forms" TextColor="#274476" FontAttributes="Italic" FontSize="15" ></Label>
+
+        </StackLayout>
+
+        <StackLayout  x:Name="marketing_my_partner_form" Grid.Row="0" Grid.Column="1"  >
+            <ImageButton BackgroundColor="#C266D9" 
+                                 CornerRadius="5" 
+                                HeightRequest="130" 
+                                WidthRequest="130" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                
+                                Source="Images/fileform.png"
+                                Command="{Binding CommandMyForms}">
+            </ImageButton>
+            <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My parnter forms" TextColor="#274476" FontAttributes="Italic" FontSize="15" ></Label>
+        </StackLayout>
+
+        <StackLayout x:Name="marketing_all_partner_form"  Grid.Row="0" Grid.Column="2"  >
+            <ImageButton BackgroundColor="#927FFA" 
+                             CornerRadius="5" 
+                                HeightRequest="130" 
+                                WidthRequest="130" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                            Source="Images/fileform.png"
+                            Command="{Binding CommandAllForms}">
+            </ImageButton>
+            <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="All parnter forms" TextColor="#274476" FontAttributes="Italic" FontSize="15" ></Label>
+        </StackLayout>
+    </VerticalStackLayout>
+</ContentPage>

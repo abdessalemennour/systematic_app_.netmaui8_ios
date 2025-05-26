@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.Cash_deskLogView"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+              xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             xmlns:local="clr-namespace:SmartPharma5.ViewModel" 
+             Title="Cash_deskLogView">
+    <ContentPage.BindingContext>
+        <local:Cash_deskLogViewModel/>
+    </ContentPage.BindingContext>
+
+    <NavigationPage.TitleView>
+        <StackLayout VerticalOptions="Center">
+            <Label Text="{Binding Title}" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>-->
+
+    <ScrollView>
+        <StackLayout>
+            <Label x:Name="total" Text="{Binding CashDesk.Amount, Mode=OneWay, StringFormat=Amount : '{0:F3}'}" Margin="0,0,0,0" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" Padding="0,10,0,0"/>
+
+            <Frame Margin="0" >
+                <StackLayout>
+                    <StackLayout Spacing="0" >
+                        <Label Text="Select period" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Padding="0"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Spacing="3" >
+
+                        <dxe:DateEdit LabelText="Start Date" x:Name="StartDate" Date="{Binding StartDate, Mode=TwoWay}" DisplayFormat="dd/MM/yyyy" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" BoxPadding="8" IsDateIconVisible="False"/>
+                        <dxe:DateEdit LabelText="End Date" x:Name="EndDate" Date="{Binding EndDate,Mode=TwoWay}" DisplayFormat="dd/MM/yyyy" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"   BoxPadding="8" IsDateIconVisible="False" />
+                        <Button BackgroundColor="#4DBF49" Text="Refresh" TextColor="White" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"  Command="{Binding RefreshCommand }"/>
+
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <ScrollView>
+                <StackLayout>
+                    <dxg:DataGridView x:Name="dgv" ColumnHeaderHeight="40" ItemsSource="{Binding LogCash_deskList}" ShowAutoFilterRow="True"
+                                  AllowDragDropRows="False" EditorShowMode="Tap" AutoFilterRowHeight="32" SelectedItem="item_tapped" RowHeight="120"
+                                      BorderColor="Black">
+
+                        <dxg:DataGridView.ColumnHeaderAppearance>
+                            <dxg:ColumnHeaderAppearance BackgroundColor="#333333" BorderColor="#515151" 
+                                   FontSize="20" FontColor="#929292" FontAttributes="Bold" 
+                                   HorizontalLineThickness="1" Padding="0" />
+                        </dxg:DataGridView.ColumnHeaderAppearance>
+
+                        <dxg:DataGridView.Columns>
+                            <dxg:TextColumn FieldName="date" DisplayFormat="dd/MM/yyyy   h:mm tt" Width="100" Caption="Date" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  AutoFilterCondition="Contains" Padding="1"/>
+                            <dxg:TextColumn FieldName="Motif" Width="100" Caption="Motif" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains" Padding="1"/>
+                            <dxg:TextColumn FieldName="register" Width="120" Caption="Register" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains" Padding="1"/>
+                            <dxg:TextColumn FieldName="Agent" Width="100" Caption="Agent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains" Padding="1"/>
+                            <dxg:NumberColumn FieldName="Montant" Width="120" DisplayFormat="F3" Caption="Amount" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains" Padding="1"/>
+                            <dxg:NumberColumn FieldName="solde" Width="120" DisplayFormat="F3" Caption="solde" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains" Padding="1"/>
+
+                        </dxg:DataGridView.Columns>
+
+                    </dxg:DataGridView>
+                </StackLayout>
+            </ScrollView>
+
+
+
+            <dxco:DXPopup IsOpen="{Binding SuccessPopup}" AllowScrim="True" >
+                <StackLayout WidthRequest="200">
+                    <Image Source="circlecheck.png" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                </StackLayout>
+            </dxco:DXPopup>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

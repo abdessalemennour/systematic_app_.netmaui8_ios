@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.FloatingActionButton.FloatingActionButton"
+             >
+    <AbsoluteLayout>
+        <!-- Boutons secondaires -->
+        <ImageButton x:Name="ActionButton1"
+                     Source="chat.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     CornerRadius="15"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     IsVisible="False"
+                     Clicked="OnActionButtonClickedchat"/>
+
+        <ImageButton x:Name="ActionButton2"
+                     Source="activity.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     CornerRadius="15"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     IsVisible="False"
+                     Clicked="OnActionButtonClickedactivity"/>
+
+        <ImageButton x:Name="ActionButton3"
+                     Source="memo.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     CornerRadius="15"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     IsVisible="False"
+                     Clicked="OnActionButtonClickedmemo"/>
+
+        <!-- Bouton principal -->
+        <ImageButton x:Name="MainButton"
+                     Source="plus.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="50"
+                     HeightRequest="50"
+                     CornerRadius="25"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     Margin="0,-130,-1,0"
+                     Clicked="OnMainButtonClicked">
+            <ImageButton.GestureRecognizers>
+                <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+            </ImageButton.GestureRecognizers>
+        </ImageButton>
+    </AbsoluteLayout>
+    <!--<Grid>
+        --><!-- Boutons secondaires (initialement invisibles) --><!--
+        <ImageButton x:Name="ActionButton1"
+                     Source="chat.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     CornerRadius="15"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     IsVisible="False"
+                     TranslationY="-70"
+                     Clicked="OnActionButtonClicked"/>
+
+        <ImageButton x:Name="ActionButton2"
+                     Source="activity.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     CornerRadius="15"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     IsVisible="False"
+                     TranslationX="-50"
+                     TranslationY="-50"
+                     Clicked="OnActionButtonClicked"/>
+
+        <ImageButton x:Name="ActionButton3"
+                     Source="memo.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     CornerRadius="15"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     IsVisible="False"
+                     TranslationX="-70"
+                     Clicked="OnActionButtonClicked"/>
+
+        --><!-- Bouton flottant principal --><!--
+        <ImageButton x:Name="MainButton"
+                     Source="plus.png"
+                     BackgroundColor="Transparent"
+                     WidthRequest="50"
+                     HeightRequest="50"
+                     CornerRadius="25"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     Margin="0,-130,-1,0"
+                     Clicked="OnMainButtonClicked">
+            <ImageButton.GestureRecognizers>
+                <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+            </ImageButton.GestureRecognizers>
+        </ImageButton>
+    </Grid>-->
+</ContentView>

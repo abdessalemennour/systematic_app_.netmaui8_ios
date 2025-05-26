@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.Cash_deskStateView"
+              xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             Title="Cash_deskStateView">
+    <NavigationPage.TitleView>
+        <StackLayout VerticalOptions="Center">
+            <Label Text="{Binding Title}" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>-->
+
+
+    <ContentPage.Content>
+        <StackLayout>
+            <dxg:DataGridView x:Name="dgv" ColumnHeaderHeight="40" ItemsSource="{Binding StateCash_deskList}" ShowAutoFilterRow="True"
+                                  AllowDragDropRows="False" EditorShowMode="Tap" SelectedItem="item_tapped"
+                                      BorderColor="Black">
+
+                <dxg:DataGridView.ColumnHeaderAppearance>
+                    <dxg:ColumnHeaderAppearance BackgroundColor="#333333" BorderColor="#515151" 
+                                   FontSize="20" FontColor="#929292" FontAttributes="Bold" 
+                                   HorizontalLineThickness="1" Padding="0" />
+                </dxg:DataGridView.ColumnHeaderAppearance>
+
+                <dxg:DataGridView.Columns>
+                    <dxg:TextColumn FieldName="code" Width="110" Caption="Code" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains"/>
+                    <dxg:TextColumn FieldName="date" DisplayFormat="dd/MM/yyyy" Width="100" Caption="Date" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  AutoFilterCondition="Contains"/>
+                    <dxg:TextColumn FieldName="Partner" Width="100" Caption="Partner" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains"/>
+                    <dxg:NumberColumn FieldName="Montant" Width="100" DisplayFormat="F3" Caption="Amount" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains"/>
+                    <dxg:TextColumn FieldName="reference" Width="100" Caption="Reference" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains"/>
+                    <dxg:TextColumn FieldName="DateEcheance" DisplayFormat="dd/MM/yyyy" Width="100" Caption="Due Date" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains"/>
+                    <dxg:TextColumn FieldName="Bank" Width="100" Caption="Bank" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" AutoFilterCondition="Contains"/>
+
+                </dxg:DataGridView.Columns>
+                <dxg:DataGridView.TotalSummaries>
+
+                    <dxg:GridColumnSummary FieldName="Montant" Type="Sum" DisplayFormat="F3"></dxg:GridColumnSummary>
+
+                </dxg:DataGridView.TotalSummaries>
+
+            </dxg:DataGridView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

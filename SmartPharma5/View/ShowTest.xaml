@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.ShowTest"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+                xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             Title="ShowTest">
+
+
+
+
+
+
+
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Home" Order="Primary" Priority="1" IconImageSource="home.png"  IsEnabled="{Binding HomeEnabled ,Mode=TwoWay}" Clicked="ToolbarItem_Clicked" />
+    </ContentPage.ToolbarItems>
+    <NavigationPage.TitleView>
+        <StackLayout VerticalOptions="Center" Orientation="Horizontal">
+            <Label Text="Commercial Partners" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+            <Label BackgroundColor="{Binding StateColor,Mode=TwoWay}"  Padding="15,10,15,10" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Text="{Binding StateString,Mode=TwoWay}" HorizontalTextAlignment="Center"    TextColor="White" FontAttributes="Bold"></Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <StackLayout>
+        <StackLayout  Margin="0,7,0,5">
+
+            <Button IsVisible="{Binding IsBtnFilter,Mode=TwoWay}" BackgroundColor="#4B9EE8" Text="Filtrer" TextColor="White" FontAttributes="Bold"  HeightRequest="35"  CornerRadius="25" Command="{Binding FilterCommand}"/>
+            <Frame   Margin="0,-5,0,0" HasShadow="True" Padding="2" IsVisible="{Binding Filtred}">
+                <StackLayout HorizontalOptions="FillAndExpand" Margin="0" BackgroundColor="White" Padding="2" Orientation="Vertical"  >
+
+                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                        <dxe:TextEdit x:Name="PartnerSearch"  LabelText="Partner Name" TextFontSize="12" ClearIconVisibility="Auto" HorizontalOptions="FillAndExpand" CornerMode="Round" CornerRadius="25" TextChanged="Search_Changed"></dxe:TextEdit>
+                        <dxe:TextEdit x:Name="EmailSearch" LabelText="Email" ClearIconVisibility="Auto" TextFontSize="12" CornerMode="Round" Keyboard="Email" HorizontalOptions="FillAndExpand"  CornerRadius="25" TextChanged="Search_Changed"></dxe:TextEdit>
+                    </StackLayout>
+
+                    <!--<dxe:ComboBoxEdit x:Name="StatesSearch" LabelText="State" ClearIconVisibility="Auto" CornerMode="Round" CornerRadius="25" SelectionChanged="Search_Changed" FilterMode="Contains" IsFilterEnabled="True"  ItemsSource="{Binding State_liste,Mode=TwoWay}"></dxe:ComboBoxEdit>-->
+
+                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                        <dxe:ComboBoxEdit  HorizontalOptions="FillAndExpand" x:Name="StateShearch" LabelText="State" ClearIconVisibility="Auto" TextFontSize="12" CornerMode="Round" CornerRadius="25" SelectionChanged="Search_Changed" FilterCondition="Contains" IsFilterEnabled="True"  ItemsSource="{Binding State_list,Mode=TwoWay}" Keyboard="Text"></dxe:ComboBoxEdit>
+                        <dxe:ComboBoxEdit  HorizontalOptions="FillAndExpand" x:Name="CategorySearch" LabelText="Category" ClearIconVisibility="Auto" TextFontSize="12" CornerMode="Round" CornerRadius="25" SelectionChanged="Search_Changed" FilterCondition="Contains" IsFilterEnabled="True"  ItemsSource="{Binding Category_list,Mode=TwoWay}" Keyboard="Text"></dxe:ComboBoxEdit>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Margin="0,5,0,0" HorizontalOptions="FillAndExpand">
+                        <dxco:SimpleButton HorizontalOptions="FillAndExpand" HeightRequest="50"  Text="Apply" TextColor="#3897f0" BackgroundColor="White" Command="{Binding NoFilterCommand}"></dxco:SimpleButton>
+
+                        <dxco:SimpleButton  HeightRequest="50" HorizontalOptions="FillAndExpand" Text="Clear all filter" TextColor="#3897f0" BackgroundColor="White" Clicked="SimpleButton_Clicked" ></dxco:SimpleButton>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+        </StackLayout>
+
+
+        <StackLayout  IsVisible="false">
+            <Label Text="LOADING PLEASE WAIT ..." FontSize="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextColor="#4B9EE8"></Label>
+        </StackLayout>
+
+        <RefreshView   BackgroundColor="Azure"  IsRefreshing="{Binding ActPopup,Mode=TwoWay}" Command="{Binding RefreshCommand}" HorizontalOptions="CenterAndExpand" RefreshColor="#4B9EE8">
+            <CollectionView   ItemsSource="{Binding Partners}"  x:Name="ClientCollectionView" SelectionMode="Single"    
+                >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate >
+
+
+
+
+
+                        <Frame  CornerRadius="5" Margin="10,10,10,0" Padding="1" BorderColor="#42A2E4" HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                            </Frame.GestureRecognizers>
+                                <Grid RowSpacing="20" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Frame Grid.Column="0" CornerRadius="50"
+                                            BackgroundColor="#EEF5FF"
+                                            HasShadow="False"
+                                            VerticalOptions="CenterAndExpand"
+                                            HorizontalOptions="CenterAndExpand">
+                                        <Image Source="userregular.png" VerticalOptions="Start" HorizontalOptions="Start" HeightRequest="50"/>
+                                    </Frame>
+
+                                    <StackLayout Grid.Column="1" Padding="18,0,18,7" Orientation="Vertical">
+                                        <Label  FontSize="20" Text="{Binding Name}" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" TextDecorations="Underline"  TextColor="#4B9EE8"  FontAttributes="Bold" />
+                                        <Label FontSize="15" Text="{Binding Category_Name,StringFormat='Category :{0}'}"  FontAttributes="Bold" TextColor="#55575c"/>
+                                        <Label Text="{Binding Phone,Mode=OneWay,StringFormat='Phone: {0}'}" TextColor="#959aa0"/>
+                                        <Label Text="{Binding Email,Mode=OneWay,StringFormat='Email: {0}'}" TextColor="#959aa0"/>
+                                        <Label Text="{Binding FullAdress,StringFormat='Adresse: {0}'}" TextColor="#959aa0"/>
+                                        <Label Text="{Binding State,StringFormat='State: {0}'}" TextColor="#959aa0"/>
+                                        <Button Margin="10" Command="{Binding ShowContacts}" Text="Contacts"></Button>
+                                   
+                                        
+                               
+                                </StackLayout>
+                                </Grid>
+                            </Frame>
+
+
+
+
+
+
+
+
+
+
+
+
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+  
+
+        
+    </StackLayout>
+
+
+     
+
+
+
+</ContentPage>

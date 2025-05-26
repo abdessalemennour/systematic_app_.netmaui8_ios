@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.SalesModule"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             Title="SalesModule">
+    <ContentPage.BindingContext>
+        <local:HomeViewModel/>
+    </ContentPage.BindingContext>
+    <VerticalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <StackLayout HorizontalOptions="FillAndExpand" x:Name="achat_add_opportunity" IsVisible="{Binding AddOppIsVisible, Mode=TwoWay}">
+            <StackLayout BackgroundColor="#6B90BF" 
+                               Orientation="Horizontal"
+                                HeightRequest="110" 
+                         
+                                HorizontalOptions="FillAndExpand" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="10"
+                         Margin="10"
+                         
+                                
+                                                 
+                                 >
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CommandAddOpp}"></TapGestureRecognizer>
+                </StackLayout.GestureRecognizers>
+                <Image Source="Images/cartarrowdown.png" WidthRequest="50"> </Image>
+                <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="White" VerticalOptions="CenterAndExpand" Text="Add Opportunity >" FontAttributes="Italic" FontSize="Large" ></Label>
+
+            </StackLayout>
+           
+
+        </StackLayout>
+
+
+        <StackLayout  x:Name="achat_my_opportunities" Grid.Row="0" Grid.Column="1" IsVisible="{Binding MyOppIsVisible, Mode=TwoWay}" >
+            <ImageButton BackgroundColor="#79D9B6" 
+                                CornerRadius="5" 
+                                HeightRequest="130" 
+                                WidthRequest="130" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/clipboardlist.png"
+                                Command="{Binding CommandMyOpp}">
+            </ImageButton>
+            <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="My Opportunities" FontAttributes="Italic" TextColor="#274476" FontSize="15" ></Label>
+        </StackLayout>
+
+        <StackLayout  x:Name="achat_all_opportunities" IsVisible="{Binding AllOppIsVisible, Mode=TwoWay} " Grid.Row="0" Grid.Column="2" >
+            <ImageButton BackgroundColor="#D95D30" 
+                                CornerRadius="5" 
+                               HeightRequest="130" 
+                                WidthRequest="130" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="Images/clipboardlist.png"
+                                Command="{Binding CommandAllOpp}">
+            </ImageButton>
+            <Label VerticalTextAlignment="End"  HorizontalOptions="CenterAndExpand"  HorizontalTextAlignment="Center" Text="All Opportunities" FontAttributes="Italic" TextColor="#274476" FontSize="15" ></Label>
+        </StackLayout>
+    </VerticalStackLayout>
+</ContentPage>

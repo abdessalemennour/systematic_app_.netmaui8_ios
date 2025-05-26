@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.PaymentListView"
+               xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             Title="PaymentListView">
+    <NavigationPage.TitleView>
+        <StackLayout VerticalOptions="Center">
+            <Label Text="Payments" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>-->
+
+    <ContentPage.Content>
+
+        <Grid Padding="10" RowSpacing="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <dxe:AutoCompleteEdit Grid.Row="0" x:Name="AutoComp" TextChanged="AutoCompleteEdit_TextChanged" 
+                              ItemsSource="{Binding PaymentList}"               
+                              LoadingProgressMode="Manual"
+                              SubmitIconVisibility="Always" SubmitIconColor="#4B9EE8" BorderColor="#4B9EE8" CornerRadius="27" Margin="20,0,8,0"/>
+            <StackLayout  Grid.Row="1" IsVisible="{Binding TestCon , Mode=TwoWay}" Padding="5" WidthRequest="150" Margin="0,20,0,0" Orientation="Vertical" >
+                <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+            </StackLayout>
+            <StackLayout Grid.Row="2">
+                <RefreshView IsRefreshing="{Binding ActPopup,Mode=TwoWay}" Command="{Binding RefreshCommand}"  HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" RefreshColor="#4B9EE8">
+
+                    <dxcv:DXCollectionView x:Name="PaymentCollectionView"  Grid.Row="1" ItemSpacing="10" AllowGroupCollapse="True"  Orientation="Vertical" ItemsSource="{Binding PaymentList}"  SelectionMode="Single" TapCommand="{Binding TapCommand}">
+
+                        <dxcv:DXCollectionView.GroupDescription >
+                            <dxcv:GroupDescription FieldName="date" GroupInterval="DateRange" SortOrder="Descending" />
+                        </dxcv:DXCollectionView.GroupDescription>
+
+                        <dxcv:DXCollectionView.GroupHeaderTemplate >
+                            <DataTemplate>
+                                <StackLayout Margin="2, 0, 18, 10" >
+                                    <Label
+                                       Margin="0,20,0,1"
+                                       FontSize="Body"
+                                       FontAttributes="Bold"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center"
+                                       Text="{Binding Value,StringFormat='{0:dd/MM/yyyy}'}"/>
+                                    <BoxView BackgroundColor="#ebebeb" 
+                                         HeightRequest="1"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.GroupHeaderTemplate>
+
+                        <dxcv:DXCollectionView.ItemTemplate >
+                            <DataTemplate>
+
+
+                                <Frame x:Name="PayBackround" BorderColor="#CCCCCC" Margin="0,0,0,0"  >
+                                    <Frame.GestureRecognizers  >
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                                    </Frame.GestureRecognizers>
+                                    <Grid ColumnSpacing="8" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0,5*"/>
+                                            <ColumnDefinition Width="0,5*"/>
+
+                                        </Grid.ColumnDefinitions>
+
+
+                                        <StackLayout Grid.Column="0" Orientation="Vertical">
+
+                                            <Label Text="{Binding code}" Margin="0,2" TextColor="#55575c" FontSize="17" FontAttributes="Bold"/>
+                                            <Label Text="{Binding date,Mode=OneWay,StringFormat='{0:dd/MM/yyyy  h:mm tt}'}" TextColor="#959aa0"/>
+                                            <Label Text="{Binding NameAgent,Mode=OneWay}" TextColor="#959aa0" FontSize="17"/>
+                                          <!--  <Label Text="{Binding AmountFormat, Mode=OneWay}" 
+       FontSize="16" 
+       TextColor="DarkSlateBlue" 
+       FontAttributes="Bold"/>-->
+                                          <!--  <Label Text="{Binding Amount,Mode=OneWay}" FontSize="16" TextColor="DarkSlateBlue" FontAttributes="Bold"/>
+-->
+                                            <StackLayout Orientation="Horizontal" VerticalOptions="Center">
+                                                <Label Text="{Binding Amount, Mode=OneWay}" FontSize="16" TextColor="DarkSlateBlue" FontAttributes="Bold"/>
+                                                <Label Text="{Binding CurrencySymbol, Mode=OneWay}" FontSize="16" TextColor="DarkSlateBlue" FontAttributes="Bold"/>
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Column="1">
+                                            <Label Text="{Binding Partner,Mode=OneWay}" TextColor="SlateBlue" FontSize="19" FontAttributes="Bold"/>
+                                            <Label Text="{Binding PayementMethod,Mode=OneWay}" TextColor="#959aa0" FontSize="19" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Due_date,StringFormat='Due Date: {0:dd/MM/yyyy  h:mm tt}',Mode=OneWay}" TextColor="#959aa0"/>
+                                        </StackLayout>
+
+                                    </Grid>
+                                </Frame>
+
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+
+                    </dxcv:DXCollectionView>
+
+                </RefreshView>
+            </StackLayout>
+            <dxco:DXPopup  x:Name="Popup"  IsOpen="{Binding Loading,Mode=TwoWay}" AllowScrim="True" CornerRadius="20"  AllowShadow="True">
+                <Frame CornerRadius="20" Padding="20,25,20,25">
+                    <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                        <Label HorizontalTextAlignment="Center" Text="PLEASE WAITING" FontAttributes="Bold" TextColor="#6CC5DE" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                        <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="30" HeightRequest="30" Margin="5,5"></ActivityIndicator>
+                    </StackLayout>
+                </Frame>
+            </dxco:DXPopup>
+        </Grid>
+
+    </ContentPage.Content>
+</ContentPage>

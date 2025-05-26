@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.MyPartnerTempAttributesView"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+ xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+ xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             Title="MyPartnerTempAttributesView">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="FillAndExpand">
+            <ScrollView VerticalOptions="FillAndExpand">
+                <dxcv:DXCollectionView HorizontalOptions="FillAndExpand"  Orientation="Vertical" ItemSpacing="10" VerticalOptions="FillAndExpand" 
+                    SelectionMode="None" ItemsSource="{Binding ListPartnerTempAttributes,Mode=TwoWay}"  >
+
+
+
+
+                    <dxcv:DXCollectionView.ItemTemplate  >
+                        <DataTemplate  >
+
+                            <Frame BackgroundColor="White" 
+       HorizontalOptions="FillAndExpand" 
+       CornerRadius="10" 
+       BorderColor="LightGray" 
+       Padding="10" 
+       HasShadow="True" 
+       Margin="10">
+                                <Grid HorizontalOptions="FillAndExpand" Padding="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ScrollView Grid.Column="0" HorizontalOptions="FillAndExpand">
+                                        <StackLayout HorizontalOptions="FillAndExpand" Spacing="10">
+                                            <dxe:TextEdit IsEnabled="false" 
+                              Text="{Binding String_value, Mode=TwoWay}" 
+                              LabelText="{Binding Label, Mode=TwoWay}"  
+                              IsVisible="{Binding HasString}"  
+                              HorizontalOptions="FillAndExpand" 
+                              IsLabelFloating="False"
+                              BackgroundColor="WhiteSmoke"
+                              Margin="0,0,0,10"
+                              BorderColor="Gray">
+                                            </dxe:TextEdit>
+                                            <dxe:TextEdit IsEnabled="false"  
+                              Text="{Binding Date_value, Mode=TwoWay}"  
+                              LabelText="{Binding Label, Mode=TwoWay}" 
+                              IsVisible="{Binding HasDate}"  
+                              HorizontalOptions="FillAndExpand" 
+                              IsLabelFloating="False"
+                              BackgroundColor="WhiteSmoke"
+                              Margin="0,0,0,10"
+                              BorderColor="Gray">
+                                            </dxe:TextEdit>
+                                            <dxe:TextEdit IsEnabled="false"  
+                              Text="{Binding Boolean_value, Mode=TwoWay}" 
+                              LabelText="{Binding Label, Mode=TwoWay}" 
+                              IsVisible="{Binding HasBool}"  
+                              HorizontalOptions="FillAndExpand" 
+                              IsLabelFloating="False"
+                              BackgroundColor="WhiteSmoke"
+                              Margin="0,0,0,10"
+                              BorderColor="Gray">
+                                            </dxe:TextEdit>
+                                            <dxe:TextEdit IsEnabled="false"  
+                              Text="{Binding Int_value, Mode=TwoWay}" 
+                              LabelText="{Binding Label, Mode=TwoWay}" 
+                              IsVisible="{Binding HasInt}"  
+                              HorizontalOptions="FillAndExpand" 
+                              IsLabelFloating="False"
+                              BackgroundColor="WhiteSmoke"
+                              Margin="0,0,0,10"
+                              BorderColor="Gray">
+                                            </dxe:TextEdit>
+                                            <dxe:TextEdit IsEnabled="false"  
+                              Text="{Binding Decimal_value, Mode=TwoWay}" 
+                              LabelText="{Binding Label, Mode=TwoWay}" 
+                              IsVisible="{Binding HasDecimal}"  
+                              HorizontalOptions="FillAndExpand" 
+                              IsLabelFloating="False"
+                              BackgroundColor="WhiteSmoke"
+                              Margin="0,0,0,10"
+                              BorderColor="Gray">
+                                            </dxe:TextEdit>
+                                            <dxe:TextEdit IsEnabled="false"  
+                              Text="{Binding String_Type_value, Mode=TwoWay}" 
+                              LabelText="{Binding Label, Mode=TwoWay}"  
+                              IsVisible="{Binding HasType}"  
+                              HorizontalOptions="FillAndExpand" 
+                              IsLabelFloating="False"
+                              BackgroundColor="WhiteSmoke"
+                              Margin="0,0,0,10"
+                              BorderColor="Gray">
+                                            </dxe:TextEdit>
+                                        </StackLayout>
+                                    </ScrollView>
+                                </Grid>
+                            </Frame>
+
+
+
+
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </ScrollView>
+            
+
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

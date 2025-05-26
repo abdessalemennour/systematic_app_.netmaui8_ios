@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SmartPharma5.Model"
+             xmlns:converters="clr-namespace:SmartPharma5.Converters"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             x:Class="SmartPharma5.View.FloatingActionButton.ChatView"
+             Title="ChatView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ReadStatusToImageConverter x:Key="ReadStatusToImageConverter" />
+            <converters:IndexConverter x:Key="IndexConverter" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Main Content -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        
+        <!-- Main Content -->
+        <ContentView Grid.Row="0">
+            <ContentView.Triggers>
+                <DataTrigger TargetType="ContentView" Binding="{Binding CurrentViewIndex}" Value="0">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Grid>
+                                <!-- Définir les lignes : une pour la zone de recherche, une pour le contenu principal -->
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" ColumnSpacing="10" Padding="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Zone recherche -->
+                                        <ColumnDefinition Width="Auto" />
+                                        <!-- Bouton -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Zone de recherche -->
+                                    <SearchBar Grid.Column="0" 
+                                               Placeholder="Rechercher..." 
+                                               BackgroundColor="White" 
+                                               TextColor="Black"
+                                               HorizontalOptions="FillAndExpand"
+                                               Text="{Binding SearchText}" />
+
+                                    <!-- Bouton Envoyer multiple -->
+                                    <Button Grid.Column="1"
+                                            Text="Envoyer multiple"
+                                            Command="{Binding ToggleCheckboxesCommand}"
+                                            BackgroundColor="#2196F3"
+                                            TextColor="White"
+                                            CornerRadius="20"
+                                            WidthRequest="150" 
+                                            HeightRequest="45"
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            HorizontalOptions="FillAndExpand"
+                                            Margin="5"
+                                            IsVisible="{Binding HasSelection}"/>
+                                </Grid>
+
+                                <!-- Contenu principal -->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Liste des avatars -->
+                                    <CollectionView ItemsSource="{Binding FilteredUsers}" SelectionMode="Single " SelectedItem="{Binding SelectedUser, Mode=TwoWay}" Grid.Column="0">
+                                        <CollectionView.ItemsLayout>
+                                            <LinearItemsLayout Orientation="Vertical" />
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackLayout HorizontalOptions="Center" Spacing="5">
+
+                                                    <AbsoluteLayout HeightRequest="50" WidthRequest="50">
+                                                        <!-- Image de profil -->
+                                                        <Frame Padding="0" HasShadow="False" HeightRequest="50" WidthRequest="50" CornerRadius="25" BorderColor="{Binding IsSelected}">
+                                                              <!--CornerRadius="25" BorderColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}">-->                                                         
+                                                            <Image Source="{Binding Avatar}" Aspect="AspectFill"/>
+                                                        </Frame>
+
+                                                        <!-- Cercle rouge de notification avec numéro -->
+                                                        <Frame BackgroundColor="Red"
+                                                               HeightRequest="18" WidthRequest="18"
+                                                               CornerRadius="20"
+                                                               AbsoluteLayout.LayoutFlags="PositionProportional"
+                                                               AbsoluteLayout.LayoutBounds="1,0,18,18"
+                                                               IsVisible="{Binding HasUnreadMessages}"  
+                                                               Padding="0">
+                                                            <Grid>
+                                                                <Label Text="{Binding UnreadMessagesCount}" FontSize="12" TextColor="White" FontAttributes="Bold"
+                                                                HorizontalOptions="Center" VerticalOptions="Center" />
+                                                            </Grid>
+                                                        </Frame>
+
+                                                        <!-- Nouvelle Checkbox en haut à droite -->
+                                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                  Color="Blue"
+                                                                  AbsoluteLayout.LayoutFlags="PositionProportional"
+                                                                  AbsoluteLayout.LayoutBounds="1,1,20,20"
+                                                                  BackgroundColor="White"
+                                                                  VerticalOptions="End"
+                                                                  HorizontalOptions="End"
+                                                                  CheckedChanged="OnCheckBoxCheckedChanged"
+                                                                  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShowCheckboxes}"/>
+
+                                                    </AbsoluteLayout>
+
+                                                    <!-- Nom d'utilisateur -->
+                                                    <Label Text="{Binding Login}" HorizontalOptions="Center"/>
+                                                </StackLayout>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+
+                                    <!-- Zone de messagerie -->
+                                    <StackLayout Grid.Column="1" Spacing="0" Padding="0">
+                                        <!-- Zone des messages -->
+                                        <StackLayout Spacing="10" Padding="10" BackgroundColor="#F0F0F0" VerticalOptions="FillAndExpand">
+                                            <StackLayout  IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Margin="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                                                <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
+                                                <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+
+                                            </StackLayout>
+                                            <!-- Liste des messages dynamiques -->
+                                            <CollectionView x:Name="MessagesCollectionView" ItemsSource="{Binding Messages}" VerticalOptions="FillAndExpand">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="5" CornerRadius="10" BackgroundColor="{Binding BackgroundColor}"
+                                                            HorizontalOptions="{Binding Alignment}" Margin="10,5">
+                                                            <StackLayout>
+                                                                <Label Text="{Binding Text}" Padding="5" HorizontalOptions="FillAndExpand" />
+                                                                <HorizontalStackLayout Spacing="5" HorizontalOptions="End">
+                                                                    <!-- Icône message lu (visible seulement si IsRead = true) -->
+                                                                    <!--<Image WidthRequest="20" HeightRequest="20" Source="{Binding ImageSource}" />-->
+                                                                    
+                                                                    <!-- Label de date (inchangé) -->
+                                                                    <Label Text="{Binding CreateDate, StringFormat='{0:HH:mm}'}" 
+                                                                           FontSize="10" 
+                                                                           TextColor="Gray" 
+                                                                           VerticalOptions="Center"/>
+
+                                                                    <Image Source="unread_icon.png" 
+                                                                           WidthRequest="12"
+                                                                           HeightRequest="12"
+                                                                           IsVisible="{Binding ShowUnreadIndicator}" />
+
+                                                                    <!-- Icône "lu" (visible si IsRead = true ET IsLastSentMessage = true) -->
+                                                                    <Image Source="read_icon.png" 
+                                                                       WidthRequest="12"
+                                                                       HeightRequest="12"
+                                                                       IsVisible="{Binding ShowReadIndicator}" />
+                                                                </HorizontalStackLayout>
+
+                                                            </StackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                                <CollectionView.ItemsLayout>
+                                                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                                                </CollectionView.ItemsLayout>
+                                            </CollectionView>
+                                        </StackLayout>
+
+                                        <!-- Zone de saisie et bouton -->
+                                        <Grid VerticalOptions="End" BackgroundColor="#F0F0F0" Padding="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <!-- Zone de saisie prend tout l'espace disponible -->
+                                                <ColumnDefinition Width="Auto" />
+                                                <!-- Bouton prend la largeur nécessaire -->
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Zone de saisie avec coins arrondis -->
+                                            <Frame Grid.Column="0" CornerRadius="20" BackgroundColor="White" Padding="0" HasShadow="False">
+                                                <Entry Placeholder="Tapez un message..."
+                                                       Text="{Binding MessageText, Mode=TwoWay}"
+                                                       HorizontalOptions="FillAndExpand"
+                                                       BackgroundColor="Transparent"
+                                                       TextColor="Black"
+                                                       PlaceholderColor="Gray"
+                                                       HeightRequest="40"
+                                                       Margin="10,0" />
+                                            </Frame>
+
+                                            <!-- Bouton Send -->
+                                            <Button Grid.Column="1" Text="Envoyer"
+                                                    Command="{Binding SendMessageCommand}"
+                                                    BackgroundColor="#4CAF50"
+                                                    TextColor="White"
+                                                    CornerRadius="20"
+                                                    WidthRequest="90"
+                                                    HeightRequest="40"
+                                                    BorderWidth="0"
+                                                    FontAttributes="Bold"
+                                                    Margin="10,0,0,0" />
+                                        </Grid>
+                                    </StackLayout>
+                                </Grid>
+                            </Grid>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </ContentView.Triggers>
+        </ContentView>
+
+    </Grid>
+</ContentPage>

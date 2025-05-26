@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.AddPartnerTemp"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             Title="AddPartnerTemp">
+
+
+    <StackLayout>
+        <ScrollView VerticalOptions="FillAndExpand">
+            <StackLayout HorizontalOptions="FillAndExpand" >
+                <BoxView BackgroundColor="DarkCyan" HeightRequest="30"></BoxView>
+                <Label HorizontalOptions="CenterAndExpand" FontAttributes="Italic"  FontSize="Large" Text="General Attributes"></Label>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit  Text="{Binding InputName,Mode=TwoWay}" x:Name="name" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"  HorizontalOptions="FillAndExpand" LabelColor="Gray" LabelText="Name Partner" BorderColor="#74c2e3"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout  Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="country" Text="{Binding InputCountry,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"   HorizontalOptions="FillAndExpand" LabelText="Country" LabelColor="Gray" BorderColor="#74c2e3"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout  Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="city" Text="{Binding InputCity,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text"  CornerRadius="10"  HorizontalOptions="FillAndExpand" LabelText="City" LabelColor="Gray" BorderColor="#74c2e3"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="state" Text="{Binding InputState,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"   HorizontalOptions="FillAndExpand" LabelText="State" LabelColor="Gray" BorderColor="#74c2e3"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="street" Text="{Binding InputStreet,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"  HorizontalOptions="FillAndExpand" LabelText="Street" LabelColor="Gray" BorderColor="#74c2e3"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="postale_code" Text="{Binding InputPostaleCode,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"   HorizontalOptions="FillAndExpand" LabelText="Postale Code" LabelColor="Gray" BorderColor="#74c2e3"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="email" Text="{Binding InputEmail,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"  HorizontalOptions="FillAndExpand" LabelText="Email" BorderColor="#74c2e3" LabelColor="Gray"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="fax" Text="{Binding InputFax,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Numeric" CornerRadius="10"   HorizontalOptions="FillAndExpand" LabelText="Fax" BorderColor="#74c2e3" LabelColor="Gray"  IsLabelFloating="False" ></dxe:TextEdit>
+
+                </StackLayout>
+                <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <dxe:TextEdit x:Name="vat_code" Text="{Binding Vat_Code,Mode=TwoWay}" Margin="10,0,0,0" Keyboard="Text" CornerRadius="10"   HorizontalOptions="FillAndExpand" LabelText="Vat_Code" BorderColor="#74c2e3" LabelColor="Gray"  IsLabelFloating="False" ></dxe:TextEdit>
+                </StackLayout>
+
+                <StackLayout Margin="0,10,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                        <Label x:Name="isCustomer"  FontAttributes="Italic"  Text="IsCustomer" Margin="0,0,10,0"></Label>
+                        <dxe:CheckEdit    HorizontalOptions="FillAndExpand"  IsChecked="{Binding InputCustomer,Mode=TwoWay}"></dxe:CheckEdit>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                        <Label x:Name="isSupplier" FontAttributes="Italic" Text="IsSupplier" Margin="0,0,10,0" ></Label>
+                        <dxe:CheckEdit   HorizontalOptions="FillAndExpand" IsChecked="{Binding InputSupplier,Mode=TwoWay}"></dxe:CheckEdit>
+                    </StackLayout>
+                </StackLayout>
+
+                <StackLayout Margin="20" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Picker x:Name="Category"   SelectedIndex="{Binding InputCategory,Mode=TwoWay}"   FontAttributes="Bold" SelectedItem="{Binding Selected_category,Mode=TwoWay}" HorizontalOptions="FillAndExpand" ItemsSource="{Binding Catgory_list,Mode=TwoWay}" ItemDisplayBinding="{Binding Name}" TextColor="Black" FontFamily="Lobster-Regular" Title="New Category"   FontSize="Medium"    Margin="10" TitleColor="Gray" />
+                </StackLayout>
+
+
+
+                <Grid Margin="0,0,10,10" HorizontalOptions="FillAndExpand" ColumnSpacing="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- TextEdit avec x:Name -->
+                    <dxe:TextEdit x:Name="locationTextEdit"
+                         Grid.Column="0"
+                         Margin="10,0,0,0" 
+                         Keyboard="Text" 
+                         CornerRadius="10"   
+                         HorizontalOptions="FillAndExpand"
+                         LabelText="Location" 
+                         BorderColor="#74c2e3" 
+                         LabelColor="Gray"  
+                         IsLabelFloating="False" 
+                         IsReadOnly="True"
+                         Text="{Binding Gps,Mode=TwoWay}">
+                    </dxe:TextEdit>
+
+                    <!-- Bouton -->
+                    <Button Grid.Column="1"
+                       BackgroundColor="Green" 
+                       TextColor="White" 
+                       HorizontalOptions="FillAndExpand"
+                       Text="LOCATION" 
+                       CornerRadius="25"
+                       Clicked="OnLocationButtonClicked">
+                    </Button>
+                </Grid>
+
+
+                <BoxView BackgroundColor="DarkCyan" HeightRequest="30"></BoxView>
+                <Label HorizontalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Italic" Text="Profile Attributes"></Label>
+               
+                <dxco:DXPopup  IsOpen="{Binding ActPop,Mode=TwoWay}" AllowScrim="True">
+                    <StackLayout Padding="20"  Orientation="Vertical">
+                        <ActivityIndicator IsRunning="True" ></ActivityIndicator>
+                        <Label Text="Loading Profile ... "></Label>
+                    </StackLayout>
+
+                </dxco:DXPopup>
+                <Picker Margin="20" IsVisible="{Binding HasMultiProfile}"  HorizontalOptions="FillAndExpand" SelectedItem="{Binding Selected_profile,Mode=TwoWay}" Title="PICK PROFILE" ItemsSource="{Binding Profiles,Mode=TwoWay}" ItemDisplayBinding="{Binding Name}">
+                    <Picker.Behaviors >
+                        <xct:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding ChangeProfile,Mode=TwoWay}"    >
+
+                        </xct:EventToCommandBehavior>
+                    </Picker.Behaviors>
+                </Picker>
+
+                
+               
+
+                <StackLayout IsVisible="{Binding ActPop,Mode=TwoWay}" HeightRequest="200" WidthRequest="300" Orientation="Vertical">
+                    <ActivityIndicator IsRunning="True" ></ActivityIndicator>
+                    
+                </StackLayout>
+
+
+
+
+
+                <CollectionView    ItemsSource="{Binding ListAttributes,Mode=TwoWay}" Margin="5,0,5,5"   HorizontalOptions="FillAndExpand"  VerticalOptions="FillAndExpand">
+                        <CollectionView.ItemTemplate >
+                            <DataTemplate >
+
+                                <StackLayout Margin="8" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+
+
+                                <dxe:TextEdit Text="{Binding String_value,Mode=TwoWay}"     IsVisible="{Binding HasString}"    LabelText="{Binding LabelName}" HorizontalOptions="FillAndExpand" IsLabelFloating="False"></dxe:TextEdit>
+                                <dxe:NumericEdit Value="{Binding Number_value,Mode=TwoWay}"   IsVisible="{Binding HasNumber}" LabelText="{Binding LabelName}" HorizontalOptions="FillAndExpand"  IsLabelFloating="False"></dxe:NumericEdit>
+                                <dxe:NumericEdit Value="{Binding Number_value,Mode=TwoWay}"   IsVisible="{Binding HasDecimal}" LabelText="{Binding LabelName}" HorizontalOptions="FillAndExpand" IsLabelFloating="False"></dxe:NumericEdit>
+                                    <StackLayout Orientation="Horizontal"  IsVisible="{Binding HasBool}">
+                                        <Label Text="{Binding LabelName,Mode=TwoWay}"></Label>
+                                        <dxe:CheckEdit IsChecked="{Binding Bool_value,Mode=TwoWay}" HorizontalOptions="CenterAndExpand" ></dxe:CheckEdit>
+                                    </StackLayout>
+
+                                    <!--<Picker ItemsSource="{Binding List_item,Mode=TwoWay}" ItemDisplayBinding="{Binding name}" SelectedItem="{Binding Selected_item , Mode=TwoWay}" HorizontalOptions="FillAndExpand" WidthRequest="120" Title="{Binding LabelName}" IsVisible="{Binding HasMultiple}" ></Picker>-->
+                                <dxe:DateEdit Date="{Binding Date_value,Mode=TwoWay}"  LabelText="{Binding LabelName}"    IsVisible="{Binding HasDate}" HorizontalOptions="FillAndExpand" IsLabelFloating="False"></dxe:DateEdit>
+                                    <dxe:ComboBoxEdit  Tap="ComboBoxEdit_Tap" FilterCondition="Contains"  ItemsSource="{Binding List_item,Mode=TwoWay}" HorizontalOptions="FillAndExpand" DisplayMember="name" IsFilterEnabled="True"  SelectedItem="{Binding Selected_item , Mode=TwoWay}"    LabelText="{Binding LabelName}"  SelectionChanged="picker_SelectedIndexChanged" IsVisible="{Binding HasMultiple}" ></dxe:ComboBoxEdit>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+               
+          
+            
+
+            </StackLayout>
+        </ScrollView>
+        <Button  BackgroundColor="Green" TextColor="white" HorizontalOptions="FillAndExpand" Margin="0,0,0,10" Text="ADD TEMP PARTNER" CornerRadius="40" Command="{Binding AddPartnerTemp,Mode=TwoWay}"></Button>
+        
+    </StackLayout>
+    
+    
+   
+        
+
+   
+</ContentPage>

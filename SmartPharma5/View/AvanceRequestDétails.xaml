@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.AvanceRequestDétails"
+                 xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local1="clr-namespace:SmartPharma5.ModelView"
+             NavigationPage.HasBackButton="False"
+             Title="AvanceRequestDétails">
+    <ContentPage.BindingContext>
+        <local1:DétailsAvanceRequest></local1:DétailsAvanceRequest>
+    </ContentPage.BindingContext>
+    <Grid BackgroundColor="#F3F5F9" RowSpacing="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+
+        <Grid.RowDefinitions>
+
+            
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+    
+        <StackLayout IsVisible="false"  Grid.Row="0" Margin="10" HeightRequest="100"  Orientation="Horizontal">
+            <Button Command="{Binding ValiderRequest}"  ImageSource="accepte.png" TextColor="White" Text="Accepter" FontSize="Medium" BackgroundColor="LawnGreen" Margin="5" HeightRequest="80" VerticalOptions="CenterAndExpand" WidthRequest="150" HorizontalOptions="StartAndExpand" ></Button>
+            <Button Command="{Binding RéfuserRequest}" ImageSource="refuse.png" TextColor="White" Margin="5" Text="Réfuser" HeightRequest="80" BackgroundColor="red" FontSize="Medium" VerticalOptions="CenterAndExpand" WidthRequest="150" HorizontalOptions="CenterAndExpand"></Button>
+        </StackLayout>
+
+        <ScrollView  Grid.Row="1" VerticalScrollBarVisibility="Default" HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" Padding="20" Margin="5">
+
+
+                <dxe:ComboBoxEdit ItemsSource="{Binding List_avance_types}"  SelectedItem="{Binding Selected_type}" DisplayMember="Description"  LabelText="type d'avance" IsLabelFloating="false"></dxe:ComboBoxEdit>
+
+
+
+                <dxe:TextEdit Keyboard="Numeric" Prefix="DT"  LabelText="Totale amount" IsLabelFloating="False" Margin="10" Text="{Binding Total_amout}"></dxe:TextEdit>
+
+
+                <dxe:MultilineEdit Margin="10" Text="{Binding Description1}"  HeightRequest="150" LabelFontSize="Medium" CursorPosition="-100"  HorizontalOptions="FillAndExpand" LabelText="Description d'avance" IsLabelFloating="False"></dxe:MultilineEdit>
+
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Modifier" TextColor="White" FontFamily="Lobster-Regular" BackgroundColor="LawnGreen" ImageSource="update3.png" Command="{Binding updateCommande}"  CornerRadius="5" Margin="10" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Supprimer"  TextColor="White" ImageSource="refuse3.png" FontFamily="Lobster-Regular" BackgroundColor="Red"   CornerRadius="5" Margin="10" HorizontalOptions="FillAndExpand" Command="{Binding deleteCommande}" />
+                </StackLayout>
+
+
+
+            </StackLayout>
+        </ScrollView>
+        <dxco:DXPopup  x:Name="Popup"  IsOpen="{Binding TestCon,Mode=TwoWay}"  CornerRadius="20"  AllowShadow="True">
+            <Frame CornerRadius="20" Padding="20,25,20,25">
+                <StackLayout Padding="5" WidthRequest="150" BackgroundColor="White" Orientation="Vertical" >
+                    <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                    <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+                </StackLayout>
+            </Frame>
+
+        </dxco:DXPopup>
+
+
+    </Grid>
+</ContentPage>

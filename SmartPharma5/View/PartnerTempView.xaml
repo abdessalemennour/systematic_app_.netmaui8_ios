@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.PartnerTempView"
+              xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+          xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             Title="PartnerTempView">
+    <ContentPage.Content>
+
+        <StackLayout>
+            <StackLayout  Orientation="Horizontal" Margin="10,20,10,10">
+                <Label Text="Agenda of Notifications" FontAttributes="Bold" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
+                <Button Text="History" WidthRequest="100" IsVisible="{Binding BtnHitstoricNotif,Mode=TwoWay}" Command="{Binding HistoriqueCommand,Mode=TwoWay}"></Button>
+                <Button Text="Current" WidthRequest="100" IsVisible="{Binding BtnCurrentNotif,Mode=TwoWay}" Command="{Binding CurrentCommand,Mode=TwoWay}"></Button>
+            </StackLayout>
+            <RefreshView Grid.Row="4"  Margin="5,20,5,5" HorizontalOptions="FillAndExpand"  Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy,Mode=TwoWay}" RefreshColor="#455399">
+
+                <dxcv:DXCollectionView  Orientation="Vertical" ItemSpacing="10" VerticalOptions="FillAndExpand" 
+                        SelectionMode="None" ItemsSource="{Binding ListPartnerTemp,Mode=TwoWay}"  >
+
+                    <dxcv:DXCollectionView.ItemTemplate  >
+                        <DataTemplate  >
+
+                            <Frame BackgroundColor="White">
+                                <Grid HorizontalOptions="FillAndExpand">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0"/>
+                                        <ColumnDefinition Width="0"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="90"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Margin="5">
+
+                                        
+
+
+
+                                    </StackLayout>
+                                    <BoxView Grid.Column="1" BackgroundColor="Black" WidthRequest="1" HorizontalOptions="Start" 
+                                                 VerticalOptions="FillAndExpand"/>
+                                    <StackLayout Grid.Column="2" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Margin="4,0,0,2" >
+
+                                        <Label Text="{Binding  Name_Partner_Temp, StringFormat='New Partner : {0}'}" FontAttributes="Bold"  TextColor="DarkCyan" FontSize="15" Margin="0,0,0,0"/>
+                                        <Label Text="{Binding Name_User,StringFormat='Created BY : {0}'}" TextColor="Gray" FontAttributes="Italic" FontSize="12"/>
+                                        <Label Text="{Binding created_date,StringFormat='Created  : {0}' }" TextColor="Gray" FontAttributes="Italic" FontSize="12"/>
+                                        <StackLayout  Orientation="Horizontal"  Grid.Column="2" HorizontalOptions="StartAndExpand" VerticalOptions="Center"  >
+                                            <Label Text="{Binding Current_profile , StringFormat='From {0} =>'}"  FontAttributes="Italic" FontSize="11">
+
+                                            </Label>
+                                            <Label Text="{Binding Profile ,StringFormat='To {0}'}" FontAttributes="Italic" FontSize="11">
+
+                                            </Label>
+
+                                        </StackLayout>
+
+
+
+
+
+                                        <!--<StackLayout Orientation="Horizontal"  VerticalOptions="StartAndExpand">
+                                                        <StackLayout Orientation="Vertical" >
+                                                            <Label   HorizontalTextAlignment="Start" HorizontalOptions="StartAndExpand" TextColor="Gray" FontSize="12" Text="{Binding current_value   ,StringFormat='Current Value : {0}' }" FontAttributes="Bold" ></Label>
+                                                            <Label   HorizontalOptions="StartAndExpand"  HorizontalTextAlignment="Start" TextColor="Gray"  FontSize="12" Text="{Binding Temp_Value  ,StringFormat='Temp Value : {0}'}" FontAttributes="Bold"></Label>
+
+
+                                                        </StackLayout>
+
+
+                                                    </StackLayout>-->
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="3" Orientation="Vertical">
+                                        <!--<Label IsVisible="{Binding HasAccepted}" FontAttributes="Bold" TextColor="Green" Text="Temp Accepted"></Label>
+                                                    <Label IsVisible="{Binding HasRefused}" FontAttributes="Bold" TextColor="Red" Text="Temp Refused"></Label>
+                                                    <Button  Command="{Binding AcceptTempValue}" IsVisible="{Binding HasNoState}" BackgroundColor="Green"  HeightRequest="40"   Margin="5" Text="Accepte" FontAttributes="Bold" TextColor="White" ></Button>
+                                                    <Button Command="{Binding ReffuseTempValue}" IsVisible="{Binding HasNoState}" BackgroundColor="Red"  HeightRequest="40"  Margin="5" Text="Refuse" FontAttributes="Bold" TextColor="White" ></Button>-->
+                                        <StackLayout HorizontalOptions="CenterAndExpand">
+                                            <Image IsVisible="{Binding Réfused,Mode=TwoWay}" Source="Notif_Refused.png" ></Image>
+                                            <Image IsVisible="{Binding Validated,Mode=TwoWay}" Source="Notif_Accepted.png" ></Image>
+                                            <Label  IsVisible="{Binding Validated}" FontAttributes="Bold" TextColor="Green" Text="Accepted"></Label>
+                                            <Label IsVisible="{Binding Réfused}" FontAttributes="Bold" TextColor="Red" Text="Refused"></Label>
+                                        </StackLayout>
+                                        <Button   BackgroundColor="Green"  IsVisible="{Binding Current,Mode=TwoWay}" HeightRequest="40"  Margin="0" Text="To Consult" FontSize="11" FontAttributes="Italic" TextColor="White" Command="{Binding ShowAttributes,Mode=TwoWay}" ></Button>
+
+                                        <!--<Button  Command="{Binding changeToProfil}" BackgroundColor="Cyan"  HeightRequest="40" CornerRadius="10"  Margin="5" Text="Profile" FontAttributes="Bold" TextColor="White" ></Button>-->
+
+                                    </StackLayout>
+
+                                </Grid>
+                            </Frame>
+
+
+
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </RefreshView>
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.SaleQuotationView"
+                xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+                  xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+                  xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+                  xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Sale Quotation">
+    <ContentPage.Content>
+        <Grid Padding="10" >
+            <Grid.RowDefinitions >
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="1" Text="Sales Quotations" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" FontSize="25" TextColor="CadetBlue" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
+            <dxco:SimpleButton Grid.Row="2"  Margin="3" Text="Add Quotation"  Command ="{Binding QuotationCommand}"  BackgroundColor="Grey" ></dxco:SimpleButton>
+            <ScrollView Grid.Row="3">
+                <dxcv:DXCollectionView ItemSpacing="2" ItemsSource="{Binding ListQuotation, Mode=TwoWay}">
+                    <dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="10" Padding="5"   CornerRadius="2" BorderColor="#00ACC1" BackgroundColor="White" HasShadow="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                </Frame.GestureRecognizers>
+                                <StackLayout Spacing="10">
+                                    <Label FontSize="22" FontAttributes="Bold" Text="{Binding Code, StringFormat='CODE : {0}'}" TextColor="#333333" />
+                                    <Label FontSize="20" Text="{Binding Reference, StringFormat='Référence : {0}'}" TextColor="#55575c" />
+                                    <Label FontSize="20" Text="{Binding CreateDate, StringFormat='Created In : {0}'}" TextColor="#55575c" />
+                                    <Label FontSize="20" Text="{Binding TotalAmount, StringFormat='Total Amount : {0}'}" TextColor="#55575c" />
+                                    <Button IsVisible="true" Command="{Binding edit_quotation}" BackgroundColor="ORANGE"  Text="EDIT"></Button>
+                                    <!--<Label FontSize="20" FontAttributes="Italic" Text="{Binding PaymentMethodName}" TextColor="DarkBlue" />
+                                    <Label FontSize="20" FontAttributes="Italic" Text="{Binding PaymentConditionName}" TextColor="DarkBlue" />-->
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </ScrollView>
+            <dxco:DXPopup BackgroundColor="White" HorizontalOptions="CenterAndExpand" x:Name="Popup"     AllowScrim="True">
+                <StackLayout>
+                    <dxco:SimpleButton Margin="10" Text="Close" BackgroundColor="Red" HorizontalOptions="EndAndExpand" Clicked="SimpleButton_Clicked"></dxco:SimpleButton>
+                    <Label FontSize="30" Margin="10"  Text="Quotation Lines" TextColor="CadetBlue" HorizontalTextAlignment="Center" HorizontalOptions="Center" FontAttributes="Bold"  />
+                    <dxcv:DXCollectionView HorizontalOptions="CenterAndExpand" ItemSpacing="1" VerticalOptions="CenterAndExpand" ItemsSource="{Binding SelectedListQuotation, Mode=TwoWay}">
+                        <dxcv:DXCollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame CornerRadius="2" BorderColor="Gray" Margin="10" Padding="5" BackgroundColor="White" HasShadow="True">
+                                    <StackLayout Padding="10">
+                                        <Label FontSize="22" FontAttributes="Bold" TextColor="#333333" Text="{Binding NameProduct, Mode=TwoWay}" HorizontalOptions="Center" />
+                                        <Label FontSize="18" TextColor="#55575c" Text="{Binding Quantity, StringFormat='Quantity : {0}', Mode=TwoWay}" HorizontalOptions="Center" />
+                                        <Label FontSize="18" TextColor="#55575c" Text="{Binding Price, StringFormat='Price Unit : {0}', Mode=TwoWay}" HorizontalOptions="Center" />
+                                        <Label FontSize="18" TextColor="#55575c" Text="{Binding Discount, StringFormat='Discount : {0} %', Mode=TwoWay}" HorizontalOptions="Center" />
+                                        <Label FontSize="20" FontAttributes="Bold" TextColor="DarkBlue" Text="{Binding TotalAmount, StringFormat='Total Amount : {0}', Mode=TwoWay}" HorizontalOptions="Center" />
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+                    </dxcv:DXCollectionView>
+
+                </StackLayout>
+              
+                
+
+            </dxco:DXPopup>
+            <dxco:DXPopup  BackgroundColor="White" IsOpen="{Binding SavingPopup}" AllowScrim="True" >
+                <StackLayout WidthRequest="200" HorizontalOptions="FillAndExpand">
+                    <ActivityIndicator HorizontalOptions="CenterAndExpand" IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+                    <Label HorizontalTextAlignment="Center" Text="Saving..." Margin="10, 10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontSize="15"/>
+                </StackLayout>
+            </dxco:DXPopup>
+            <dxco:DXPopup  IsOpen="{Binding SuccessPopup}" AllowScrim="True" >
+                <StackLayout HorizontalOptions="FillAndExpand" WidthRequest="200">
+                    <Label Text="Success" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" FontSize="17"/>
+                    <Image Source="circlecheck.png" HorizontalOptions="CenterAndExpand" HeightRequest="50" Margin="0,20"/>
+                    <Label HorizontalTextAlignment="Center" Text="{Binding SuccessPopupMessage}" HorizontalOptions="CenterAndExpand" Margin="10, 10" VerticalOptions="Center"  FontSize="15"/>
+                </StackLayout>
+            </dxco:DXPopup>
+
+        </Grid>
+      
+    </ContentPage.Content>
+</ContentPage>

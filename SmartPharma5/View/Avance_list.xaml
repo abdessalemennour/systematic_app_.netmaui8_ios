@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.Avance_list"
+                 xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+              xmlns:local1="clr-namespace:SmartPharma5.ModelView"
+             NavigationPage.HasBackButton="False"
+             Title="Avance_list">
+    <ContentPage.BindingContext>
+
+        <local1:AvanceMV></local1:AvanceMV>
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem  Text=" Home page   >"></ToolbarItem>
+        <ToolbarItem   IconImageSource="home.png"  Command="{Binding changeToHome}" ></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <StackLayout>
+
+
+    <StackLayout IsVisible="false" HorizontalOptions="FillAndExpand"  Orientation="Vertical" >
+
+            <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal" Spacing="-10">
+                <Frame HeightRequest="60"  IsVisible="{Binding IsStringShearsh ,Mode=TwoWay}" CornerRadius="30" Padding="-2" HorizontalOptions="CenterAndExpand"  BackgroundColor="LightGray" Margin="0,10,0,0">
+
+                    <SearchBar  HorizontalOptions="FillAndExpand"  Margin="0" x:Name="srcBar" TextColor="White" PlaceholderColor="White" FontSize="12" Placeholder="Shearch ..." 
+                        >
+                        <SearchBar.Behaviors>
+                            <xct:EventToCommandBehavior EventName="TextChanged"  Command="{Binding CommandSearch}" CommandParameter="{Binding Text, Source={x:Reference srcBar}}"/>
+                        </SearchBar.Behaviors>
+
+                    </SearchBar>
+
+
+
+
+                </Frame>
+
+              
+                    <StackLayout HorizontalOptions="CenterAndExpand" Margin="10" Orientation="Horizontal">
+                        <dxe:DateEdit IsVisible="{Binding IsDateStartShearsh,Mode=TwoWay}" Margin="10" Date="{Binding StartShearshDate}" WidthRequest="120"  IsLabelFloating="False" TextFontSize="10"  LabelText="start date" HorizontalOptions="FillAndExpand" DisplayFormat="dd/MM/yy" HeightRequest="70"></dxe:DateEdit>
+                    <dxe:DateEdit IsVisible="{Binding IsDateEndShearsh,Mode=TwoWay}" Margin="10" MinDate="{Binding StartShearshDate}"  WidthRequest="120" Date="{Binding EndShearshDate}" IsLabelFloating="False"  TextFontSize="10" LabelText="end date" HorizontalOptions="FillAndExpand" DisplayFormat="dd/MM/yy" HeightRequest="70"></dxe:DateEdit>
+
+                    </StackLayout>
+              
+
+                <Button IsVisible="{Binding IsDateShearsh,Mode=TwoWay}" Command="{Binding ShaershWithDate}" HorizontalOptions="CenterAndExpand"  ImageSource="shearsh2.png" BackgroundColor="Transparent" CornerRadius="10" WidthRequest="50" VerticalOptions="CenterAndExpand"  HeightRequest="30"></Button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </StackLayout>
+            <Picker  HorizontalOptions="FillAndExpand" Margin="0,0,0,0  " ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding List_shearsh_avance}" HeightRequest="60" x:Name="pickSearch"   FontSize="15" Title="Shearch With"  SelectedItem="{Binding SelectItem,Mode=TwoWay}"   WidthRequest="110"  HorizontalTextAlignment="Center"    VerticalOptions="CenterAndExpand" TextColor="Black" >
+                <Picker.Behaviors>
+                    <xct:EventToCommandBehavior EventName="SelectedIndexChanged"   Command="{Binding changeSearsh}" >
+
+                    </xct:EventToCommandBehavior>
+                </Picker.Behaviors>
+            </Picker>
+        </StackLayout>
+
+
+        <StackLayout Grid.Row="2"  Margin="10" Orientation="Vertical"  >
+            <Label Text="Agenda of deposit request" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"  />
+            <!--<Button IsVisible="{Binding insertAvance}" BackgroundColor="Transparent" HorizontalOptions="End" ImageSource="add2.PNG" VerticalOptions="CenterAndExpand" HeightRequest="30" WidthRequest="60" Command="{Binding InsertAvance}" >
+
+                </Button>-->
+
+            <StackLayout   IsVisible="{Binding TestCon , Mode=TwoWay}" Padding="5" WidthRequest="150"  Orientation="Vertical" >
+                <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+            </StackLayout>
+        </StackLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+        <RefreshView    HorizontalOptions="FillAndExpand" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy,Mode=TwoWay}"  RefreshColor="#455399">
+
+            <dxcv:DXCollectionView ItemSpacing="20" ItemsSource="{Binding List_avance_request,Mode=TwoWay}"  >
+
+                <dxcv:DXCollectionView.ItemTemplate  >
+                    <DataTemplate >
+                        <Frame HorizontalOptions="FillAndExpand" BorderColor="{Binding color}" Margin="5,0,5,0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+
+                                <BoxView BackgroundColor="{Binding color}" WidthRequest="5" HorizontalOptions="Start"
+                                     VerticalOptions="FillAndExpand"/>
+                                <xct:Expander HorizontalOptions="FillAndExpand" >
+                                    <xct:Expander.Header>
+                                        <Grid HorizontalOptions="FillAndExpand">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+
+                                            </Grid.ColumnDefinitions>
+                                            <StackLayout Grid.Column="0" HorizontalOptions="Center" VerticalOptions="StartAndExpand" Margin="5">
+
+                                                <Label Text="{Binding state_name,StringFormat='{0}'}" TextColor="Black"  HorizontalTextAlignment="Center" TextDecorations="Underline" HorizontalOptions="CenterAndExpand" FontSize="10"></Label>
+                                                <Label Text="{Binding create_date, StringFormat='{0:dd}'}" TextColor="Black" FontSize="20" 
+                                                   HorizontalOptions="Center"/>
+                                                <Label Text="{Binding create_date, StringFormat='{0:MMM}'}" TextColor="Black" FontSize="15" 
+                                                   HorizontalOptions="Center" Margin="0,0,0,0"/>
+                                                <Label Text="{Binding create_date, StringFormat='{0:yyyy}'}" FontSize="13" 
+                                                   HorizontalOptions="Center" Margin="0,0,0,0" TextColor="Gray" />
+                                            </StackLayout>
+                                            <BoxView Margin="5" Grid.Column="1" BackgroundColor="#F2F4F8" WidthRequest="1" HorizontalOptions="Start" 
+                                                 VerticalOptions="FillAndExpand"/>
+                                            <StackLayout Grid.Column="2" Margin="10"  HorizontalOptions="CenterAndExpand" VerticalOptions="Center" >
+
+                                                <Label Text="{Binding type_avance}" Margin="5" TextColor="Black" FontAttributes="Bold" FontSize="15"/>
+                                                <Label Text="{Binding nom_employe}" FontAttributes="Bold" TextColor="#2F3246" FontSize="12" Margin="0,-10,0,0"/>
+                                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                                                        <Label HorizontalTextAlignment="Start" HorizontalOptions="CenterAndExpand" TextColor="Gray" FontSize="12" Text="{Binding amount ,StringFormat='Réquest amount  :{0 : 0.000}'}" FontAttributes="Bold" ></Label>
+                                                        <Label IsVisible="{Binding deposit_created}"  HorizontalTextAlignment="Start" HorizontalOptions="CenterAndExpand" TextColor="Green"  FontSize="12" Text="{Binding deposit_amount ,StringFormat='Déposit amount  :{0 : 0.000}'}" FontAttributes="Bold" ></Label>
+                                                        <Label IsVisible="{Binding deposit_created}"  TextDecorations="Underline" HorizontalTextAlignment="Start" HorizontalOptions="CenterAndExpand" TextColor="Green" FontSize="12" Text="* Deposit Created succefuly" FontAttributes="Bold" ></Label>
+                                                       
+                                                    </StackLayout>
+
+                                                    
+
+                                                        
+                                                    
+
+                                                </StackLayout>
+                                            </StackLayout>
+                                            <StackLayout Grid.Column="3" HorizontalOptions="CenterAndExpand">
+                                                <Button IsVisible="{Binding decision_notvalidated}" HorizontalOptions="FillAndExpand" Text="Editer" Command="{Binding getDétail}"  CornerRadius="5" FontSize="15" BackgroundColor="GreenYellow" FontAttributes="Bold" TextColor="White"      VerticalOptions="Center" >
+                                                </Button>
+                                                <Button IsVisible="{Binding decision_validate}" HorizontalOptions="FillAndExpand" BackgroundColor="{Binding color}" Text="Decision" Command="{Binding getDécision,Mode=TwoWay}" CornerRadius="5" FontSize="11" FontAttributes="Bold"  BorderColor="White" TextColor="White"     VerticalOptions="CenterAndExpand" >
+                                                </Button>
+
+                                            </StackLayout>
+                                            
+
+                                        </Grid>
+                                    </xct:Expander.Header>
+                                    <Grid HorizontalOptions="FillAndExpand">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <BoxView Grid.Column="1" BackgroundColor="#F2F4F8" WidthRequest="1" HorizontalOptions="Start" 
+                                             VerticalOptions="FillAndExpand"/>
+                                        <StackLayout Grid.Column="2" Spacing="10">
+                                            <Label Text="Description :" TextColor="Black" Opacity="0.5" FontSize="10" Margin="20,0"/>
+                                            <Label Text="{Binding description}"  TextColor="Black" Opacity="0.5" FontSize="15" Margin="20,0"/>
+                                        </StackLayout>
+
+                                    </Grid>
+                                </xct:Expander>
+
+                            </StackLayout>
+                        </Frame>
+
+                        
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+            </dxcv:DXCollectionView>
+        </RefreshView>
+
+
+
+
+
+    </StackLayout>
+</ContentPage>

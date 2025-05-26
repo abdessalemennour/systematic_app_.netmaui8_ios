@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             x:Class="SmartPharma5.View.ListContactsPartner"
+             Title="ListContactsPartner">
+    <ContentPage.Content>
+        <Grid Padding="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Button outside the ScrollView -->
+            <Button Grid.Row="0" 
+                    Text="Add New Contact" 
+                    Clicked="Button_Clicked"
+                    BackgroundColor="#4B9EE8" 
+                    TextColor="White" 
+                    FontAttributes="Bold"
+                    HeightRequest="35" 
+                    CornerRadius="25"
+                    Padding="10,5" 
+                    Margin="0,0,0,10"/>
+
+            <!-- Label -->
+            <Label Grid.Row="1" 
+                   Text="Choose the contact" 
+                   VerticalTextAlignment="Center" 
+                   HorizontalTextAlignment="Center" 
+                   FontSize="16"/>
+
+            <!-- ScrollView for the collection view and other content -->
+            <ScrollView Grid.Row="2">
+                <StackLayout Padding="10">
+                    <dxcv:DXCollectionView 
+                        ItemsSource="{Binding Contacts, Mode=TwoWay}" 
+                        x:Name="ClientCollectionView">
+                        <dxcv:DXCollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Margin="10,10,10,0" 
+                                       CornerRadius="10" 
+                                       BorderColor="CadetBlue" 
+                                       HasShadow="True">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                                    </Frame.GestureRecognizers>
+
+                                    <Grid RowSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout 
+                                            Grid.Column="0" 
+                                            Padding="10,5" 
+                                            Orientation="Vertical">
+
+                                            <StackLayout 
+                                                Orientation="Horizontal" 
+                                                Spacing="5">
+                                                <Label FontSize="20" 
+                                                       Text="{Binding FirstName}" 
+                                                       Margin="2,0" 
+                                                       TextColor="#55575c" />
+                                                <Label FontSize="20" 
+                                                       Text="{Binding LastName}" 
+                                                       Margin="2,0" 
+                                                       TextColor="#55575c" />
+                                            </StackLayout>
+
+                                            <Label FontSize="18" 
+                                                   Text="{Binding job_position}" 
+                                                   FontAttributes="Bold" 
+                                                   Margin="0,5" 
+                                                   TextColor="DarkBlue" />
+                                        </StackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </dxcv:DXCollectionView.ItemTemplate>
+                    </dxcv:DXCollectionView>
+                </StackLayout>
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

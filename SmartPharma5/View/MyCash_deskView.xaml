@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.MyCash_deskView"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+              x:Name="cash_desk"
+             Title="MyCash_deskView">
+    <NavigationPage.TitleView>
+        <StackLayout VerticalOptions="Center">
+            <Label Text="{Binding Title}" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+        </StackLayout>
+    </NavigationPage.TitleView>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>-->
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout BackgroundColor="White" >
+                <StackLayout HorizontalOptions="FillAndExpand" BackgroundColor="CadetBlue">
+                    <Label x:Name="total" Text="{Binding Total, Mode=OneWay, StringFormat=Total : '{0:F3}' }" TextColor="White" Margin="0,0,0,0" FontSize="Large" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"   VerticalOptions="Center" Padding="0,10,0,0"/>
+
+                </StackLayout>
+                <StackLayout   IsVisible="{Binding TestCon , Mode=TwoWay}" Padding="5" WidthRequest="150" Margin="0,20,0,0" Orientation="Vertical" >
+                    <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                    <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+                </StackLayout>
+
+                <dxcv:DXCollectionView ItemsSource="{Binding MyCash_deskList}" ItemSpacing="5" SelectionMode="Single"  Margin="5,8,8,0"  >
+
+                    <dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="10"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#EEF5FF" HasShadow="False" BorderColor="#1B6D6A" CornerRadius="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions >
+                                        <ColumnDefinition Width="0.65*"/>
+                                        <ColumnDefinition Width="0.35*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackLayout Grid.Column="0">
+                                        <Label  Text="{Binding Name, Mode=OneWay}" FontSize="Large" FontAttributes="Italic" TextColor="#0BA2A2"/>
+                                        <Label  Text="{Binding Payment_method_name, Mode=OneWay}"/>
+                                        <Label/>
+                                        <Label  Text="{Binding Amount,StringFormat='{0:F3} DT', Mode=OneWay}" FontSize="Large" FontAttributes="Bold" TextColor="Black"/>
+                                    </StackLayout>
+
+                                    <StackLayout Grid.Column="1">
+                                        <dxco:SimpleButton Margin="5"  Text="Log" FontSize="Subtitle" FontAttributes="Bold" Padding="5"  BorderColor="Black" HeightRequest="35" Focused="Button_Focused" BackgroundColor="BlueViolet" TextColor="White" Command="{Binding Source={x:Reference cash_desk} ,Path=BindingContext.CommandLogCashDesk}"  CommandParameter="{Binding .}"/>
+                                        <dxco:SimpleButton Margin="5"  Text="State" FontSize="Subtitle" FontAttributes="Bold" Padding="5"  BorderColor="Black" HeightRequest="35" BackgroundColor="#33A29B" TextColor="White" IsVisible="{Binding isNotCash}" Command="{Binding Source={x:Reference cash_desk} ,Path=BindingContext.CommandStateCashDesk}"  CommandParameter="{Binding .}"/>
+                                        <dxco:SimpleButton Margin="5"  Text="Add Transfer" FontSize="Subtitle" FontAttributes="Bold" Padding="2"  BorderColor="Black" HeightRequest="35" BackgroundColor="#1B6D6A" TextColor="White" IsVisible="{Binding isTransfer}" Command="{Binding Source={x:Reference cash_desk} ,Path=BindingContext.CommandAddTransferCashDesk}"  CommandParameter="{Binding .}"/>
+                                        <dxco:SimpleButton  Margin="5" Text="Transfer" FontSize="Subtitle" FontAttributes="Bold" Padding="2"  BorderColor="Black" HeightRequest="35" BackgroundColor="#034C3F" TextColor="White" IsVisible="{Binding isTransfer_state}" Command="{Binding Source={x:Reference cash_desk} ,Path=BindingContext.CommandTransferCashDesk}"  CommandParameter="{Binding .}"/>
+                                    </StackLayout>
+
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+
+                </dxcv:DXCollectionView>
+                <dxco:DXPopup  x:Name="Popup"  IsOpen="{Binding Loading,Mode=TwoWay}" AllowScrim="True" CornerRadius="20"  AllowShadow="True">
+                    <Frame CornerRadius="20" Padding="20,25,20,25">
+                        <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                            <Label HorizontalTextAlignment="Center" Text="PLEASE WAITING" FontAttributes="Bold" TextColor="#6CC5DE" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+                            <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="30" HeightRequest="30" Margin="5,5"></ActivityIndicator>
+                        </StackLayout>
+                    </Frame>
+                </dxco:DXPopup>
+
+            </StackLayout>
+        </ScrollView>
+        
+
+    </ContentPage.Content>
+</ContentPage>

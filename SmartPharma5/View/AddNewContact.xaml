@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.AddNewContact"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:SmartPharma5.ViewModel"
+             Title="AddNewContact"
+                        
+             >
+    <NavigationPage.TitleView>
+        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Label HorizontalOptions="CenterAndExpand"  Text="Add New Contact" TextColor="White" FontAttributes="Bold"/>
+        </StackLayout>
+    </NavigationPage.TitleView>
+
+
+    <ContentPage.Resources>
+        <Style TargetType="dxe:TextEdit">
+            <Setter Property="Margin" Value="10,0,10,10" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="BorderColor" Value="#74c2e3" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="LabelColor" Value="Gray" />
+            <Setter Property="IsLabelFloating" Value="False" />
+        </Style>
+        <Style TargetType="dxe:DateEdit">
+            <Setter Property="Margin" Value="10,0,10,10" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="BorderColor" Value="#74c2e3" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="LabelColor" Value="Gray" />
+            <Setter Property="IsLabelFloating" Value="False" />
+        </Style>
+        <Style TargetType="dxe:ComboBoxEdit">
+            <Setter Property="Margin" Value="10,0,10,10" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="BorderColor" Value="#74c2e3" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="LabelColor" Value="Gray" />
+            <Setter Property="IsLabelFloating" Value="False" />
+            <Setter Property="PlaceholderColor" Value="Gray" />
+            <!-- Couleur du texte d'espace réservé -->
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView VerticalOptions="FillAndExpand">
+        <StackLayout Padding="20" Spacing="10">
+            <!-- BoxView et Label pour le titre -->
+            <BoxView BackgroundColor="DarkCyan" HeightRequest="30" />
+            <Label HorizontalOptions="CenterAndExpand" FontAttributes="Italic" FontSize="Large" Text="General Attributes" />
+
+            <!-- Champs de formulaire -->
+            <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:TextEdit Text="{Binding FirstName, Mode=TwoWay}" 
+                              x:Name="firstNameEntry" 
+                              LabelText="First Name" 
+                               />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:TextEdit Text="{Binding LastName, Mode=TwoWay}" 
+                              x:Name="lastNameEntry" 
+                              LabelText="Last Name" 
+                               />
+            </StackLayout>
+
+
+
+            <StackLayout Margin="0,0,10,10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                <Label Text="Job Position" TextColor="Gray" FontSize="Small" Margin="5,0,0,2"/>
+                <Frame CornerRadius="10" BorderColor="#74c2e3" Padding="5" HasShadow="False" HorizontalOptions="FillAndExpand">
+                    <Picker x:Name="jobPositionPicker"
+                SelectedIndex="{Binding id}"
+                ItemDisplayBinding="{Binding name}"
+                Title="Select Job Position"
+                TextColor="Black"/>
+                </Frame>
+            </StackLayout>
+            <StackLayout Margin="0,0,10,10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                <Label Text="Sex" TextColor="Gray" FontSize="Small" Margin="5,0,0,2"/>
+                <Frame CornerRadius="10"  Padding="5" HasShadow="False" HorizontalOptions="FillAndExpand">
+                    <StackLayout Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand">
+                        <RadioButton x:Name="hommeRadioButton" Content="Homme" GroupName="Sex" TextColor="Black"/>
+                        <RadioButton x:Name="womenRadioButton" Content="Women" GroupName="Sex" TextColor="Black"/>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+            <StackLayout Margin="0,0,10,10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                <Label Text="Marital Status" TextColor="Gray" FontSize="Small" Margin="5,0,0,2"/>
+                <Frame CornerRadius="10" BorderColor="#74c2e3" Padding="5" HasShadow="False" HorizontalOptions="FillAndExpand">
+                    <Picker x:Name="maritalStatusPicker"
+                SelectedIndex="{Binding id}"
+                ItemDisplayBinding="{Binding name}"
+                Title="Select Marital Status"
+                TextColor="Black"/>
+                </Frame>
+            </StackLayout>
+
+
+            <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:DateEdit Date="{Binding BirthDate, Mode=TwoWay}" 
+                  x:Name="birthDatePicker" 
+                  LabelText="Birth Date" 
+                  DisplayFormat="d" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:TextEdit Text="{Binding BirthPlace, Mode=TwoWay}" 
+                          x:Name="birthPlaceEntry" 
+                          LabelText="Birth Place" />
+            </StackLayout>
+
+            <!--<Label Text="Nationality" />
+            <Picker x:Name="nationalityPicker" Title="Select nationality"  SelectedIndexChanged="OnNationalityChanged"/>-->
+            <!--<StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:ComboBoxEdit x:Name="nationalityComboBox"
+                      ItemsSource="{Binding countries}"
+                      DisplayMember="Name"
+                      SelectedItem="{Binding selectedNationality}"
+                      PlaceholderText="Select nationality"
+                      IsFilterEnabled="True"
+                      FilterText="{Binding FilterText}" 
+                      FilterCondition="Contains"
+                      LabelText="Nationality" />
+            </StackLayout>
+
+
+            <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:TextEdit Text="{Binding Address, Mode=TwoWay}" 
+                          x:Name="addressEntry" 
+                          LabelText="Address" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <dxe:TextEdit Text="{Binding Identity, Mode=TwoWay}" 
+                          x:Name="identityEntry" 
+                          LabelText="Identity"
+                          Keyboard="Numeric"/>
+            </StackLayout>
+-->
+
+            <StackLayout Margin="0,0,10,10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                <Label Text="Handicap" TextColor="Gray" FontSize="Small" Margin="5,0,0,2"/>
+                <Frame CornerRadius="10"  Padding="5" HasShadow="False" HorizontalOptions="FillAndExpand">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="5,0">
+                        <Label Text="Enable Handicap" VerticalOptions="Center" TextColor="Black"/>
+                        <Switch x:Name="handicapSwitch" Toggled="OnHandicapToggled" HorizontalOptions="End"/>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <StackLayout x:Name="handicapDescriptionStack" IsVisible="False" Margin="0,0,10,10" Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                <Label Text="Handicap Description" TextColor="Gray" FontSize="Small" Margin="5,0,0,2"/>
+                <Frame CornerRadius="10" BorderColor="#74c2e3" Padding="5" HasShadow="False" HorizontalOptions="FillAndExpand">
+                    <Editor x:Name="handicapDescriptionEditor" Placeholder="Describe the handicap" TextColor="Black" AutoSize="TextChanges"/>
+                </Frame>
+            </StackLayout>
+
+
+            <Button Text="Confirmed" Clicked="OnSubmitClicked" />
+        </StackLayout>
+    </ScrollView>
+    
+</ContentPage>

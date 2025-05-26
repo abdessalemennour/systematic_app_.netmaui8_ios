@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.QuizForm2"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="QuizForm2">
+
+    <!--<NavigationPage.TitleView>
+        <Grid HorizontalOptions="FillAndExpand"
+          Padding="10"
+          ColumnDefinitions="*,Auto">
+
+            --><!-- Colonne vide à gauche pour pousser le bouton à droite --><!--
+            <BoxView Color="Transparent"/>
+
+            --><!-- ImageButton à droite --><!--
+            <ImageButton Grid.Column="1"
+                     Source="pichon_menu2.png"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     BackgroundColor="Transparent"
+                     Clicked="OnSwipeViewClicked"/>
+        </Grid>
+    </NavigationPage.TitleView>-->
+
+    <SwipeView x:Name="MainSwipeView">
+        <SwipeView.RightItems>
+            <SwipeItems  Mode="Reveal">
+                <SwipeItemView WidthRequest="100" IsVisible="{Binding IsMainButtonVisible}">
+                    <StackLayout Orientation="Vertical" 
+                             Spacing="20" 
+                             Padding="10"
+                             BackgroundColor="#F5F5F5">
+
+                        <!-- Activity Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="activity.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedactivity"/>
+                            <Label Text="Activité" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- Memo Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="note3.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedmemo"/>
+                            <Label Text="Note" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- Chat Button -->
+                        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Spacing="2">
+                            <Grid>
+                                <ImageButton 
+                                    Source="chat.png"
+                                    BackgroundColor="Transparent"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    CornerRadius="10"
+                                    Clicked="OnActionButtonClickedchat"/>
+                                <!-- Badge pour messages non lus -->
+                                <Frame 
+                                    IsVisible="False"
+                                    x:Name="UnreadBadgeFrame"
+                                    BackgroundColor="Red"
+                                    CornerRadius="10"
+                                    Padding="0"
+                                    HeightRequest="20"
+                                    WidthRequest="20"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start"
+                                    Margin="0,-5,-5,0"
+                                    HasShadow="False">
+                                    <Grid>
+                                        <Label 
+                                            x:Name="UnreadBadgeLabel"
+                                            Text="0"
+                                            TextColor="White"
+                                            FontSize="10"
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Chat" 
+                                   HorizontalOptions="Center"
+                                   FontSize="12"
+                                   TextColor="Black"
+                                   FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- Document Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="document.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickeddocument"/>
+                            <Label Text="Document" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+                        <!-- report Button -->
+                        <!--<StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="rapport.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedreport"/>
+                            <Label Text="Rapport" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>-->
+                        <!-- logs Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
+                             Source="logs.png"
+                             BackgroundColor="Transparent"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnActionButtonClickedlogs"/>
+                            <Label Text="Logs" 
+                               HorizontalOptions="Center"
+                               FontSize="10"
+                               TextColor="Black"
+                               FontAttributes="Bold"/>
+                        </StackLayout>
+
+                    </StackLayout>
+                </SwipeItemView>
+            </SwipeItems>
+        </SwipeView.RightItems>
+        <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackLayout Grid.Row="0">
+            <Frame Margin="0" Padding="0">
+                <StackLayout>
+                    <Label x:Name="Partner_name" Padding="8" BackgroundColor="#4DBF49" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" TextColor="White"  FontSize="16"></Label>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+        <ScrollView Grid.Row="1" x:Name="ScrolView">
+
+            <StackLayout x:Name="Stacklay">
+
+            </StackLayout>
+
+
+        </ScrollView>
+
+        <StackLayout  Grid.Row="2" x:Name="btnGroupe"  Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Padding="10">
+            <dxco:SimpleButton Margin="2" x:Name="btnExit" WidthRequest="100" Text="Exit" CornerMode = "Round" CornerRadius="5" BackgroundColor="#ED1416" TextColor="White" Clicked="SimpleButton_Clicked" />
+            <dxco:SimpleButton Margin="2" x:Name="btnSave" WidthRequest="100" Text="Save" CornerMode = "Round" CornerRadius="5" BackgroundColor="#F3BA04" TextColor="White" Clicked="btnSave_Clicked" />
+            <dxco:SimpleButton Margin="2" x:Name="btnValidate" WidthRequest="100" Text="Validate" CornerMode = "Round" CornerRadius="5" BackgroundColor="#4DBF49" TextColor="White" Clicked="Submit_Clicked" />
+
+        </StackLayout>
+        <dxco:DXPopup BackgroundColor="White" x:Name="SavingPopup" IsOpen="False" AllowScrim="True" >
+            <StackLayout WidthRequest="200">
+                <ActivityIndicator IsRunning="True" BackgroundColor="White" Color="#6CC5DE" Margin="20,20"></ActivityIndicator>
+                <Label HorizontalTextAlignment="Center" Text="Saving..." Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+            </StackLayout>
+        </dxco:DXPopup>
+        <dxco:DXPopup BackgroundColor="White" x:Name="SuccessPopup" IsOpen="False" AllowScrim="True" >
+            <StackLayout WidthRequest="200">
+                <Label Text="Success" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="17"/>
+                <Image Source="circlecheck.png" HeightRequest="50" Margin="0,20"/>
+                <Label HorizontalTextAlignment="Center" Text="Saved with Success" Margin="10, 10" VerticalOptions="Center" HorizontalOptions="Center" FontSize="15"/>
+            </StackLayout>
+        </dxco:DXPopup>
+
+
+        <StackLayout Grid.Row="1" IsVisible="{Binding TestConnection,Mode=TwoWay}" VerticalOptions="CenterAndExpand" Padding="5" WidthRequest="150"  Orientation="Vertical" >
+            <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+            <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+        </StackLayout>
+
+            <Image Source="rotate.png" 
+           x:Name="swipeHint"
+           HorizontalOptions="End"
+           VerticalOptions="Center"
+           WidthRequest="40"
+           HeightRequest="60"
+           Margin="0,0,10,0"
+           Opacity="0.3"/>
+    </Grid>
+    </SwipeView>
+</ContentPage>

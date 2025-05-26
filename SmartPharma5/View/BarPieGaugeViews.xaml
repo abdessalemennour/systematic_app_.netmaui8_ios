@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.BarPieGaugeViews"
+                xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+          xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+              xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             xmlns:control="clr-namespace:Syncfusion.Maui.Gauges;assembly=Syncfusion.Maui.Gauges"
+             Title="BarPieGaugeViews">
+    <NavigationPage.TitleView>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+            <Label HorizontalOptions="EndAndExpand" TextColor="White" FontAttributes="Bold" Text="Parametrage >"></Label>
+            <ImageButton   HorizontalOptions="EndAndExpand" Clicked="ImageButton_Clicked"   Source="Images/parametrage.png"  WidthRequest="40" ></ImageButton>
+
+
+
+
+        </StackLayout>
+    </NavigationPage.TitleView>
+    <ScrollView>
+        <VerticalStackLayout>
+            <CollectionView ItemsSource="{Binding List_BarSeries,Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+
+
+                        <Frame>
+                            <StackLayout>
+                                <StackLayout Margin="5" BackgroundColor="#2296F3" HorizontalOptions="FillAndExpand" Padding="5">
+                                    <Label HorizontalTextAlignment="Center" TextColor="White" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding BarSerie_Name}"></Label>
+
+                                </StackLayout>
+                                <StackLayout Margin="5" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                    <Label HorizontalTextAlignment="Start" TextColor="Black" FontAttributes="Bold" HorizontalOptions="StartAndExpand" Text="{Binding argument ,StringFormat='selected {0} :'}"></Label>
+                                    <Label HorizontalTextAlignment="Center" TextColor="Black" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding Selected_Arguemnt,Mode=TwoWay}"></Label>
+
+                                </StackLayout>
+                                <StackLayout  Margin="5" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                    <Label HorizontalTextAlignment="Start" TextColor="#2296F3" FontAttributes="Bold" HorizontalOptions="StartAndExpand" Text="{Binding value1 ,StringFormat='{0} :'}"></Label>
+                                    <Label HorizontalTextAlignment="Center" TextColor="#2296F3" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding Selected_Value1,Mode=TwoWay}"></Label>
+
+                                </StackLayout>
+                                <StackLayout  Margin="5" IsVisible="{Binding Has_Two_Value}" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                    <Label HorizontalTextAlignment="Start" TextColor="Green" FontAttributes="Bold" HorizontalOptions="StartAndExpand" Text="{Binding value2 ,StringFormat='{0} :'}"></Label>
+                                    <Label HorizontalTextAlignment="Center" TextColor="Green" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding Selected_Value2,Mode=TwoWay}"></Label>
+
+                                </StackLayout>
+                                <StackLayout  Margin="5" IsVisible="{Binding Has_Three_Value}" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                    <Label HorizontalTextAlignment="Start" TextColor="Green" FontAttributes="Bold" HorizontalOptions="Start" Text="{Binding value2 ,StringFormat='{0} :'}"></Label>
+                                    <Label HorizontalTextAlignment="Center" TextColor="Green" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding Selected_Value2,Mode=TwoWay}"></Label>
+
+                                </StackLayout>
+                                <StackLayout  Margin="5" IsVisible="{Binding Has_Three_Value}" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                                    <Label HorizontalTextAlignment="Start" TextColor="red" FontAttributes="Bold" HorizontalOptions="Start" Text="{Binding value3 ,StringFormat='{0} :'}"></Label>
+                                    <Label HorizontalTextAlignment="Center" TextColor="red" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding Selected_Value3,Mode=TwoWay}"></Label>
+
+                                </StackLayout>
+
+                                <dxc:ChartView IsVisible="{Binding Has_One_Value,Mode=TwoWay}" BackgroundColor="LightGray"  HorizontalOptions="FillAndExpand"
+                                              SelectionMode="Single"
+                                       SelectionChanged="ChartView_SelectionChanged"
+                                              HeightRequest="400" 
+                                              WidthRequest="300" 
+                                              ScrollIndicatorsEnabled="True"
+                             AxisYNavigationMode="ScrollingAndZooming"
+                                              AxisXNavigationMode="ScrollingAndZooming" >
+                                    <dxc:ChartView.Series>
+
+
+                                        <dxc:BarSeries  BarWidth="0.9">
+                                            <dxc:BarSeries.Data>
+                                                <dxc:SeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay}" ArgumentDataMember="Name">
+
+                                                    <dxc:ValueDataMember Type="Value" Member="Number1" />
+
+                                                </dxc:SeriesDataAdapter>
+                                            </dxc:BarSeries.Data>
+                                            <dxc:BarSeries.Label>
+                                                <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                                    <dxc:BarSeriesLabel.Style>
+                                                        <dxc:SeriesLabelStyle>
+                                                            <dxc:SeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="Black"/>
+                                                            </dxc:SeriesLabelStyle.TextStyle>
+                                                        </dxc:SeriesLabelStyle>
+                                                    </dxc:BarSeriesLabel.Style>
+                                                </dxc:BarSeriesLabel>
+                                            </dxc:BarSeries.Label>
+
+                                            <dxc:BarSeries.Style>
+                                                <dxc:BarSeriesStyle Fill="#2296F3" />
+                                            </dxc:BarSeries.Style>
+                                        </dxc:BarSeries>
+                                    </dxc:ChartView.Series>
+
+                                    <dxc:ChartView.AxisX >
+                                        <dxc:QualitativeAxisX >
+                                            <dxc:QualitativeAxisX.Label >
+                                                <dxc:AxisLabel Angle="45"/>
+                                            </dxc:QualitativeAxisX.Label>
+                                        </dxc:QualitativeAxisX>
+                                    </dxc:ChartView.AxisX>
+                                </dxc:ChartView>
+                                <dxc:ChartView IsVisible="{Binding Has_Two_Value,Mode=TwoWay}" BackgroundColor="LightGray"  HorizontalOptions="FillAndExpand"
+                                              SelectionMode="Single"
+                                       SelectionChanged="ChartView_SelectionChanged_1"
+                                              HeightRequest="400" 
+                                              WidthRequest="300" 
+                                              ScrollIndicatorsEnabled="True"
+                             AxisYNavigationMode="ScrollingAndZooming"
+                                              AxisXNavigationMode="ScrollingAndZooming" >
+                                    <dxc:ChartView.Series>
+
+
+                                        <dxc:BarSeries  BarWidth="0.9">
+                                            <dxc:BarSeries.Data>
+                                                <dxc:SeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay}" ArgumentDataMember="Name">
+
+                                                    <dxc:ValueDataMember Type="Value" Member="Number1" />
+
+                                                </dxc:SeriesDataAdapter>
+                                            </dxc:BarSeries.Data>
+                                            <dxc:BarSeries.Label>
+                                                <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                                    <dxc:BarSeriesLabel.Style>
+                                                        <dxc:SeriesLabelStyle>
+                                                            <dxc:SeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="Black"/>
+                                                            </dxc:SeriesLabelStyle.TextStyle>
+                                                        </dxc:SeriesLabelStyle>
+                                                    </dxc:BarSeriesLabel.Style>
+                                                </dxc:BarSeriesLabel>
+                                            </dxc:BarSeries.Label>
+
+                                            <dxc:BarSeries.Style>
+                                                <dxc:BarSeriesStyle Fill="#2296F3" />
+                                            </dxc:BarSeries.Style>
+                                        </dxc:BarSeries>
+                                        <dxc:BarSeries  BarWidth="0.9">
+                                            <dxc:BarSeries.Data>
+                                                <dxc:SeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay}" ArgumentDataMember="Name">
+
+                                                    <dxc:ValueDataMember Type="Value" Member="Number2" />
+
+                                                </dxc:SeriesDataAdapter>
+                                            </dxc:BarSeries.Data>
+                                            <dxc:BarSeries.Label>
+                                                <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                                    <dxc:BarSeriesLabel.Style>
+                                                        <dxc:SeriesLabelStyle>
+                                                            <dxc:SeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="Black"/>
+                                                            </dxc:SeriesLabelStyle.TextStyle>
+                                                        </dxc:SeriesLabelStyle>
+                                                    </dxc:BarSeriesLabel.Style>
+                                                </dxc:BarSeriesLabel>
+                                            </dxc:BarSeries.Label>
+
+                                            <dxc:BarSeries.Style>
+                                                <dxc:BarSeriesStyle Fill="Green" />
+                                            </dxc:BarSeries.Style>
+                                        </dxc:BarSeries>
+                                    </dxc:ChartView.Series>
+
+
+                                    <dxc:ChartView.AxisX >
+                                        <dxc:QualitativeAxisX >
+                                            <dxc:QualitativeAxisX.Label >
+                                                <dxc:AxisLabel Angle="45"/>
+                                            </dxc:QualitativeAxisX.Label>
+                                        </dxc:QualitativeAxisX>
+                                    </dxc:ChartView.AxisX>
+                                </dxc:ChartView>
+                                <dxc:ChartView IsVisible="{Binding Has_Three_Value,Mode=TwoWay}" BackgroundColor="LightGray" x:Name="bar_chart" HorizontalOptions="FillAndExpand"
+                                              SelectionMode="Single"
+                                       SelectionChanged="bar_chart_SelectionChanged"
+                                              HeightRequest="400" 
+                                              WidthRequest="300" 
+                                              ScrollIndicatorsEnabled="True"
+                             AxisYNavigationMode="ScrollingAndZooming"
+                                              AxisXNavigationMode="ScrollingAndZooming" >
+                                    <dxc:ChartView.Series>
+
+
+                                        <dxc:BarSeries  BarWidth="0.9">
+                                            <dxc:BarSeries.Data>
+                                                <dxc:SeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay}" ArgumentDataMember="Name">
+
+                                                    <dxc:ValueDataMember Type="Value" Member="Number1" />
+
+                                                </dxc:SeriesDataAdapter>
+                                            </dxc:BarSeries.Data>
+                                            <dxc:BarSeries.Label>
+                                                <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                                    <dxc:BarSeriesLabel.Style>
+                                                        <dxc:SeriesLabelStyle>
+                                                            <dxc:SeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="Black"/>
+                                                            </dxc:SeriesLabelStyle.TextStyle>
+                                                        </dxc:SeriesLabelStyle>
+                                                    </dxc:BarSeriesLabel.Style>
+                                                </dxc:BarSeriesLabel>
+                                            </dxc:BarSeries.Label>
+
+                                            <dxc:BarSeries.Style>
+                                                <dxc:BarSeriesStyle Fill="#2296F3" />
+                                            </dxc:BarSeries.Style>
+                                        </dxc:BarSeries>
+                                        <dxc:BarSeries  BarWidth="0.9">
+                                            <dxc:BarSeries.Data>
+                                                <dxc:SeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay}" ArgumentDataMember="Name">
+
+                                                    <dxc:ValueDataMember Type="Value" Member="Number2" />
+
+                                                </dxc:SeriesDataAdapter>
+                                            </dxc:BarSeries.Data>
+                                            <dxc:BarSeries.Label>
+                                                <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                                    <dxc:BarSeriesLabel.Style>
+                                                        <dxc:SeriesLabelStyle>
+                                                            <dxc:SeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="Black"/>
+                                                            </dxc:SeriesLabelStyle.TextStyle>
+                                                        </dxc:SeriesLabelStyle>
+                                                    </dxc:BarSeriesLabel.Style>
+                                                </dxc:BarSeriesLabel>
+                                            </dxc:BarSeries.Label>
+
+                                            <dxc:BarSeries.Style>
+                                                <dxc:BarSeriesStyle Fill="Green" />
+                                            </dxc:BarSeries.Style>
+                                        </dxc:BarSeries>
+                                        <dxc:BarSeries  BarWidth="0.9">
+                                            <dxc:BarSeries.Data>
+                                                <dxc:SeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay}" ArgumentDataMember="Name">
+
+                                                    <dxc:ValueDataMember Type="Value" Member="Number3" />
+
+                                                </dxc:SeriesDataAdapter>
+                                            </dxc:BarSeries.Data>
+                                            <dxc:BarSeries.Label>
+                                                <dxc:BarSeriesLabel Position="InsideTop"
+                                                                TextPattern="{}{V}">
+                                                    <dxc:BarSeriesLabel.Style>
+                                                        <dxc:SeriesLabelStyle>
+                                                            <dxc:SeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="Black"/>
+                                                            </dxc:SeriesLabelStyle.TextStyle>
+                                                        </dxc:SeriesLabelStyle>
+                                                    </dxc:BarSeriesLabel.Style>
+                                                </dxc:BarSeriesLabel>
+                                            </dxc:BarSeries.Label>
+
+                                            <dxc:BarSeries.Style>
+                                                <dxc:BarSeriesStyle Fill="Red" />
+                                            </dxc:BarSeries.Style>
+                                        </dxc:BarSeries>
+                                    </dxc:ChartView.Series>
+
+                                    <dxc:ChartView.AxisX >
+                                        <dxc:QualitativeAxisX >
+                                            <dxc:QualitativeAxisX.Label >
+                                                <dxc:AxisLabel Angle="45"/>
+                                            </dxc:QualitativeAxisX.Label>
+                                        </dxc:QualitativeAxisX>
+                                    </dxc:ChartView.AxisX>
+                                </dxc:ChartView>
+                            </StackLayout>
+
+
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <CollectionView ItemsSource="{Binding List_Pie,Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+
+
+                        <Frame>
+                            <StackLayout>
+                                <StackLayout Margin="5" BackgroundColor="#2296F3" HorizontalOptions="FillAndExpand" Padding="5">
+                                    <Label HorizontalTextAlignment="Center" TextColor="White" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Text="{Binding Pie_Name}"></Label>
+
+                                </StackLayout>
+                                <dxc:PieChartView HeightRequest="700" Margin="0"  FlowDirection="MatchParent" Visual="Material">
+
+                                    <dxc:PieChartView.Hint>
+                                        <dxc:PieHint Enabled="True"/>
+                                    </dxc:PieChartView.Hint>
+
+                                    <dxc:PieChartView.Legend>
+
+                                        <dxc:Legend Orientation="TopToBottom"
+                                HorizontalPosition="Left"
+                                VerticalPosition="BottomOutside"/>
+                                    </dxc:PieChartView.Legend>
+
+
+
+                                    <dxc:PieChartView.Series >
+
+                                        <dxc:DonutSeries>
+
+
+
+                                            <dxc:DonutSeries.HintOptions>
+                                                <dxc:PieSeriesHintOptions PointTextPattern="{}{L}: {VP}%"/>
+                                            </dxc:DonutSeries.HintOptions>
+
+                                            <dxc:DonutSeries.Label>
+                                                <dxc:PieSeriesLabel   Position="Inside" TextPattern="{}{V}"  Indent="30">
+                                                    <dxc:PieSeriesLabel.Style>
+                                                        <dxc:PieSeriesLabelStyle>
+                                                            <dxc:PieSeriesLabelStyle.TextStyle>
+                                                                <dxc:TextStyle Color="White" Size="15"  />
+                                                            </dxc:PieSeriesLabelStyle.TextStyle>
+                                                        </dxc:PieSeriesLabelStyle>
+                                                    </dxc:PieSeriesLabel.Style>
+                                                </dxc:PieSeriesLabel>
+                                            </dxc:DonutSeries.Label>
+
+                                            <dxc:DonutSeries.Data>
+                                                <dxc:PieSeriesDataAdapter DataSource="{Binding ListOfItems,Mode=TwoWay }"
+                                                                  LabelDataMember="Name"
+                                                                  ValueDataMember="Number" AutomationProperties.IsInAccessibleTree="True"
+                                                                  />
+                                            </dxc:DonutSeries.Data>
+
+                                        </dxc:DonutSeries>
+                                    </dxc:PieChartView.Series>
+                                </dxc:PieChartView>
+                            </StackLayout>
+
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <dxco:DXPopup  x:Name="Popup2" BackgroundColor="LightGray" CornerRadius="20" Margin="10"   AllowShadow="True">
+                <StackLayout  Padding="10" BackgroundColor="LightGray">
+                    <ScrollView>
+                        <CollectionView   ItemsSource="{Binding List_Paramettre_final,Mode=TwoWay}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+
+                                    <StackLayout Margin="5">
+
+
+                                        <dxe:TextEdit HorizontalOptions="FillAndExpand"   IsVisible="{Binding IsString}"  Text="{Binding StringValue,Mode=TwoWay}"  LabelText="{Binding Name}" IsLabelFloating="False"></dxe:TextEdit>
+
+                                        <dxe:NumericEdit HorizontalOptions="FillAndExpand"  IsVisible="{Binding IsInt,Mode=TwoWay}" Value="{Binding IntValue}" LabelText="{Binding Name}"  IsLabelFloating="False"></dxe:NumericEdit>
+
+                                        <Label HorizontalOptions="Start"  IsVisible="{Binding IsBool}" Text="{Binding Name,Mode=TwoWay}"></Label>
+                                        <dxe:CheckEdit  HorizontalOptions="FillAndExpand" IsChecked="{Binding BoolValue,Mode=TwoWay}" IsVisible="{Binding IsBool}"></dxe:CheckEdit>
+
+                                        <dxe:DateEdit HorizontalOptions="FillAndExpand" LabelText="{Binding Name}"  Date="{Binding DateValue,Mode=TwoWay}"  IsVisible="{Binding IsDate}" IsLabelFloating="False"></dxe:DateEdit>
+
+
+                                    </StackLayout>
+
+
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+                    </ScrollView>
+                    <Button Clicked="Button_Clicked" Text="Config"></Button>
+                </StackLayout>
+
+
+            </dxco:DXPopup>
+        </VerticalStackLayout>
+
+    </ScrollView>
+  
+
+
+
+
+
+
+
+
+
+</ContentPage>

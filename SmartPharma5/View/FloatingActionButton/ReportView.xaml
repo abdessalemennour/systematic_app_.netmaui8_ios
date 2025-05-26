@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                x:Class="SmartPharma5.View.FloatingActionButton.ReportView"
+                Title="ReportView">
+    <ScrollView>
+        <StackLayout Padding="24" Spacing="24" BackgroundColor="#FAFAFA">
+
+            <!-- Titre principal -->
+            <Label Text="Générer un rapport PDF"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="#222"
+                    Margin="0,0,0,10"/>
+
+            <!-- Section d'affichage et édition binaire -->
+            <Frame BackgroundColor="White"
+                   CornerRadius="16"
+                   HasShadow="True"
+                   Padding="20"
+                   BorderColor="#E0E0E0"
+>
+                <StackLayout Spacing="14">
+                    <Label Text="Contenu binaire modifiable"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#3D79F8"/>
+
+                    <Editor Text="{Binding EditableBinaryContent, Mode=TwoWay}"
+                           FontSize="12"
+                           FontFamily="Courier New"
+                           TextColor="#444"
+                           HeightRequest="200"
+                           AutoSize="TextChanges"/>
+
+
+                </StackLayout>
+            </Frame>
+            <Button Text="🎤 Écouter" Clicked="OnListenClicked" />
+
+            <!-- Bouton d'import -->
+            <Button Text="Importer PDF"
+          Command="{Binding ImportPdfCommand}"
+          FontSize="18"
+          FontAttributes="Bold"
+          TextColor="White"
+          BackgroundColor="#4CAF50"
+          CornerRadius="12"
+          HeightRequest="48"/>
+
+            <!-- Bouton de génération -->
+            <Button Text="Convertir en binaire"
+          Command="{Binding GeneratePdfCommand}"
+          FontSize="18"
+          FontAttributes="Bold"
+          TextColor="White"
+          BackgroundColor="#3D79F8"
+          CornerRadius="12"
+          HeightRequest="48"/>
+
+            <!-- Bouton de génération -->
+            <Button Text="Convertir en pdf"
+          Command="{Binding GeneratebinaryCommand}"
+          FontSize="18"
+          FontAttributes="Bold"
+          TextColor="White"
+          BackgroundColor="#3D79F8"
+          CornerRadius="12"
+          HeightRequest="48"/>
+
+            <!-- Message de statut -->
+            <Label Text="{Binding StatusMessage}"
+         FontSize="14"
+         TextColor="#388E3C"
+         IsVisible="{Binding IsStatusVisible}"
+         Margin="0,10,0,0"/>
+
+            <!-- Affichage d'un message de succès/erreur (optionnel) -->
+            <Label Text="{Binding PdfStatusMessage}"
+                    FontSize="14"
+                    TextColor="#388E3C"
+                    IsVisible="{Binding IsPdfStatusVisible}"
+                    Margin="0,10,0,0"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

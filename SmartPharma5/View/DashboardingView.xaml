@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.DashboardingView"
+             Title="DashboardingView">
+    <VerticalStackLayout>
+        <ScrollView Orientation="Vertical">
+            <StackLayout x:Name="scroll" >
+
+                <StackLayout  >
+                    <ImageButton BackgroundColor="#F2798F" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="dashboard.png"
+                             Command="{Binding MyDashBoardCommand}"
+                             
+                                >
+                    </ImageButton>
+                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"   Text="My Dashboard" TextColor="#274476"  FontSize="12" ></Label>
+                </StackLayout>
+                <StackLayout  IsVisible="{Binding DashboardIsVisible, Mode=TwoWay}" >
+                    <ImageButton BackgroundColor="#F2798F" 
+                                 CornerRadius="5" 
+                                HeightRequest="100" 
+                                WidthRequest="100" 
+                                HorizontalOptions="Center" 
+                                VerticalOptions="StartAndExpand"
+                                Padding="20"
+                                Source="dashboard.png"
+                             Command="{Binding AllDashBoardCommand}"
+                            
+                                >
+                    </ImageButton>
+                    <Label VerticalTextAlignment="End" HorizontalOptions="CenterAndExpand" FontAttributes="Bold" HorizontalTextAlignment="Center"   Text="All Dashboard" TextColor="#274476"  FontSize="12" ></Label>
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+       
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.QuizPartnerFormCalender"
+            xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                xmlns:local="clr-namespace:SmartPharma5.ViewModel"
+             xmlns:dxsch="clr-namespace:DevExpress.Maui.Scheduler;assembly=DevExpress.Maui.Scheduler"
+            
+          
+            Title="Calenadar"
+            >
+    <ContentPage.BindingContext>
+        <local:QuizPartnerFormCalenderViewModel></local:QuizPartnerFormCalenderViewModel>
+    </ContentPage.BindingContext>
+    
+    <dxco:TabView
+       >
+        <dxco:TabViewItem>
+            <dxco:TabViewItem.HeaderText >
+                <OnPlatform x:TypeArguments="x:String">
+                    <On Platform="iOS">Days</On>
+                    <On Platform="Android">Days</On>
+                    <!-- Add additional platforms as needed -->
+                </OnPlatform>
+
+
+            </dxco:TabViewItem.HeaderText>
+            <dxco:TabViewItem.Content>
+                <dxsch:DayView Visual="Default" FirstDayOfWeek="Monday"  FlowDirection="LeftToRight" LongPress="MonthView_LongPress" Tap="MonthView_Tap"  x:Name="yourDayViewCell">
+               
+                    <dxsch:DayView.GestureRecognizers></dxsch:DayView.GestureRecognizers>
+                    <dxsch:DayView.DataStorage>
+                        <dxsch:SchedulerDataStorage x:Name="partnerformstorage">
+                            <dxsch:SchedulerDataStorage.DataSource>
+                                <dxsch:DataSource AppointmentsSource="{Binding PartnerForms}"  AppointmentLabelsSource="{Binding PartnerForms}"  DateTimeSavingMode="Appointment">
+
+
+
+                                    <dxsch:DataSource.AppointmentMappings>
+                                        <dxsch:AppointmentMappings 
+                                                          Start="Estimated_date"
+                                                           End="Estimated_date"
+                                                           Id="Id"
+                                                           Subject="Partner_name"
+                                                           LabelId="Id_Calender"
+                                           
+                                                           >
+                                        </dxsch:AppointmentMappings>
+                                    </dxsch:DataSource.AppointmentMappings>
+
+
+                                    <dxsch:DataSource.AppointmentLabelMappings >
+                                        <dxsch:AppointmentLabelMappings
+                                    Caption="Partner_name"
+                                    Color="ValidatedColor"
+                                    Id="Id_Calender"/>
+                                    </dxsch:DataSource.AppointmentLabelMappings>
+
+                                </dxsch:DataSource>
+                            </dxsch:SchedulerDataStorage.DataSource>
+                        </dxsch:SchedulerDataStorage>
+                    </dxsch:DayView.DataStorage>
+
+                </dxsch:DayView>
+            </dxco:TabViewItem.Content>
+        </dxco:TabViewItem>
+
+        <dxco:TabViewItem >
+            <dxco:TabViewItem.HeaderText >
+                <OnPlatform x:TypeArguments="x:String">
+                    <On Platform="iOS">Weecks</On>
+                    <On Platform="Android">Weecks</On>
+                    <!-- Add additional platforms as needed -->
+                </OnPlatform>
+
+
+            </dxco:TabViewItem.HeaderText>
+            <dxco:TabViewItem.Content>
+                <ContentView >
+                    <ContentView.Content>
+                        <dxsch:WorkWeekView Visual="Default" FirstDayOfWeek="Monday" FlowDirection="LeftToRight" LongPress="MonthView_LongPress" Tap="MonthView_Tap" >
+                            <dxsch:WorkWeekView.DataStorage>
+                                <dxsch:SchedulerDataStorage >
+                                    <dxsch:SchedulerDataStorage.DataSource>
+                                        <dxsch:DataSource AppointmentsSource="{Binding PartnerForms}" AppointmentLabelsSource="{Binding PartnerForms}"  DateTimeSavingMode="Appointment">
+
+
+
+                                            <dxsch:DataSource.AppointmentMappings>
+                                                <dxsch:AppointmentMappings 
+                                                           Start="Estimated_date"
+                                                           End="Estimated_date"
+                                                           Id="Id"
+                                                           Subject="Partner_name"
+                                                           LabelId="Id_Calender"
+                                                           >
+                                                </dxsch:AppointmentMappings>
+                                            </dxsch:DataSource.AppointmentMappings>
+
+
+                                            <dxsch:DataSource.AppointmentLabelMappings>
+                                                <dxsch:AppointmentLabelMappings
+                                    Caption="Partner_name"
+                                    Color="ValidatedColor"
+                                    Id="Id_Calender"/>
+                                            </dxsch:DataSource.AppointmentLabelMappings>
+
+                                        </dxsch:DataSource>
+                                    </dxsch:SchedulerDataStorage.DataSource>
+                                </dxsch:SchedulerDataStorage>
+                            </dxsch:WorkWeekView.DataStorage>
+
+                        </dxsch:WorkWeekView>
+                    </ContentView.Content>
+                
+                </ContentView>
+            </dxco:TabViewItem.Content>
+        </dxco:TabViewItem>
+
+        <dxco:TabViewItem >
+            <dxco:TabViewItem.HeaderText >
+                <OnPlatform x:TypeArguments="x:String">
+                    <On Platform="iOS">Months</On>
+                    <On Platform="Android">Months</On>
+                    <!-- Add additional platforms as needed -->
+                </OnPlatform>
+
+
+            </dxco:TabViewItem.HeaderText>
+            <dxco:TabViewItem.Content>
+                <ContentView >
+                    <ContentView.Content >
+                        <dxsch:MonthView Visual="Default"  FirstDayOfWeek="Monday" FlowDirection="LeftToRight" LongPress="MonthView_LongPress" Tap="MonthView_Tap" >
+                            
+                            <dxsch:MonthView.DataStorage>
+                                <dxsch:SchedulerDataStorage>
+                                    <dxsch:SchedulerDataStorage.DataSource>
+                                        <dxsch:DataSource  AppointmentsSource="{Binding PartnerForms}" AppointmentLabelsSource="{Binding PartnerForms}"  DateTimeSavingMode="Appointment">
+
+
+
+                                            <dxsch:DataSource.AppointmentMappings 
+                                                >
+                                                
+                                                <dxsch:AppointmentMappings 
+                                                           Start="Estimated_date"
+                                                           End="Estimated_date"
+                                                           Id="Id"
+                                                    
+                                            
+                                                           Subject="Partner_name"
+                                                           LabelId="Id_Calender"
+                                                           >
+                                                </dxsch:AppointmentMappings>
+                                            </dxsch:DataSource.AppointmentMappings>
+
+
+                                            <dxsch:DataSource.AppointmentLabelMappings>
+                                                
+                                                <dxsch:AppointmentLabelMappings 
+                                                    
+                                    Caption="Partner_name"
+                                    Color="ValidatedColor"
+                                    Id="Id_Calender"/>
+                                                
+                                               
+                                                    
+                                               
+                                            </dxsch:DataSource.AppointmentLabelMappings>
+                                            
+
+                                        </dxsch:DataSource>
+                                    </dxsch:SchedulerDataStorage.DataSource>
+                                </dxsch:SchedulerDataStorage>
+                            </dxsch:MonthView.DataStorage>
+
+                        </dxsch:MonthView>
+                    </ContentView.Content>
+
+                </ContentView>
+            </dxco:TabViewItem.Content>
+        </dxco:TabViewItem>
+
+    </dxco:TabView>
+  
+</ContentPage>

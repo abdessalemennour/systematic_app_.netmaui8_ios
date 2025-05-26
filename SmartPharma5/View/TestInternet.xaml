@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.TestInternet"
+             Title="TestInternet"
+             NavigationPage.HasNavigationBar="false">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal">
+                <StackLayout Orientation="Vertical" Margin="15,20,0,0">
+                    <ImageButton BackgroundColor="White" Clicked="ImageButton_Clicked_1" Source="exit1.png" VerticalOptions="StartAndExpand"  HorizontalOptions="EndAndExpand">
+
+                    </ImageButton>
+                    <Label Text="Exit" FontAttributes="Bold" TextColor="#2596be"   HorizontalOptions="CenterAndExpand"></Label>
+
+                </StackLayout>
+
+                <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand" Margin="0,20,15,0">
+                    <ImageButton BackgroundColor="White" Clicked="ImageButton_Clicked_2" Source="login3.png" VerticalOptions="StartAndExpand"  HorizontalOptions="EndAndExpand">
+
+                    </ImageButton>
+                    <Label Text="Login" FontAttributes="Bold" TextColor="#2596be"   HorizontalOptions="CenterAndExpand"></Label>
+                </StackLayout>
+
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,0" Orientation="Vertical" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                <Image Source="failed2.png" BackgroundColor="White"></Image>
+                <Label Text="Connection Failed "   TextColor="Gray" FontSize="20" HorizontalTextAlignment="Center"></Label>
+                <ImageButton Source="loading1.png" BackgroundColor="White" Margin="0,40,0,0" Clicked="ImageButton_Clicked"></ImageButton>
+                <Label Text="Reload" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Start"  FontSize="20"  ></Label>
+                <StackLayout  IsVisible="false" x:Name="loading" Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <Label Text="Loading Please wait ..." FontSize="17" HorizontalTextAlignment="Center" Margin="0,15,0,0" TextColor="#2596be"></Label>
+                    <ActivityIndicator HorizontalOptions="CenterAndExpand"  IsRunning="True" BackgroundColor="White" Color="#6CC5DE" WidthRequest="15" HeightRequest="15" Margin="5,0,5,0"></ActivityIndicator>
+                </StackLayout>
+               
+                    <Image Source="workmanlogo.jpeg"  HorizontalOptions="CenterAndExpand" Margin="0,30,0,0" HeightRequest="60" WidthRequest="60"  VerticalOptions="StartAndExpand"></Image>
+
+               
+            </StackLayout>
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

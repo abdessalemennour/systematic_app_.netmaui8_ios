@@ -1,0 +1,11 @@
+version: 1.0.0
+build:
+  iOS:
+    branch: main   # Remplace 'main' par la branche de ton choix
+    targets:
+      - net7.0-ios  # Spécifie la plateforme iOS
+    configuration: Release   # Configuration du build (Release ou Debug)
+    build_script: appcenter-post-clone.sh
+    environment_variables:
+      - name: "DOTNET_CLI_HOME"
+        value: "/tmp"

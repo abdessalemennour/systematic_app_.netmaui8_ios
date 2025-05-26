@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.AjouterCongé"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             
+             Title="AjouterCongé">
+ 
+  
+        
+        
+        <ScrollView  Padding="10" HorizontalOptions="FillAndExpand"  >
+            <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand"  >
+
+
+
+
+                <dxe:ComboBoxEdit Margin="0,20,0,0" SelectedIndex="0" TextColor="Black"  LabelText="Pick Type" IsLabelFloating="False"  SelectedItem="{Binding Selected_type}" ItemsSource="{Binding Day_Off_Types}"  DisplayMember="Description"  ></dxe:ComboBoxEdit>
+
+                <StackLayout Orientation="Vertical" Margin="0,20,0,0">
+                    <Label Text="Start date :"  FontSize="Medium"  TextColor="Gray"  HorizontalTextAlignment="Start" TextDecorations="None" VerticalOptions="CenterAndExpand" Margin="1" />
+                    <Frame CornerRadius="2" BorderColor="CadetBlue" BackgroundColor="#F3F5F9" HasShadow="True" Margin="1" Padding="10">
+                        <StackLayout Orientation="Horizontal"  >
+                            <DatePicker MaximumDate="{Binding Maximum_date}" MinimumDate="{Binding Minimum_date,Mode=TwoWay}" WidthRequest="150"  Date="{Binding Start_date , Mode=TwoWay}" x:Name="date1" FontFamily = "Lobster" TextColor="Black" FontSize="Medium"  Margin="5" HorizontalOptions="StartAndExpand"  VerticalOptions="CenterAndExpand" ></DatePicker>
+                            <TimePicker  Time="{Binding Start_time,Mode=TwoWay}" HorizontalOptions="CenterAndExpand" WidthRequest="100" VerticalOptions="CenterAndExpand"></TimePicker>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+
+
+            <StackLayout Margin="0,20,0,0" HorizontalOptions="FillAndExpand" Orientation="Vertical">
+                    <Label Text="End date :" FontSize="Medium" HorizontalTextAlignment="Start" TextColor="Gray"  VerticalOptions="StartAndExpand" Margin="1"></Label>
+                    <Frame CornerRadius="5" BorderColor="CadetBlue" BackgroundColor="#F3F5F9" HasShadow="True" Padding="10" Margin="1">
+                        <StackLayout Orientation="Horizontal">
+                            <DatePicker MaximumDate="{Binding Maximum_date}" MinimumDate="{Binding Start_date}"  Margin="5" FontSize="Medium"  FontFamily="Lobster-Regular" HorizontalOptions="StartAndExpand"  Date="{Binding End_date , Mode=TwoWay}" VerticalOptions="CenterAndExpand" WidthRequest="150"></DatePicker>
+                            <TimePicker Time="{Binding End_time ,Mode=TwoWay}" HorizontalOptions="CenterAndExpand" WidthRequest="100" VerticalOptions="CenterAndExpand"></TimePicker>
+                        </StackLayout>
+
+                    </Frame>
+                </StackLayout>
+
+
+
+
+            <dxe:MultilineEdit  Margin="0,20,0,0" Text="{Binding Description}"  HeightRequest="150" LabelFontSize="Medium" CursorPosition="-100"  HorizontalOptions="FillAndExpand" LabelText="Request déscription :" IsLabelFloating="False"></dxe:MultilineEdit>
+
+                <Button  Text="ADDED"  FontFamily="Lobster-Regular" BackgroundColor="LightGray" ImageSource="add2.png" HorizontalOptions="CenterAndExpand" CornerRadius="10" Margin="10" WidthRequest="200" Command="{Binding InsertCongeCommandet}" />
+
+                <dxco:DXPopup IsOpen="{Binding isAdded}"  >
+                    <StackLayout WidthRequest="200" Padding="10"   BackgroundColor="AliceBlue">
+                        <Label
+                    Text="ADDED SUCCEFULLY" 
+                    Margin="5, 5"/>
+                        <Image Source="accept2.png">
+
+                        </Image>
+                    </StackLayout>
+                </dxco:DXPopup>
+            <dxco:DXPopup  x:Name="Popup"  IsOpen="{Binding TestCon,Mode=TwoWay}"  CornerRadius="20"  AllowShadow="True">
+                <Frame CornerRadius="20" Padding="20,25,20,25">
+                    <StackLayout Padding="5" WidthRequest="150" BackgroundColor="White" Orientation="Vertical" >
+                        <Label HorizontalOptions="CenterAndExpand" FontAttributes="Bold" Text="Failed Connection"  VerticalOptions="CenterAndExpand"></Label>
+                        <Image HorizontalOptions="CenterAndExpand" Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+                    </StackLayout>
+                </Frame>
+
+            </dxco:DXPopup>
+        </StackLayout>
+            
+        </ScrollView>
+      
+ 
+</ContentPage>

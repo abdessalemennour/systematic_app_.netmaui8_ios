@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SmartPharma5.View"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             x:Class="SmartPharma5.View.FileSelectionView"
+             Title="Select File"
+             BackgroundColor="#F5F5F5">
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Text="Menu" IconImageSource="menu2.png" Clicked="OpenDrawer_Clicked"/>
+    </ContentPage.ToolbarItems>-->
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem Text="Menu" IconImageSource="menu2.png" Clicked="OpenNewPage_Clicked"/>
+    </ContentPage.ToolbarItems>-->
+
+
+    <Grid>
+        <StackLayout>
+            <!-- Barre horizontale en haut avec les boutons "Add File", "Drawing" et "Take Photo" -->
+            <StackLayout Orientation="Horizontal">
+                <Frame HorizontalOptions="FillAndExpand">
+                    <Button Clicked="OnAddFileClicked"
+                            VerticalOptions="CenterAndExpand"
+                            HeightRequest="40"
+                            CornerRadius="30"
+                            Text="Add File"
+                            BackgroundColor="#512BD4"
+                            TextColor="White"/>
+                </Frame>
+                <Frame HorizontalOptions="FillAndExpand">
+                    <Button Clicked="OnDrawingClicked"
+                            VerticalOptions="CenterAndExpand"
+                            BackgroundColor="#4B9EE8"
+                            HeightRequest="40"
+                            CornerRadius="30"
+                            Text="Drawing"
+                            TextColor="White"/>
+                </Frame>
+                <Frame x:Name="added" HorizontalOptions="FillAndExpand">
+                    <Button Clicked="OnTakePhotoClicked"
+                            VerticalOptions="CenterAndExpand"
+                            BackgroundColor="ForestGreen"
+                            HeightRequest="40"
+                            CornerRadius="30"
+                            Text="Take Photo"
+                            TextColor="White"/>
+                </Frame>
+            </StackLayout>
+            <StackLayout  IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Margin="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
+                <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
+
+            </StackLayout>
+            <!-- CollectionView pour afficher les documents récupérés -->
+            <RefreshView IsRefreshing="{Binding ActPopup}" 
+                         Command="{Binding RefreshCommand}" 
+                         HorizontalOptions="CenterAndExpand" 
+                         RefreshColor="#4B9EE8">
+                
+                <dxcv:DXCollectionView x:Name="DocumentsCollectionView" 
+
+                                       ItemsSource="{Binding Documents, Mode=TwoWay}" 
+                                       ItemSpacing="1">
+                    <!-- Define the item template -->
+                    <dxcv:DXCollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="8" 
+                                   HasShadow="True" 
+                                   BorderColor="{Binding ValidatedColor}" 
+                                   Padding="0">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                </Frame.GestureRecognizers>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Partie gauche : Détails du fichier -->
+                                    <StackLayout Grid.Column="0" Padding="10">
+                                        <!-- Nom et type sur la même ligne -->
+                                        <StackLayout Orientation="Horizontal" Spacing="5">
+                                            <Label FontSize="Medium" TextColor="#55575c">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding name}" FontAttributes="Bold" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                            <Label FontSize="Medium" TextColor="#55575c">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding extension}" FontAttributes="Bold" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </StackLayout>
+                                        
+
+                                        <!-- Utiliser un Grid pour aligner "Created" et "Date" sur la même ligne -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Label "Date" dans la première colonne -->
+                                            <Label Grid.Column="0" FontSize="Caption" TextColor="#959aa0" Margin="0,5,0,0">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Date: " FontAttributes="Bold" />
+                                                        <Span Text="{Binding date, StringFormat='{0:dd/MM/yyyy}'}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            <!-- Label "Creation Date" dans la deuxième colonne -->
+                                            <Label Grid.Column="1" FontSize="Caption" TextColor="#959aa0" Margin="0,5,0,0" HorizontalOptions="End">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Creation Date: " FontAttributes="Bold" />
+                                                        <Span Text="{Binding create_date, StringFormat='{0:dd/MM/yyyy HH:mm}'}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </Grid>
+
+                                        <!-- Memo -->
+                                        <Label FontSize="Caption" TextColor="#959aa0" Margin="0,5,0,0">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Memo: " FontAttributes="Bold" />
+                                                    <Span Text="{Binding memo}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <!-- Description -->
+                                        <Label FontSize="Caption" TextColor="#959aa0" Margin="0,5,0,0">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Description: " FontAttributes="Bold" />
+                                                    <Span Text="{Binding description}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <!-- Document_type -->
+                                        <Label FontSize="Caption" TextColor="#959aa0" Margin="0,5,0,0">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Document Type: " FontAttributes="Bold" />
+                                                    <Span Text="{Binding TypeDocumentName}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <!-- Taille du document -->
+                                        <Label FontSize="Caption" TextColor="#959aa0" Margin="0,5,0,0">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Size: " FontAttributes="Bold" />
+                                                    <Span Text="{Binding size, StringFormat='{0} bytes'}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
+
+                                    <!-- Partie droite : Boutons -->
+                                    <StackLayout Grid.Column="1" 
+                                                 VerticalOptions="Center" 
+                                                 Padding="10">
+                                        <!-- Bouton DELETE remplacé par une icône -->
+                                        <ImageButton Margin="5" 
+                                                     VerticalOptions="Center" 
+                                                     HorizontalOptions="End" 
+                                                     Padding="5" 
+                                                     Source="delete_icon.png"
+                                                     BackgroundColor="Transparent" 
+                                                     Clicked="OnDeleteClicked" 
+                                                     CommandParameter="{Binding .}" />
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </dxcv:DXCollectionView.ItemTemplate>
+                </dxcv:DXCollectionView>
+            </RefreshView>
+        </StackLayout>
+        <!--<Grid>
+            --><!-- Bouton principal --><!--
+            <ImageButton x:Name="MainButton" 
+                 Source="plus.png" 
+                 BackgroundColor="Transparent" 
+                 WidthRequest="50" 
+                 HeightRequest="50" 
+                 CornerRadius="25" 
+                 HorizontalOptions="End" 
+                 VerticalOptions="End" 
+                 Clicked="OnMainButtonClicked"/>
+
+            --><!-- Boutons secondaires (initialement invisibles) --><!--
+            <ImageButton x:Name="ActionButton1" 
+                 Source="chat.png" 
+                 BackgroundColor="Transparent" 
+                 WidthRequest="30" 
+                 HeightRequest="30" 
+                 CornerRadius="15" 
+                 HorizontalOptions="End" 
+                 VerticalOptions="End" 
+                 IsVisible="False"
+                 TranslationY="-70"
+                 Clicked="OnActionButtonClicked"/>
+
+            <ImageButton x:Name="ActionButton2" 
+                 Source="activity.png" 
+                 BackgroundColor="Transparent" 
+                 WidthRequest="30" 
+                 HeightRequest="30" 
+                 CornerRadius="15" 
+                 HorizontalOptions="End" 
+                 VerticalOptions="End" 
+                 IsVisible="False"
+                 TranslationX="-50"
+                 TranslationY="-50"
+                 Clicked="OnActionButtonClicked"/>
+
+            <ImageButton x:Name="ActionButton3" 
+                 Source="memo.png" 
+                 BackgroundColor="Transparent" 
+                 WidthRequest="30" 
+                 HeightRequest="30" 
+                 CornerRadius="15" 
+                 HorizontalOptions="End" 
+                 VerticalOptions="End" 
+                 IsVisible="False"
+                 TranslationX="-70"
+                 Clicked="OnActionButtonClicked"/>
+        </Grid>-->
+    </Grid>
+
+</ContentPage>

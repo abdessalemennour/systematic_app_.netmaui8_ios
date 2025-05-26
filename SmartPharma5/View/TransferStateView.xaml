@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartPharma5.View.TransferStateView"
+              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="TransferStateView">
+    <NavigationPage.TitleView>
+        <Label Text="{Binding Title}" HorizontalOptions="CenterAndExpand"  FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+    </NavigationPage.TitleView>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
+        <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
+    </ContentPage.ToolbarItems>
+
+
+
+
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="FillAndExpand">
+            <StackLayout VerticalOptions="FillAndExpand">
+
+
+                    <StackLayout HorizontalOptions="FillAndExpand" BackgroundColor="#88979B">
+                        <Label Text="{Binding Transfer.create_date, Mode=TwoWay,StringFormat='Validated : {0:dd/MM/yyyy  h:mm tt}'}" TextColor="White" FontSize="Subtitle" BackgroundColor="#88979B" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5"/>
+                    </StackLayout>
+                    <StackLayout HorizontalOptions="CenterAndExpand" BackgroundColor="{Binding Transfer.stateColor}">
+                        <Label Text="{Binding Transfer.last_state}" TextColor="White" FontSize="Subtitle" BackgroundColor="{Binding Transfer.stateColor}" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"  HorizontalTextAlignment="Center"  VerticalTextAlignment="Center" Padding="5" IsVisible="{Binding IsVisibleStateName}"/>
+
+                    </StackLayout>
+
+
+                   
+                    <StackLayout  Spacing="5" Margin="0" Padding="10,10,10,2">
+                        <dxe:NumericEdit LabelText="Amount" Value="{Binding Transfer.amount , Mode=TwoWay}" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" IsReadOnly="True" DisplayFormat="n3"/>
+                        <dxe:ComboBoxEdit LabelText="Cash Desk In" HeightRequest="50" TextHorizontalAlignment="Center" VerticalOptions="Center" ItemsSource="{Binding Cash_deskList, Mode=TwoWay}" SelectedItem="{Binding Cash_deskListselecteditem, Mode=TwoWay}" DisplayMember="Name" IsReadOnly="True"></dxe:ComboBoxEdit>
+                        <dxe:MultilineEdit HeightRequest="100" LabelText="Note" Text="{Binding Transfer.memo, Mode=TwoWay}" TextFontSize="Small" IsReadOnly="True"></dxe:MultilineEdit>
+                    </StackLayout>
+
+
+
+
+
+
+
+
+                <ScrollView VerticalOptions="FillAndExpand">
+                    <StackLayout Spacing="5" Margin="5,8,8,0">
+                        <dxcv:DXCollectionView 
+            x:Name="UnpaiedCollectionView" 
+            ItemsSource="{Binding Transfer.PaymentList}" 
+            ItemSpacing="5"  
+            Margin="5,8,8,0">
+
+                            <dxcv:DXCollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame  HasShadow="True" BorderColor="#1B7D6A" CornerRadius="5" BackgroundColor="#EEEAEA">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*"/>
+                                                <ColumnDefinition Width="5*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition Height="auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Label Grid.Row="0" Grid.Column="0"  Text="{Binding PaymentCode, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                                            <Label Grid.Row="0" Grid.Column="1"  Text="{Binding PartnerName, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center"/>
+                                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding amount, Mode=OneWay,StringFormat='{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Center"/>
+                                            <Label Grid.Row="1" Grid.Column="0" Text="Amount :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </dxcv:DXCollectionView.ItemTemplate>
+                        </dxcv:DXCollectionView>
+                    </StackLayout>
+                </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </StackLayout>
+
+            <StackLayout VerticalOptions="End" Orientation="Horizontal" Margin="1" HorizontalOptions="FillAndExpand"  IsVisible="{Binding IsVisibleState}">
+                <dxco:SimpleButton BackgroundColor="#FF0000" HorizontalOptions="FillAndExpand" BorderColor="#515151" FontSize="Medium" Text="Reject" Icon="demotabview_cartbutton" Padding="10" Margin="0,15,5,5" Command="{Binding SetRejectedCommand}" IsVisible="{Binding IsVisibleRejectedState}"/>
+                <dxco:SimpleButton BackgroundColor="#1EC71A" HorizontalOptions="FillAndExpand" BorderColor="#515151" FontSize="Medium" Text="Accept" Icon="demotabview_cartbutton" Padding="10" Margin="5,15,0,5" Command="{Binding SetAcceptedCommand}" IsVisible="{Binding IsVisibleAcceptedState}"/>
+            </StackLayout>
+            <StackLayout Margin="10">
+                <dxco:SimpleButton VerticalOptions="EndAndExpand" BackgroundColor="Black" BorderColor="#515151" FontSize="Medium" Text="SAVE" Icon="demotabview_cartbutton" Padding="10" Margin="10,0,10,10" Command="{Binding SaveCommand}" IsVisible="{Binding IsSaveVisible}"/>
+            </StackLayout>
+        </StackLayout>
+       
+    </ContentPage.Content>
+
+
+
+</ContentPage>
