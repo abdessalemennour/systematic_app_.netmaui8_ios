@@ -1,6 +1,4 @@
-﻿
-
-/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
+﻿/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
 Avant :
 using SmartPharma5.Model;
 using SmartPharma5.View;
@@ -13,6 +11,8 @@ using SmartPharma5.Model;
 //using GameplayKit;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
+using MySqlConnector;
+
 
 /* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
 Avant :
@@ -27,6 +27,7 @@ using SmartPharma5.View;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 //using Xamarin.Essentials;
 //using static SmartPharma.Model.Payment;
@@ -68,12 +69,23 @@ namespace SmartPharma5.ViewModel
 
         private bool isVisibleSaveButton = true;
         public bool IsVisibleSaveButton { get => isVisibleSaveButton; set => SetProperty(ref isVisibleSaveButton, value); }
-      /*  private bool isCurrencySymbolVisible;
-        public bool IsCurrencySymbolVisible
-        {
-            get => isCurrencySymbolVisible;
-            set => SetProperty(ref isCurrencySymbolVisible, value);
-        }*/
+
+        private bool isVisiblesocity = true;
+        public bool IsVisiblesocity { get => isVisiblesocity; set => SetProperty(ref isVisibleSaveButton, value); }
+        private bool isVisibleSocity = true;
+        public bool IsVisibleSocity { get => isVisibleSocity; set => SetProperty(ref isVisibleSocity, value); }
+        //private bool isVisiblesocity = true;
+        //public bool IsVisiblesocity
+        //{
+        //    get => isVisiblesocity;
+        //    set => SetProperty(ref isVisiblesocity, value);
+        //}
+        /*  private bool isCurrencySymbolVisible;
+          public bool IsCurrencySymbolVisible
+          {
+              get => isCurrencySymbolVisible;
+              set => SetProperty(ref isCurrencySymbolVisible, value);
+          }*/
 
         private bool isVisibleCurrency = false;
         public bool IsVisibleCurrency
@@ -81,9 +93,11 @@ namespace SmartPharma5.ViewModel
             get => isVisibleCurrency;
             set => SetProperty(ref isVisibleCurrency, value);
         }
-
         private bool isVisibleBankAccount = false;
         public bool IsVisibleBankAccount { get => isVisibleBankAccount; set => SetProperty(ref isVisibleBankAccount, value); }
+
+        //private bool isVisibleSocity = true;
+        //public bool IsVisibleSocity { get => isVisibleSocity; set => SetProperty(ref isVisibleSocity, value); }
         private bool isVisibledue_date = false;
         public bool IsVisibledue_date { get => isVisibledue_date; set => SetProperty(ref isVisibledue_date, value); }
         private bool isVisiblereference = false;
@@ -104,7 +118,6 @@ namespace SmartPharma5.ViewModel
                 OnPropertyChanged(nameof(IsComboBoxVisible));
             }
         }
-
         private bool _isLabelVisible = true;
         public bool IsLabelVisible
         {
@@ -242,34 +255,62 @@ namespace SmartPharma5.ViewModel
         /*****************************/
         private async Task AmountChange()
         {
-            decimal restEffectedAmount = Effected_Amount;
-            this.Payment.Payment_pieceList.Clear();
-            foreach (Payment.Piece piece in UnpaiedList)
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                if (restEffectedAmount >= piece.rest_amount)
+                decimal restEffectedAmount = Effected_Amount;
+                this.Payment.Payment_pieceList.Clear();
+
+                foreach (Payment.Piece piece in UnpaiedList)
                 {
-                    if (piece == UnpaiedList.Last())
+                    if (restEffectedAmount >= piece.rest_amount)
                     {
-                        this.Payment.Payment_pieceList.Add(new Payment.Payment_piece(0, piece.Id, piece.piece_type, piece.piece_type_name, piece.code, 0, restEffectedAmount, piece.total_amount, piece.paied_amount, piece.rest_amount,piece.currencySymbol, piece.DecimalNumbre));
-                        restEffectedAmount = restEffectedAmount - piece.rest_amount;
+                        // Créer un nouveau Payment_piece avec le montant total restant
+                        this.Payment.Payment_pieceList.Add(new Payment.Payment_piece(
+                            0,
+                            piece.Id,
+                            piece.piece_type,
+                            piece.piece_type_name,
+                            piece.code,
+                            0,
+                            piece.rest_amount,
+                            piece.total_amount,
+                            piece.paied_amount,
+                            piece.rest_amount,
+                            piece.currencySymbol,
+                            piece.DecimalNumbre
+                        ));
+                        restEffectedAmount -= piece.rest_amount;
                     }
-                    else
+                    else if (restEffectedAmount > 0)
                     {
-                        this.Payment.Payment_pieceList.Add(new Payment.Payment_piece(0, piece.Id, piece.piece_type, piece.piece_type_name, piece.code, 0, piece.rest_amount, piece.total_amount, piece.paied_amount, piece.rest_amount, piece.currencySymbol, piece.DecimalNumbre));
-                        restEffectedAmount = restEffectedAmount - piece.rest_amount;
+                        // Créer un nouveau Payment_piece avec le montant restant partiel
+                        this.Payment.Payment_pieceList.Add(new Payment.Payment_piece(
+                            0,
+                            piece.Id,
+                            piece.piece_type,
+                            piece.piece_type_name,
+                            piece.code,
+                            0,
+                            restEffectedAmount,
+                            piece.total_amount,
+                            piece.paied_amount,
+                            piece.rest_amount,
+                            piece.currencySymbol,
+                            piece.DecimalNumbre
+                        ));
+                        restEffectedAmount = 0;
                     }
+
+                    // Forcer la mise à jour de l'interface
+                    OnPropertyChanged(nameof(UnpaiedList));
                 }
-                else
-                {
-                    this.Payment.Payment_pieceList.Add(new Payment.Payment_piece(0, piece.Id, piece.piece_type, piece.piece_type_name, piece.code, 0, restEffectedAmount, piece.total_amount, piece.paied_amount, piece.rest_amount, piece.currencySymbol, piece.DecimalNumbre));
-                    break;
-                }
-            }
-            Payment.SetAmount();
-            SuccessPopupMessage = "Amount affected with success";
-            SuccessPopup = true;
-            await Task.Delay(1000);
-            SuccessPopup = false;
+
+                // Mettre à jour le montant total
+                Payment.SetAmount();
+
+                // Mettre à jour l'interface après toutes les modifications
+                UpdateUIOnMainThread();
+            });
         }
         public AsyncCommand<Payment.Piece> SelectedChangedCommand { get; }
         private async Task serr()
@@ -359,7 +400,7 @@ namespace SmartPharma5.ViewModel
              }
          }
         */
-       // private string _currencyName;
+        // private string _currencyName;
 
         public string CurrencyNameLabel
         {
@@ -385,6 +426,14 @@ namespace SmartPharma5.ViewModel
             get => _displayFormat;
             set => SetProperty(ref _displayFormat, value);
         }
+        private bool _isVisibleSocietyComboBox;
+        public bool IsVisibleSocietyComboBox
+        {
+            get => _isVisibleSocietyComboBox;
+            set => SetProperty(ref _isVisibleSocietyComboBox, value);
+        }
+       //public bool SocietyComboBox => !IsVisibleSocietyComboBox;
+
         private int? _decimalNumber;
         public int? DecimalNumber
         {
@@ -396,7 +445,7 @@ namespace SmartPharma5.ViewModel
                     _decimalNumber = value;
                     OnPropertyChanged(nameof(DecimalNumber));
                     UpdateDisplayFormat();
-                  //  UpdateDisplayTotal();
+                    //  UpdateDisplayTotal();
                 }
             }
         }
@@ -409,8 +458,15 @@ namespace SmartPharma5.ViewModel
         }
 
         //public string CurrencyNameview => CurrencyListselecteditem?.Name;
+        private ObservableRangeCollection<Society> societyList;
+        public ObservableRangeCollection<Society> SocietyList { get => societyList; set => SetProperty(ref societyList, value); }
 
-        public PaymentViewModel() {
+        private Society societySelectedItem;
+        public Society SocietySelectedItem { get => societySelectedItem; set => SetProperty(ref societySelectedItem, value); }
+
+        public AsyncCommand SocietyChangedCommand { get; }
+        public PaymentViewModel()
+        {
 
             //CurrencySelectionChangedCommand = new AsyncCommand<Payment.currency>(OnCurrencySelectionChanged);
         }
@@ -422,7 +478,6 @@ namespace SmartPharma5.ViewModel
             Currency = Payment.Currency;
             Currency = payment.Currency ?? Partner.Currency;
             CurrencyList = new ObservableRangeCollection<Payment.currency>(Payment.currency.GetAllCurrencies());
-            //Sélectionner la devise correcte en fonction de l'ID de la devise récupéré
             CurrencyListselecteditem = CurrencyList.FirstOrDefault(c => c.Id == Currency.Value);
             UnpaiedList = new ObservableRangeCollection<Payment.Piece>();
             CurrencySelectionChangedCommand = new AsyncCommand<Payment.currency>(OnCurrencySelectionChanged);
@@ -442,16 +497,83 @@ namespace SmartPharma5.ViewModel
             IsSaveDocumentButtonVisible = false;
             IsMainButtonVisible = false;
             Payment_pieceAmountChangeCommand = new AsyncCommand<object>(Payment_pieceAmountChange);
+
+            // Initialize Society
+            SocietyList = new ObservableRangeCollection<Society>();
+            SocietyChangedCommand = new AsyncCommand(SocietyChanged);
+
             setSaveVisibility();
             Task.Run(() => LoadList());
+            Task.Run(() => LoadSocieties());
             UpdateDisplayFormat();
-          //UpdateDisplayTotal();
         }
+        private async Task SocietyChanged()
+        {
+            if (SocietySelectedItem != null)
+            {
+                // Vous pouvez ajouter ici la logique asynchrone nécessaire quand une société est sélectionnée
+                await Task.CompletedTask; // Pour respecter la signature async
+            }
+        }
+        private async Task LoadSocieties()
+        {
+            // 1. Vider le cache avant de recharger
+            await Society.ClearSocietiesCache();
 
+            // 2. Charger les sociétés pour le nouvel utilisateur
+            var societies = await Society.GetAllSocietiesAsync();
+
+            // 3. Mettre à jour la liste
+            SocietyList.Clear();
+            foreach (var society in societies)
+            {
+                SocietyList.Add(society);
+            }
+            IsVisibleSocietyComboBox = SocietyList.Count > 1;
+
+            // 4. Sélectionner la première société comme valeur par défaut
+            if (SocietyList.Count > 0)
+            {
+                SocietySelectedItem = SocietyList[0];
+            }
+
+            // 5. Notifier les changements
+            OnPropertyChanged(nameof(SocietyList));
+            OnPropertyChanged(nameof(SocietySelectedItem));
+            OnPropertyChanged(nameof(IsVisibleSocietyComboBox));
+            //OnPropertyChanged(nameof(SocietyComboBox));
+
+        }
+        // Ajoutez ces méthodes
+        protected void UpdateUIOnMainThread()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                OnPropertyChanged(nameof(Payment));
+                OnPropertyChanged(nameof(UnpaiedList));
+                OnPropertyChanged(nameof(Payment.Payment_pieceList));
+                OnPropertyChanged(nameof(Effected_Amount));
+                OnPropertyChanged(nameof(Total_unpaied));
+
+                // Afficher le message de succès
+                SuccessPopupMessage = "Amount affected with success";
+                SuccessPopup = true;
+
+                // Programmer la fermeture du popup après 1 seconde
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        SuccessPopup = false;
+                    });
+                    return false;
+                });
+            });
+        }
         #endregion
         #region DisplayFormat
         private void UpdateDisplayFormat()
-        
+
         {
             if (Payment.DecimalNumber.HasValue)
             {
@@ -459,7 +581,7 @@ namespace SmartPharma5.ViewModel
             }
             else
             {
-                DisplayFormat = "n3"; 
+                DisplayFormat = "n3";
             }
         }
 
@@ -478,7 +600,7 @@ namespace SmartPharma5.ViewModel
                 }
                 else
                 {
-                   // await App.Current.MainPage.DisplayAlert("Warning", "Please select a payment method first.", "Ok");
+                    // await App.Current.MainPage.DisplayAlert("Warning", "Please select a payment method first.", "Ok");
 
                 }
 
@@ -590,11 +712,12 @@ namespace SmartPharma5.ViewModel
                 {
                     Cash_deskListselecteditem = cd;
                     break;
-                }   
+                }
         }
         #endregion
         #region Payment_typeChangeCommand
         public AsyncCommand Payment_typeChangedCommand { get; }
+
         private Task Payment_typeChanged()
         {
             switch (PaymentTypeListSelectedItem.Id)
@@ -617,7 +740,7 @@ namespace SmartPharma5.ViewModel
 
         private async Task Save()
         {
-            // Vérifier la devise de chaque pièce sélectionnée
+            // Vérifier chaque pièce sélectionnée
             foreach (var piece in UnpaiedList)
             {
                 if (piece.Is_checked && piece.IdCurrency != Currency)
@@ -625,7 +748,15 @@ namespace SmartPharma5.ViewModel
                     await App.Current.MainPage.DisplayAlert("Failed", $"Coin currency {piece.code} does not match the selected currency.", "Ok");
                     return; // Arrête la sauvegarde si la devise ne correspond pas
                 }
+                if (piece.Is_checked && piece.SocityId != SocietySelectedItem.Id)
+                {
+                    await App.Current.MainPage.DisplayAlert("Failed", $"The society of the selected piece does not match the selected society.", "Ok");
+                    return; // Arrête la sauvegarde si la société ne correspond pas
+                }
             }
+
+            //Payment.Socity = SocietySelectedItem.Id;
+            Payment.Socity = SocietySelectedItem.Id;
 
             SuccessPopupMessage = "data verification...";
             VerifPopup = true;
@@ -746,7 +877,7 @@ namespace SmartPharma5.ViewModel
                 IsSaveDocumentButtonVisible = true;
                 IsMainButtonVisible = true;
             }
-           
+
         }
 
 
@@ -778,14 +909,14 @@ namespace SmartPharma5.ViewModel
             ActPopup = true;
             UnpaiedList.Clear();
             /*   if (!(Payment.Id > 0))
-               {
-                   var unpaiedPiecesTask = Task.Run(() => Payment.GetUnpaiedPiece(Payment.IdPartner, Currency));
-                   UnpaiedList = new ObservableRangeCollection<Payment.Piece>(await unpaiedPiecesTask);
-                   var totalUnpaiedPiecesTask = Task.Run(() => Payment.GettotalUnpaiedPiece(Payment.IdPartner));
-                   var totalUnpaiedPieces = await totalUnpaiedPiecesTask;
-                   Total_unpaied = totalUnpaiedPieces.Sum(p => p.rest_amount);
-               }
-            */
+                {
+                    var unpaiedPiecesTask = Task.Run(() => Payment.GetUnpaiedPiece(Payment.IdPartner, Currency));
+                    UnpaiedList = new ObservableRangeCollection<Payment.Piece>(await unpaiedPiecesTask);
+                    var totalUnpaiedPiecesTask = Task.Run(() => Payment.GettotalUnpaiedPiece(Payment.IdPartner));
+                    var totalUnpaiedPieces = await totalUnpaiedPiecesTask;
+                    Total_unpaied = totalUnpaiedPieces.Sum(p => p.rest_amount);
+                }
+             */
             if (!(Payment.Id > 0))
             {
                 var unpaiedPiecesTask = Task.Run(() => Payment.GetUnpaiedPiece(Payment.IdPartner, null)); // Ne pas passer currencyId
@@ -808,7 +939,6 @@ namespace SmartPharma5.ViewModel
                 var J = Task.Run(() => Payment.getPaymentMethodByUser(iduser));
                 Payment_methodList = new ObservableRangeCollection<Payment.Payment_method>(await J);
             }
-
 
             PaymentTypeList.Clear();
             var A = Task.Run(() => Payment.getTypeList());
@@ -885,6 +1015,13 @@ namespace SmartPharma5.ViewModel
                     var W = Task.Run(() => Payment.Bank.getBankById(Payment.sale_bank));
                     BankListSelectedItem = await W;
                 }
+                // Ajout de la gestion de la société comme le cash desk
+                if (Payment.Socity > 0)
+                {
+                    var S = Task.Run(() => Society.GetSocietyById((int)Payment.Socity));
+                    SocietySelectedItem = await S;
+                    OnPropertyChanged(nameof(SocietySelectedItem));
+                }
             }
             else
             {
@@ -951,13 +1088,42 @@ namespace SmartPharma5.ViewModel
             }
             ActPopup = false;
         }
+
+        //public ObservableCollection<Society> SocietyList { get; set; }
+        //public Society SocietySelectedItem { get; set; }
+        //public ICommand SocietyChangedCommand { get; }
+
+        //private async Task LoadSocieties()
+        //{
+        //    try
+        //    {
+        //        var societies = await Society.GetAllSocietiesAsync();
+        //        if (societies != null)
+        //        {
+        //            SocietyList = new ObservableCollection<Society>(societies);
+        //        }
+        //        else
+        //        {
+        //            await App.Current.MainPage.DisplayAlert("Error", "Failed to load societies", "OK");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await App.Current.MainPage.DisplayAlert("Error", "Failed to load societies: " + ex.Message, "OK");
+        //    }
+        //}
+
+        //private async Task OnSocietyChanged(Society society)
+        //{
+        //    if (society != null)
+        //    {
+        //        // Handle society selection change here
+        //        SocietySelectedItem = society;
+        //        // Add any additional logic you need when society changes
+        //    }
+        //}
+
+        // Ajoutez cette méthode dans la classe Society si elle n'existe pas déjà
     }
 }
-/*  CurrencyList = new ObservableRangeCollection<Payment.currency>
-  {
-      new Payment.currency { Id = 1, Name = "TND" },
-      new Payment.currency { Id = 2, Name = "USD" },
-      new Payment.currency { Id = 3, Name = "EURO" }
-  };*/
-/* CurrencyList = new ObservableRangeCollection<string> { Payment.Currency?.ToString() };
- CurrencySelectedItem = Payment.Currency?.ToString();*/
+

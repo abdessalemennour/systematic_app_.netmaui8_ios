@@ -46,11 +46,14 @@ namespace SmartPharma5
                     IdEmploye = (uint)Preferences.Get("idagent", Convert.ToUInt32(null));
                     IdUser = Preferences.Get("iduser", 0);
                     var LoginSuccess = false;
+                    //  Charger la liste des sociétés
+                    Task.Run(async () =>
+                    {
+                        var societies = await Society.GetAllSocietiesAsync();
+                    }).GetAwaiter().GetResult();
 
                     if (login == "" && password == "")
                     {
-
-
 
                         LoginSuccess = false;
 
@@ -59,6 +62,7 @@ namespace SmartPharma5
                     {
                         LoginSuccess = true;
                         // LoginSuccess = User.LoginTrue(login,password).Result;
+
                     }
 
 
@@ -111,7 +115,6 @@ namespace SmartPharma5
                                 switch (CrmGroupe)
                                 {
                                     case 27:
-
                                         MainPage = new NavigationPage(new NavigationPage(new HomeView()));
                                         break;
                                     case 28:
@@ -119,7 +122,6 @@ namespace SmartPharma5
                                         MainPage = new NavigationPage(new NavigationPage(new SammaryView()));
                                         break;
                                     case 32:
-
                                         MainPage = new NavigationPage(new NavigationPage(new SammaryView(IdEmploye)));
                                         break;
                                     case 37:
@@ -157,165 +159,6 @@ namespace SmartPharma5
 
 
         }
-        //public App()
-        //{
-        //    try
-        //    {
-        //        // Initialisation Syncfusion
-        //        try
-        //        {
-        //            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzAyMzE5M0AzMjM0MmUzMDJlMzBtY2lxOXBDZmJZOUVlRlhzVEd5QVBVV2VDeStPZDI1L1BUTStOU0VtUXBBPQ==");
-        //            Console.WriteLine("License Syncfusion initialisée avec succès");
-        //        }
-        //        catch (Exception syncEx)
-        //        {
-        //            Console.WriteLine($"ERREUR Syncfusion: {syncEx.Message}");
-        //            throw;
-        //        }
-
-        //        InitializeComponent();
-        //        Console.WriteLine("Application initialisée");
-
-        //        // Chargement des données utilisateur
-        //        try
-        //        {
-        //            user_contrat.getInfo().GetAwaiter();
-        //            user_contrat.getModules().GetAwaiter();
-        //            Console.WriteLine("Données utilisateur chargées avec succès");
-        //        }
-        //        catch (Exception userDataEx)
-        //        {
-        //            Console.WriteLine($"ERREUR Chargement données utilisateur: {userDataEx.Message}");
-        //        }
-
-        //        try
-        //        {
-        //            string login = Preferences.Get("UserName", "");
-        //            string password = Preferences.Get("Password", "");
-        //            Console.WriteLine($"Récupération des préférences - Login: {login}");
-
-        //            User = new User(login, password);
-        //            IdEmploye = (uint)Preferences.Get("idagent", Convert.ToUInt32(null));
-        //            IdUser = Preferences.Get("iduser", 0);
-        //            var LoginSuccess = !string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password);
-
-        //            Console.WriteLine($"ID Employé: {IdEmploye}, ID User: {IdUser}, LoginSuccess: {LoginSuccess}");
-
-        //            if (!LoginSuccess)
-        //            {
-        //                Console.WriteLine("Aucun login/password trouvé, redirection vers LoginView");
-        //                MainPage = new NavigationPage(new LoginView());
-        //                return;
-        //            }
-
-        //            // Vérification du module CRM
-        //            try
-        //            {
-        //                var CrmGroupe = Task.Run(async () => await UserCheckModule()).Result;
-        //                Console.WriteLine($"Module CRM récupéré: {CrmGroupe}");
-        //            }
-        //            catch (Exception crmEx)
-        //            {
-        //                Console.WriteLine($"ERREUR Module CRM: {crmEx.Message}");
-        //                throw;
-        //            }
-
-        //            // Vérification statut utilisateur
-        //            try
-        //            {
-        //                bool? IsActif = User.UserIsActif(Convert.ToUInt32(IdEmploye));
-        //                Console.WriteLine($"Statut utilisateur: {IsActif}");
-
-        //                if (IsActif == null)
-        //                {
-        //                    Console.WriteLine("Statut utilisateur null, redirection vers TestInternet");
-        //                    MainPage = new NavigationPage(new TestInternet());
-        //                    return;
-        //                }
-
-        //                if (IsActif == false)
-        //                {
-        //                    Console.WriteLine("Utilisateur inactif, redirection vers LoginView");
-        //                    MainPage = new NavigationPage(new LoginView());
-        //                    return;
-        //                }
-
-        //                if (IdEmploye == 0)
-        //                {
-        //                    Console.WriteLine("ID Employé = 0, redirection vers LoginView");
-        //                    MainPage = new NavigationPage(new LoginView());
-        //                    return;
-        //                }
-
-        //                // Gestion de la navigation en fonction du groupe CRM
-
-        //                try
-        //                {
-        //                    var CrmGroupe = Task.Run(async () => await UserCheckModule()).Result;
-        //                    Console.WriteLine($"Navigation basée sur le groupe CRM: {CrmGroupe}");
-
-        //                    switch (CrmGroupe)
-        //                    {
-        //                        case 27:
-        //                            Console.WriteLine("Redirection vers HomeView");
-        //                            MainPage = new NavigationPage(new HomeView());
-        //                            break;
-        //                        case 28:
-        //                            MainPage = new NavigationPage(new NavigationPage(new SammaryView()));
-        //                            break;
-        //                        case 32:
-        //                            MainPage = new NavigationPage(new NavigationPage(new SammaryView(IdEmploye)));
-        //                            break;
-        //                        case 37:
-        //                            Console.WriteLine($"Redirection vers SammaryView avec ID Employé: {IdEmploye}");
-        //                            MainPage = new NavigationPage(new SammaryView(IdEmploye));
-        //                            break;
-        //                        default:
-        //                            Console.WriteLine("Groupe CRM non reconnu, redirection vers HomeView par défaut");
-        //                            MainPage = new NavigationPage(new HomeView());
-        //                            break;
-        //                    }
-
-        //                    // Chargement des taxes
-        //                    try
-        //                    {
-        //                        taxList = Tax.getList();
-        //                        taxTypeList = Tax.Type.getList();
-        //                        Console.WriteLine($"Taxes chargées - Count: {taxList?.Count}");
-        //                    }
-        //                    catch (Exception taxEx)
-        //                    {
-        //                        Console.WriteLine($"ERREUR Chargement taxes: {taxEx.Message}");
-        //                    }
-        //                }
-        //                catch (Exception navEx)
-        //                {
-        //                    Console.WriteLine($"ERREUR Navigation: {navEx.Message}");
-        //                    MainPage = new LoginView();
-        //                }
-        //            }
-        //            catch (Exception statusEx)
-        //            {
-        //                Console.WriteLine($"ERREUR Vérification statut: {statusEx.Message}");
-        //                MainPage = new LoginView();
-        //            }
-        //        }
-        //        catch (Exception mainEx)
-        //        {
-        //            Console.WriteLine($"ERREUR PRINCIPALE: {mainEx.Message}");
-        //            Console.WriteLine($"STACK TRACE: {mainEx.StackTrace}");
-        //            MainPage = new LoginView();
-        //        }
-        //    }
-        //    catch (Exception globalEx)
-        //    {
-        //        Console.WriteLine($"ERREUR GLOBALE DANS LE CONSTRUCTEUR APP: {globalEx.Message}");
-        //        Console.WriteLine($"STACK TRACE COMPLET: {globalEx.StackTrace}");
-
-        //        // Solution pour l'erreur "Either set MainPage or override CreateWindow"
-        //        MainPage = new NavigationPage(new LoginView());
-        //    }
-        //}
 
 
         protected override void OnStart()

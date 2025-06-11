@@ -20,8 +20,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        
+
+
         <!-- Main Content -->
         <ContentView Grid.Row="0">
             <ContentView.Triggers>
@@ -86,7 +86,7 @@
                                                     <AbsoluteLayout HeightRequest="50" WidthRequest="50">
                                                         <!-- Image de profil -->
                                                         <Frame Padding="0" HasShadow="False" HeightRequest="50" WidthRequest="50" CornerRadius="25" BorderColor="{Binding IsSelected}">
-                                                              <!--CornerRadius="25" BorderColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}">-->                                                         
+                                                            <!--CornerRadius="25" BorderColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}">-->
                                                             <Image Source="{Binding Avatar}" Aspect="AspectFill"/>
                                                         </Frame>
 
@@ -144,7 +144,7 @@
                                                                 <HorizontalStackLayout Spacing="5" HorizontalOptions="End">
                                                                     <!-- Icône message lu (visible seulement si IsRead = true) -->
                                                                     <!--<Image WidthRequest="20" HeightRequest="20" Source="{Binding ImageSource}" />-->
-                                                                    
+
                                                                     <!-- Label de date (inchangé) -->
                                                                     <Label Text="{Binding CreateDate, StringFormat='{0:HH:mm}'}" 
                                                                            FontSize="10" 

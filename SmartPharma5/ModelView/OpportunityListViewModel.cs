@@ -45,7 +45,7 @@ namespace SmartPharma5.ViewModel
         private bool loading;
         public bool Loading { get => loading; set => SetProperty(ref loading, value); }
 
-        
+
 
         public AsyncCommand<SmartPharma5.Model.Opportunity.Collection> TapCommand { get; set; }
         public AsyncCommand RefreshCommand { get; }

@@ -65,8 +65,12 @@
 
 
                                 <Frame x:Name="PayBackround" BorderColor="#CCCCCC" Margin="0,0,0,0"  >
-                                    <Frame.GestureRecognizers  >
-                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                                    <Frame.GestureRecognizers>
+                                        <OnPlatform x:TypeArguments="GestureRecognizer">
+                                            <On Platform="Android">
+                                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                            </On>
+                                        </OnPlatform>
                                     </Frame.GestureRecognizers>
                                     <Grid ColumnSpacing="8" >
                                         <Grid.ColumnDefinitions>
@@ -97,6 +101,23 @@
                                             <Label Text="{Binding Partner,Mode=OneWay}" TextColor="SlateBlue" FontSize="19" FontAttributes="Bold"/>
                                             <Label Text="{Binding PayementMethod,Mode=OneWay}" TextColor="#959aa0" FontSize="19" FontAttributes="Bold"/>
                                             <Label Text="{Binding Due_date,StringFormat='Due Date: {0:dd/MM/yyyy  h:mm tt}',Mode=OneWay}" TextColor="#959aa0"/>
+                                            <!--<Label Text="{Binding SocietyName, Mode=OneWay}" FontSize="16" TextColor="DarkSlateBlue" FontAttributes="Bold"/>-->
+                                            <!--<Label Text="{Binding SocietyName}"
+                                                   FontSize="16"
+                                                   TextColor="DarkSlateBlue"
+                                                   FontAttributes="Bold">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsSocietyVisible}" Value="False">
+                                                        <Setter Property="IsVisible" Value="False" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>-->
+                                            <Label Text="{Binding SocietyName}"
+                                               FontSize="16"
+                                               TextColor="DarkSlateBlue"
+                                               FontAttributes="Bold"
+                                               IsVisible="{Binding IsSocietyVisible}"/>
+
                                         </StackLayout>
 
                                     </Grid>

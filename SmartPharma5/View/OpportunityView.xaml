@@ -37,20 +37,57 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackLayout VerticalOptions="Center">
-            <Label Text="{Binding Title }" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
+                <Label Text="{Binding Title }" HorizontalOptions="CenterAndExpand" FontSize="19" TextColor="White" VerticalOptions="CenterAndExpand"></Label>
 
-        </StackLayout>
-            <ImageButton Source="pichon_menu2.png"
-             Grid.Column="1"
-             WidthRequest="35"
-             HeightRequest="35"
-             BackgroundColor="Transparent"
-             Clicked="OnSwipeViewClicked"
-             HorizontalOptions="End"
-             VerticalOptions="Center"
-             IsVisible="{Binding IsMainButtonVisible}"/>
+            </StackLayout>
+            <ImageButton Grid.Column="2" 
+                        Source="editregular.png" 
+                        WidthRequest="35"
+                        HeightRequest="35"
+                        Padding="5"
+                        CornerRadius="6"
+                        BackgroundColor="#4DBF49"
+                        Command="{Binding EditCommand}"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                <ImageButton.IsVisible>
+                    <OnPlatform x:TypeArguments="x:Boolean">
+                        <On Platform="iOS" Value="True"/>
+                        <On Platform="Android" Value="False"/>
+                    </OnPlatform>
+                </ImageButton.IsVisible>
+            </ImageButton>
+
+            <ImageButton Grid.Column="2"
+                        Source="baselineadd.png"
+                        WidthRequest="35"
+                        HeightRequest="35"
+                        Padding="5"
+                        CornerRadius="6"
+                        BackgroundColor="#4DBF49"
+                        Command="{Binding AddCommand}"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                <ImageButton.IsVisible>
+                    <OnPlatform x:TypeArguments="x:Boolean">
+                        <On Platform="iOS" Value="True"/>
+                        <On Platform="Android" Value="False"/>
+                    </OnPlatform>
+                </ImageButton.IsVisible>
+            </ImageButton>
+                        <ImageButton Source="pichon_menu2.png"
+                         Grid.Column="3"
+                         WidthRequest="35"
+                         HeightRequest="35"
+                         BackgroundColor="Transparent"
+                         Clicked="OnSwipeViewClicked"
+                         HorizontalOptions="End"
+                         VerticalOptions="Center"
+                         IsVisible="{Binding IsMainButtonVisible}"/>
         </Grid>
     </NavigationPage.TitleView>
 
@@ -61,7 +98,9 @@
 
 
     <!--<Grid>
-        --><!-- Votre SwipeView comme premier élément --><!--
+        -->
+    <!-- Votre SwipeView comme premier élément -->
+    <!--
         <SwipeView>
             <SwipeView.RightItems>
                 <SwipeItems Mode="Reveal">
@@ -74,7 +113,9 @@
                 </SwipeItems>
             </SwipeView.RightItems>
 
-            --><!-- Contenu à swiper --><!--
+            -->
+    <!-- Contenu à swiper -->
+    <!--
             <Frame Padding="15"
            BackgroundColor="White"
            CornerRadius="10"
@@ -428,11 +469,50 @@
                 </dxcv:DXCollectionView.ItemTemplate>
             </dxcv:DXCollectionView>
 
-
-
-
             <ImageButton Grid.Row="1" Source="editregular.png" Margin="0,-180,-1,0" Opacity="1"  VerticalOptions="Center" HorizontalOptions="End" HeightRequest="50" WidthRequest="50" Padding="5"  CornerRadius="6" BackgroundColor="#4DBF49" Command="{Binding EditCommand}" IsVisible="{Binding EditActive,Mode=TwoWay}" ZIndex="1"/>
             <ImageButton Grid.Row="1" Source="baselineadd.png" Margin="0,-180,-1,0" Opacity="10" VerticalOptions="Center" HorizontalOptions="End" HeightRequest="50" WidthRequest="50" Padding="5"  CornerRadius="6" BackgroundColor="#4DBF49" Command="{Binding AddCommand}" IsVisible="{Binding AddActive,Mode=TwoWay}" ZIndex="1"/>
+
+            <!--<ImageButton Grid.Row="1" 
+                        Source="editregular.png" 
+                        Margin="0,-180,-1,0" 
+                        Opacity="1"  
+                        VerticalOptions="Center" 
+                        HorizontalOptions="End" 
+                        HeightRequest="50" 
+                        WidthRequest="50" 
+                        Padding="5"  
+                        CornerRadius="6" 
+                        BackgroundColor="#4DBF49" 
+                        Command="{Binding EditCommand}">
+                <ImageButton.IsVisible>
+                    <OnPlatform x:TypeArguments="x:Boolean">
+                        <On Platform="Android" Value="{Binding EditActive}"/>
+                        <On Platform="iOS" Value="False"/>
+                    </OnPlatform>
+                </ImageButton.IsVisible>
+            </ImageButton>
+
+            <ImageButton Grid.Row="1" 
+                        Source="baselineadd.png" 
+                        Margin="0,-180,-1,0" 
+                        Opacity="10" 
+                        VerticalOptions="Center" 
+                        HorizontalOptions="End" 
+                        HeightRequest="50" 
+                        WidthRequest="50" 
+                        Padding="5"  
+                        CornerRadius="6" 
+                        BackgroundColor="#4DBF49" 
+                        Command="{Binding AddCommand}">
+                <ImageButton.IsVisible>
+                    <OnPlatform x:TypeArguments="x:Boolean">
+                        <On Platform="Android" Value="{Binding AddActive}"/>
+                        <On Platform="iOS" Value="False"/>
+                    </OnPlatform>
+                </ImageButton.IsVisible>
+            </ImageButton>-->
+            
+            
             <!--<ImageButton x:Name="MainButton"
                  Source="plus.png"
                  BackgroundColor="Transparent"
@@ -782,7 +862,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+
 
                     </Grid.RowDefinitions>
 
@@ -800,27 +883,31 @@
                         </StackLayout>
                     </Frame>
                     <Frame Grid.Row="2">
-                        <StackLayout>
-                            <Label Text="Currency" TextColor="Black" FontSize="16"/>
+                        <dxe:ComboBoxEdit 
+                            HeightRequest="45" 
+                            LabelText="Currency" 
+                            TextHorizontalAlignment="Center" 
+                            ItemsSource="{Binding Currencies}" 
+                            SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" 
+                            BorderColor="Black" 
+                            DisplayMember="Item2" />
+                    </Frame>
+                    <!--<dxe:ComboBoxEdit Grid.Row="2" HeightRequest="45" LabelText="Currency" TextHorizontalAlignment="Center" ItemsSource="{Binding Currencies}" SelectedItem="{Binding SelectedCurrency}" BorderColor="Black" DisplayMember="name" SelectionChangedCommand="{Binding SocietyChangedCommand}"/>-->
 
-                            <Picker Title="Select Currency"
-                ItemsSource="{Binding Currencies}"
-                ItemDisplayBinding="{Binding Item2}"
-                SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" />
-                        </StackLayout>
+                    <Frame Grid.Row="3">
+                        <dxe:ComboBoxEdit HeightRequest="45" LabelText="Socity" TextHorizontalAlignment="Center" ItemsSource="{Binding SocietyList}" SelectedItem="{Binding SocietySelectedItem}" BorderColor="Black" DisplayMember="name" SelectionChangedCommand="{Binding SocietyChangedCommand}"  IsVisible="{Binding IsVisibleSocietyComboBox}"/>
                     </Frame>
 
-
-
-
-                    <Grid Grid.Row="2" VerticalOptions="CenterAndExpand" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <dxco:SimpleButton VerticalOptions="CenterAndExpand" Grid.Column="0" Text="CANCEL" CornerMode = "Round" CornerRadius="5" BackgroundColor="#E6E6E6" TextColor="#4D4D4D"   Command="{Binding CancelMoreDetailCommand}"/>
-                        <dxco:SimpleButton VerticalOptions="CenterAndExpand"  Grid.Column="1" Text="SAVE" CornerMode = "Round" CornerRadius="5" BackgroundColor="#3897f0" TextColor="White" Command="{Binding SaveMoreDetailCommand}"/>
-                    </Grid>
+                    <Frame Grid.Row="4">
+                        <Grid VerticalOptions="CenterAndExpand" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <dxco:SimpleButton VerticalOptions="CenterAndExpand" Grid.Column="0" Text="CANCEL" CornerMode = "Round" CornerRadius="5" BackgroundColor="#E6E6E6" TextColor="#4D4D4D"   Command="{Binding CancelMoreDetailCommand}"/>
+                            <dxco:SimpleButton VerticalOptions="CenterAndExpand"  Grid.Column="1" Text="SAVE" CornerMode = "Round" CornerRadius="5" BackgroundColor="#3897f0" TextColor="White" Command="{Binding SaveMoreDetailCommand}"/>
+                        </Grid>
+                    </Frame>
                 </Grid>
             </dxco:DXPopup>
 
@@ -865,13 +952,15 @@
 
 
 
-<!--<Frame x:Name="SidePanel"
+    <!--<Frame x:Name="SidePanel"
                HorizontalOptions="Start"
                VerticalOptions="Fill"
                WidthRequest="300"
                TranslationX="-300"
                IsVisible="False">
-            --><!-- Contenu du menu --><!--
+            -->
+    <!-- Contenu du menu -->
+    <!--
         </Frame>
     </Grid>-->
 

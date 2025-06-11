@@ -8,7 +8,7 @@
              Shell.FlyoutBehavior="Flyout"
              
              windows:Application.ImageDirectory="Assets">
-    
+
     <Application.Resources>
         <ResourceDictionary>
 

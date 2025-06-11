@@ -29,7 +29,7 @@ public partial class TypePaymentView : ContentPage
                         foreach (Payment.Piece piece in ovm.UnpaiedList)
                             if (piece.Is_checked == true)
                             {
-                                ovm.Payment.Payment_pieceList.Add(new Payment.Payment_piece(0, piece.Id, piece.piece_type, piece.piece_type_name, piece.code, 0, piece.rest_amount, piece.total_amount, piece.paied_amount, piece.rest_amount, piece.currencySymbol,piece.DecimalNumbre));
+                                ovm.Payment.Payment_pieceList.Add(new Payment.Payment_piece(0, piece.Id, piece.piece_type, piece.piece_type_name, piece.code, 0, piece.rest_amount, piece.total_amount, piece.paied_amount, piece.rest_amount, piece.currencySymbol,piece.DecimalNumbre,piece.societe));
                             }
                         if (p.Is_checked)
                         {

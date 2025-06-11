@@ -18,7 +18,7 @@ public partial class PayView : ContentPage
     public PayView(Payment payment)
     {
         InitializeComponent();
-        Payment = payment ?? throw new ArgumentNullException(nameof(payment), "Payment ne peut pas être null.");
+        Payment = payment ?? throw new ArgumentNullException(nameof(payment), "Payment ne peut pas ï¿½tre null.");
         BindingContext = new PaymentViewModel(payment);
     }
 
@@ -28,7 +28,7 @@ public partial class PayView : ContentPage
         {
             if (Payment == null || Payment.Id == 0)
             {
-                await DisplayAlert("Erreur", "Aucun paiement valide sélectionné.", "OK");
+                await DisplayAlert("Erreur", "Aucun paiement valide sï¿½lectionnï¿½.", "OK");
                 return;
             }
 
@@ -121,13 +121,13 @@ public partial class PayView : ContentPage
     {
         base.OnAppearing();
 
-        // Activer le rafraîchissement périodique
+        // Activer le rafraï¿½chissement pï¿½riodique
         _refreshEnabled = true;
 
-        // Exécuter le premier rafraîchissement
+        // Exï¿½cuter le premier rafraï¿½chissement
         await RefreshMessages();
 
-        // Démarrer le timer pour les rafraîchissements périodiques
+        // Dï¿½marrer le timer pour les rafraï¿½chissements pï¿½riodiques
         Device.StartTimer(TimeSpan.FromSeconds(3), () =>
         {
             if (!_refreshEnabled) return false;
@@ -150,7 +150,7 @@ public partial class PayView : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        // Désactiver le rafraîchissement périodique
+        // Dï¿½sactiver le rafraï¿½chissement pï¿½riodique
         _refreshEnabled = false;
     }
 
@@ -172,13 +172,13 @@ public partial class PayView : ContentPage
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erreur lors du rafraîchissement: {ex.Message}");
+            Console.WriteLine($"Erreur lors du rafraï¿½chissement: {ex.Message}");
         }
     }
 
     private async Task AnimateSwipeHint()
     {
-        // Faire apparaître l'indicateur
+        // Faire apparaï¿½tre l'indicateur
         await swipeHint.FadeTo(0.8, 300);
 
         // Animation de balayage (2 cycles)
@@ -197,7 +197,7 @@ public partial class PayView : ContentPage
     //    {
     //        if (Payment == null || Payment.Id == 0)
     //        {
-    //            await DisplayAlert("Erreur", "Aucun paiement valide sélectionné.", "OK");
+    //            await DisplayAlert("Erreur", "Aucun paiement valide sï¿½lectionnï¿½.", "OK");
     //            return;
     //        }
 
@@ -225,11 +225,11 @@ public partial class PayView : ContentPage
         {
             if (Payment == null || Payment.Id == 0)
             {
-                await DisplayAlert("Erreur", "Aucun paiement valide sélectionné.", "OK");
+                await DisplayAlert("Erreur", "Aucun paiement valide sï¿½lectionnï¿½.", "OK");
                 return;
             }
 
-            // Passer l'ID de Payment à la vue de sélection de fichiers
+            // Passer l'ID de Payment ï¿½ la vue de sï¿½lection de fichiers
             await Navigation.PushAsync(new FileSelectionView(Payment.Id));
         }
         catch (Exception ex)
@@ -251,7 +251,7 @@ public partial class PayView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         UserDialogs.Instance.HideLoading();
 
@@ -269,7 +269,7 @@ public partial class PayView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         //UserDialogs.Instance.HideLoading();
 
@@ -287,7 +287,7 @@ public partial class PayView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         UserDialogs.Instance.HideLoading();
 
@@ -306,7 +306,7 @@ public partial class PayView : ContentPage
         else
         {
             /* string buttonName = button.Source.ToString().Replace("File: ", "");
-             await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");*/
+             await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");*/
         }
         UserDialogs.Instance.HideLoading();
 
@@ -322,7 +322,7 @@ public partial class PayView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
     }
 
@@ -339,7 +339,7 @@ public partial class PayView : ContentPage
     //    else
     //    {
     //        string buttonname = button.source.tostring().replace("file: ", "");
-    //        await displayalert("action", $"vous avez cliqué sur {buttonname}", "ok");
+    //        await displayalert("action", $"vous avez cliquï¿½ sur {buttonname}", "ok");
     //    }
     //    userdialogs.instance.hideloading();
 
@@ -350,9 +350,9 @@ public partial class PayView : ContentPage
 
         try
         {
-            var payment = this.Payment; // Assurez-vous que cette propriété est accessible
+            var payment = this.Payment; // Assurez-vous que cette propriï¿½tï¿½ est accessible
 
-            // Appeler la même navigation que l'ancien bouton
+            // Appeler la mï¿½me navigation que l'ancien bouton
             await Navigation.PushAsync(new FileSelectionView(payment.Id, EntityType.Payment));
         }
         catch (Exception ex)

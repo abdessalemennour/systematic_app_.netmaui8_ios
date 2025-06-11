@@ -8,11 +8,11 @@
     <TabbedPage.BindingContext>
         <local:PaymentViewModel/>
     </TabbedPage.BindingContext>
-    <TabbedPage.ToolbarItems>
+    <!--<TabbedPage.ToolbarItems>
         <ToolbarItem  Text="Home" Order="Secondary" Priority="1" Command="{Binding ExitCommand}"/>
         <ToolbarItem Text="Logout" Order="Secondary" Priority="2" Command="{Binding LogoutCommand}"/>
 
-    </TabbedPage.ToolbarItems>
+    </TabbedPage.ToolbarItems>-->
 
 
     <local1:TypePaymentView Title="To Pay" IsVisible="{Binding IsVisibleSaveButton}"/>

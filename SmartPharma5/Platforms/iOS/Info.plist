@@ -26,17 +26,54 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconName</key>
-			<string>AppIcon</string>
-		</dict>
-	</dict>
+	<!--<key>CFBundleIconFile</key>
+	<string>icon11.jpeg</string>-->
 	<key>CFBundleIdentifier</key>
 	<string>com.tonentreprise.smartpharma</string>
-	<key>CFBundleIconFile</key>
-	<string>icon11.png</string>
+	
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Nous avons besoin de votre position pour localiser les pharmacies proches de vous.</string>
+	
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Votre position est utilisée même en arrière-plan pour vous envoyer des notifications de proximité.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cette application nécessite l'accès à votre bibliothèque photos pour sélectionner des images.</string>
+	
+	<key>NSCameraUsageDescription</key>
+	<string>Cette application nécessite l'accès à votre appareil photo pour prendre des photos.</string>
+	
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	
+	<key>UIFileSharingEnabled</key>
+	<true/>
+
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>splash</string>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<true/>
+		<key>UIColorName</key>
+		<string>LaunchScreenBackground</string>
+	</dict>
+
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/appicon.appiconset</string>
+
+	<!--<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />-->
+	<MauiIcon Include="Resources\AppIcon\appicon.svg" />
+	<MauiSplashScreen Include="Resources\Images\logo_systematic.jpeg" Color="#FFFF" />
+
 </dict>
 </plist>

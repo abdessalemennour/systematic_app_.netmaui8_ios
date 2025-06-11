@@ -148,7 +148,7 @@ namespace SmartPharma5.ViewModel
             }
         }
 
-     
+
 
         private ObservableCollection<UserchatModel> _users;
         public ObservableCollection<UserchatModel> Users
@@ -736,7 +736,7 @@ namespace SmartPharma5.ViewModel
             }
         }
 
-      
+
 
         // Modifiez SendMessageAsync
         public async Task SendMessageAsync()
@@ -910,7 +910,7 @@ namespace SmartPharma5.ViewModel
 
         /***********************************/
         /*****************memo**************/
-       
+
 
         // Mise à jour du texte de l'en-tête selon l'index de la vue
         private void UpdateHeaderText()
@@ -931,4 +931,3 @@ namespace SmartPharma5.ViewModel
         }
     }
 }
-

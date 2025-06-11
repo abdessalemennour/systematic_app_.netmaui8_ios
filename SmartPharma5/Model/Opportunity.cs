@@ -109,6 +109,20 @@ namespace SmartPharma5.Model
         // Propriété
         public uint? Currency { get; set; }
         public int? IdAgent { get; set; }
+        public int? Socity { get; set; }
+        private string socityName;
+        public string SocityName 
+        { 
+            get => socityName;
+            set
+            {
+                socityName = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    LoadSocityFromName(value);
+                }
+            }
+        }
         public uint parent { get; set; }
         private int dealer;
         public int Dealer { get => dealer; set => SetProperty(ref dealer, value); }
@@ -138,6 +152,7 @@ namespace SmartPharma5.Model
                 "crm_opportunity.payment_condition, crm_opportunity.payment_method, crm_opportunity.validated, " +
                 "crm_opportunity.agent, crm_opportunity.revenue_stamp, crm_opportunity.to_invoice, " +
                 "crm_opportunity.state, crm_opportunity.order, crm_opportunity.dealer, crm_opportunity.currency, " + // crm_opportunity.currency
+                "crm_opportunity.socity, atooerp_socity.name as socityName, " +
                 "p1.name as partnerName, p2.name as dealerName, crm_opportunity.parent, " +
                 "crm_state.name, crm_opportunity_state.create_date as date_State, crm_opportunity_state.state as opp_State, " +
                 "crm_opportunity.order, sale_order.create_date as orderDate, sale_order.delivred, " +
@@ -150,6 +165,7 @@ namespace SmartPharma5.Model
                 "left join sale_shipping on sale_order.Id = sale_shipping.order " +
                 "left join sale_invoice on sale_invoice.Id = sale_order.invoice " +
                 "left join crm_state on crm_state.Id = crm_opportunity_state.state " +
+                "left join atooerp_socity on atooerp_socity.Id = crm_opportunity.socity " +
                 "where crm_opportunity_state.opportunity = " + id +
                 " group by crm_opportunity_state.Id " +
                 "order by crm_opportunity_state.date;";
@@ -178,6 +194,8 @@ namespace SmartPharma5.Model
                 // this.purchase_probability = Convert.ToDecimal(dt.Rows[0]["purchase_probability"]);
                 this.purchase_probability = Convert.ToInt32(dt.Rows[0]["purchase_probability"]);
                 this.Currency = Convert.ToUInt32(dt.Rows[0]["currency"].ToString());
+                this.Socity = dt.Rows[0]["socity"] is DBNull ? 0 : Convert.ToInt32(dt.Rows[0]["socity"]);
+                this.SocityName = dt.Rows[0]["socityName"]?.ToString() ?? string.Empty;
 
                 try
                 {
@@ -303,6 +321,7 @@ namespace SmartPharma5.Model
                 "partner=" + (int)IdPartner + ", payment_method=" + (int)IdPayment_method +
                 ", payment_condition=" + (int)IdPayment_condition + ", validated=false, total_amount=" + totalAmount +
                 ", agent=" + (int)IdAgent + ", tax1=true, tax2=true, tax3=true, revenue_stamp=0, crm_opportunity=" + Id +
+                (Socity.HasValue ? ", socity=" + Socity.Value : "") +
                 "; SELECT MAX(Id) FROM " + DbConnection.Database + ".sale_quotation;";
 
             MySqlCommand cmd = new MySqlCommand(sqlCmd, DbConnection.con);
@@ -371,7 +390,26 @@ namespace SmartPharma5.Model
             string Code = CreatCodeBc();
             string totalAmount = this.totalAmount.ToString().Replace(',', '.');
 
-            string sqlCmd = "INSERT INTO sale_order SET code ='" + Code + "',create_date= NOW(), date= NOW(),tva_chec=" + true + ",memo='" + memo + "', currency='" + Currency + "',partner=" + (int)IdPartner + ",payment_method=" + (int)IdPayment_method + ",payment_condition=" + (int)IdPayment_condition + ",validated=false,total_amount=" + totalAmount + ",paied_amount=0,delivred=0,due_date=Now(),delivred_date=now(),agent=" + (int)IdAgent + ",tax1=true,tax2=true,tax3=true,revenue_stamp=0;SELECT MAX(Id) FROM " + DbConnection.Database + ".sale_order;";
+            string sqlCmd = "INSERT INTO sale_order SET code ='" + Code +
+                           "', create_date= NOW(), date= NOW(), tva_chec=" + true +
+                           ", memo='" + memo +
+                           "', currency='" + Currency +
+                           "', partner=" + (int)IdPartner +
+                           ", payment_method=" + (int)IdPayment_method +
+                           ", payment_condition=" + (int)IdPayment_condition +
+                           ", validated=false" +
+                           ", total_amount=" + totalAmount +
+                           ", paied_amount=0" +
+                           ", delivred=0" +
+                           ", due_date=Now()" +
+                           ", delivred_date=now()" +
+                           ", agent=" + (int)IdAgent +
+                           ", tax1=true" +
+                           ", tax2=true" +
+                           ", tax3=true" +
+                           ", revenue_stamp=0" +
+                           (Socity.HasValue ? ", socity=" + Socity.Value : "") + // Ajout conditionnel de socity
+                           "; SELECT MAX(Id) FROM " + DbConnection.Database + ".sale_order;";
             MySqlCommand cmd = new MySqlCommand(sqlCmd, DbConnection.con);
             DbConnection.Connecter();
             try
@@ -788,14 +826,12 @@ namespace SmartPharma5.Model
             string totalAmount = this.totalAmount.ToString().Replace(',', '.');
             string sqlCmd;
 
-            // Récupérer la position GPS actuelle
             try
             {
                 var location = await Geolocation.GetLocationAsync();
 
                 if (location != null)
                 {
-                    // Si la localisation est disponible, inclure le champ GPS dans la requête
                     string gpsCoordinates = $"{location.Latitude.ToString("F15", CultureInfo.InvariantCulture)},{location.Longitude.ToString("F15", CultureInfo.InvariantCulture)}";
 
                     sqlCmd = @"INSERT INTO crm_opportunity 
@@ -814,12 +850,14 @@ namespace SmartPharma5.Model
                                      ",dealer=" + Dealer +
                                      ", parent=" + parent +
                                      ",currency=" + Currency +
+                                     (Socity.HasValue ? ",socity=" + Socity.Value : ",socity=NULL") +
                                      ",gps='" + gpsCoordinates + "'" +
                                      ";SELECT LAST_INSERT_ID();";
+
+                    Console.WriteLine($"Inserting opportunity with society ID: {Socity}");
                 }
                 else
                 {
-                    // Si la localisation n'est pas disponible, ne pas inclure le champ GPS
                     sqlCmd = @"INSERT INTO crm_opportunity 
                      SET purchase_probability=" + (int)purchase_probability +
                                      ",code ='" + code +
@@ -836,12 +874,12 @@ namespace SmartPharma5.Model
                                      ",dealer=" + Dealer +
                                      ", parent=" + parent +
                                      ",currency=" + Currency +
+                                     (Socity.HasValue ? ",socity=" + Socity.Value : "") +
                                      ";SELECT LAST_INSERT_ID();";
                 }
             }
             catch (Exception ex)
             {
-                // En cas d'erreur lors de la récupération de la localisation, utiliser la requête sans GPS
                 Console.WriteLine("Erreur de géolocalisation : " + ex.Message);
                 sqlCmd = @"INSERT INTO crm_opportunity 
                  SET purchase_probability=" + (int)purchase_probability +
@@ -859,6 +897,7 @@ namespace SmartPharma5.Model
                                  ",dealer=" + Dealer +
                                  ", parent=" + parent +
                                  ",currency=" + Currency +
+                                 (Socity.HasValue ? ",socity=" + Socity.Value : "") +
                                  ";SELECT LAST_INSERT_ID();";
             }
 
@@ -904,7 +943,26 @@ namespace SmartPharma5.Model
         public void update()
         {
             string totalAmount = this.totalAmount.ToString().Replace(',', '.');
-            string sqlCmd = "Update crm_opportunity SET purchase_probability=" + (int)purchase_probability + ", tva_chec=" + true + ",code= '" + code + "' ,memo='" + memo + "',partner=" + (int)IdPartner + ",payment_method=" + (int)IdPayment_method + ",payment_condition=" + (int)IdPayment_condition + ",validated=" + validated + ",total_amount=" + totalAmount + ",due_date=Now(),delivred_date=now(),agent=" + (int)IdAgent + ",revenue_stamp=0,closing_date=Now(),to_invoice=" + toinvoice + ",dealer=" + Dealer + ", parent=" + parent + ",currency=" + Currency +" where Id = " + Id + ";";
+            string sqlCmd = "Update crm_opportunity SET purchase_probability=" + (int)purchase_probability + 
+                          ", tva_chec=" + true + 
+                          ",code= '" + code + "' " +
+                          ",memo='" + memo + "'" +
+                          ",partner=" + (int)IdPartner + 
+                          ",payment_method=" + (int)IdPayment_method + 
+                          ",payment_condition=" + (int)IdPayment_condition + 
+                          ",validated=" + validated + 
+                          ",total_amount=" + totalAmount + 
+                          ",due_date=Now(),delivred_date=now()" +
+                          ",agent=" + (int)IdAgent + 
+                          ",revenue_stamp=0,closing_date=Now()" +
+                          ",to_invoice=" + toinvoice + 
+                          ",dealer=" + Dealer + 
+                          ", parent=" + parent + 
+                          ",currency=" + Currency + 
+                          (Socity.HasValue ? ",socity=" + Socity.Value : ",socity=NULL") + 
+                          " where Id = " + Id + ";";
+
+            Console.WriteLine($"Updating opportunity with society ID: {Socity}");
             
             MySqlCommand cmd = new MySqlCommand(sqlCmd, DbConnection.con);
             DbConnection.Connecter();
@@ -1142,6 +1200,9 @@ namespace SmartPharma5.Model
 
             public bool HasParent { get; set; }
             public string stateName { get; set; }
+            public string SocietyName { get; set; }
+            public bool IsSocietyVisible { get; set; }
+
             public Microsoft.Maui.Graphics.Color stateColor
             {
                 get
@@ -1216,13 +1277,42 @@ namespace SmartPharma5.Model
                     this.HasWholesaler = true;                }
             }
 
+            public Collection(int id, string code, DateTime create_date, string partnaireName, string agentName, decimal total_amount, string ordreCode, DateTime? ordreDate, bool? delivred, DateTime? delivred_date, string wholesalerName, string parentCode, string stateName, string SocietyName)
+            {
+                Id = id;
+                this.code = code;
+                this.create_date = create_date;
+                this.partnaireName = partnaireName;
+                this.agentName = agentName;
+                this.total_amount = total_amount;
+                this.ordreCode = ordreCode;
+                this.ordreDate = ordreDate;
+                this.delivred = delivred;
+                this.delivred_date = delivred_date;
+                this.wholesalerName = wholesalerName;
+                this.parentCode = parentCode;
+                this.stateName = stateName;
+                this.SocietyName = SocietyName;
+                IsSocietyVisible = Society.Count > 1;
+                if (parentCode != "")
+                {
+                    this.HasParent = true;
+                }
+                if (wholesalerName != "")
+                {
+                    this.HasWholesaler = true;
+                }
+            }
+
+
             public static MySqlCommand cmd;
 
             public async static Task<BindingList<Collection>> GetOpportunityByAgent(uint agentId)
             {
                 BindingList<Collection> list = new BindingList<Collection>();
                 string sqlCmd = "select crm_opportunity.Id, CONCAT(atooerp_person.first_name,' ',atooerp_person.last_name) as agentName,crm_opportunity.code ,crm_opportunity.create_date, commercial_partner.name as partnaireName, crm_opportunity.total_amount as total_amount, sale_order.code as ordreCode, sale_order.date as ordreDate, sale_order.delivred , sale_order.delivred_date, " +
-                    "wholesaler.name as wholesalerName, parent.code as parentCode, crm_state.name stateName " +
+                    "wholesaler.name as wholesalerName, parent.code as parentCode, crm_state.name stateName, " +
+                    "atooerp_socity.name as SocietyName " +
                     "from crm_opportunity left join " +
                     "commercial_partner on commercial_partner.Id = crm_opportunity.partner left join " +
                     "atooerp_person on atooerp_person.Id = crm_opportunity.agent left join " +
@@ -1230,7 +1320,8 @@ namespace SmartPharma5.Model
                     "commercial_partner wholesaler on wholesaler.Id = crm_opportunity.dealer left join " +
                     "crm_opportunity parent on parent.Id = crm_opportunity.parent left join " +
                     "crm_opportunity_state on crm_opportunity.state = crm_opportunity_state.Id left join " +
-                    "crm_state on crm_state.Id = crm_opportunity_state.state " +
+                    "crm_state on crm_state.Id = crm_opportunity_state.state left join " +
+                    "atooerp_socity ON atooerp_socity.Id = crm_opportunity.socity " +
                     "where( (crm_opportunity.agent = " + agentId + ") or (commercial_partner.sale_agent = " + agentId + "))" +
                     " order by crm_opportunity.Id desc ";
 
@@ -1259,7 +1350,8 @@ namespace SmartPharma5.Model
                                 reader["delivred_date"] is DateTime ? reader.GetDateTime("delivred_date") : (DateTime?)null,
                                 reader["wholesalerName"].ToString(),
                                 reader["parentCode"].ToString(),
-                                reader["stateName"].ToString()));
+                                reader["stateName"].ToString(),
+                                reader["SocietyName"].ToString()));
 
 
 
@@ -1289,7 +1381,8 @@ namespace SmartPharma5.Model
                 if (await DbConnection.Connecter3())
                 {
                     string sqlCmd = "select crm_opportunity.Id , CONCAT(atooerp_person.first_name,' ',atooerp_person.last_name) as agentName,crm_opportunity.code ,crm_opportunity.create_date, commercial_partner.name as partnaireName, crm_opportunity.total_amount as total_amount, sale_order.code as ordreCode, sale_order.date as ordreDate, sale_order.delivred , sale_order.delivred_date, " +
-                    "wholesaler.name as wholesalerName, parent.code as parentCode, crm_state.name stateName " +
+                    "wholesaler.name as wholesalerName, parent.code as parentCode, crm_state.name stateName, " +
+                    "atooerp_socity.name as SocietyName " +
                     "from crm_opportunity left join " +
                     "commercial_partner on commercial_partner.Id = crm_opportunity.partner left join " +
                     "atooerp_person on atooerp_person.Id = crm_opportunity.agent left join " +
@@ -1297,7 +1390,8 @@ namespace SmartPharma5.Model
                     "commercial_partner wholesaler on wholesaler.Id = crm_opportunity.dealer left join " +
                     "crm_opportunity parent on parent.Id = crm_opportunity.parent left join " +
                     "crm_opportunity_state on crm_opportunity.state = crm_opportunity_state.Id left join " +
-                    "crm_state on crm_state.Id = crm_opportunity_state.state " +
+                    "crm_state on crm_state.Id = crm_opportunity_state.state left join " +
+                    "atooerp_socity ON atooerp_socity.Id = crm_opportunity.socity " + 
                     "order by crm_opportunity.Id desc ";
                     MySqlDataReader reader = null;
                     try
@@ -1320,7 +1414,8 @@ namespace SmartPharma5.Model
                                 reader["delivred_date"] is DateTime ? reader.GetDateTime("delivred_date") : (DateTime?)null,
                                 reader["wholesalerName"].ToString(),
                                 reader["parentCode"].ToString(),
-                                reader["stateName"].ToString()));
+                                reader["stateName"].ToString(),
+                                reader["SocietyName"].ToString()));
                         }
                         reader.Close();
                     }
@@ -1425,6 +1520,33 @@ namespace SmartPharma5.Model
                 return list;
             }
 
+        }
+
+        private void LoadSocityFromName(string name)
+        {
+            string sqlCmd = "SELECT Id FROM atooerp_socity WHERE name = @SocityName";
+            DbConnection.Connecter();
+
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(sqlCmd, DbConnection.con))
+                {
+                    cmd.Parameters.AddWithValue("@SocityName", name);
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        Socity = Convert.ToInt32(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading socity: {ex.Message}");
+            }
+            finally
+            {
+                DbConnection.Deconnecter();
+            }
         }
 
     }

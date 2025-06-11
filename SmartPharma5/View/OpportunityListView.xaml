@@ -95,6 +95,13 @@
                                         <Label Text="{Binding create_date,Mode=OneWay,StringFormat='{0:dd/MM/yyyy  h:mm tt}'}" TextColor="#959aa0"/>
                                         <Label Text="{Binding partnaireName,Mode=OneWay}" TextColor="#959aa0"/>
                                         <Label Text="{Binding total_amount,Mode=OneWay, StringFormat='{0:F3}'}" FontSize="14" TextColor="DarkSlateBlue" FontAttributes="Bold"/>
+                                        <Label Text="{Binding SocietyName, Mode=OneWay}"
+                                           FontSize="16"
+                                           TextColor="DarkSlateBlue"
+                                           FontAttributes="Bold"
+                                           IsVisible="{Binding IsSocietyVisible}"/>
+                                        <!--<Label Text="{Binding SocietyName, Mode=OneWay}" FontSize="16" TextColor="DarkSlateBlue" FontAttributes="Bold" IsVisible="{Binding IsSocietyLabelVisible}"/>-->
+
                                     </StackLayout>
 
                                     <StackLayout Grid.Column="1">

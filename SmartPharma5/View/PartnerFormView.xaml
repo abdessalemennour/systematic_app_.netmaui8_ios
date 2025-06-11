@@ -19,10 +19,10 @@
                     <ImageButton  Source="calendar.png"   HeightRequest="50"    Clicked="ImageButton_Clicked" ></ImageButton>
                 </Frame>
                 <Frame  HorizontalOptions="FillAndExpand">
-                    <Button Clicked="Button_Clicked" VerticalOptions="CenterAndExpand"   HeightRequest="40"  CornerRadius="30" Text="FILTRAGE"></Button>
+                    <Button Clicked="Button_Clicked" VerticalOptions="CenterAndExpand" BackgroundColor="#512BD4" HeightRequest="40" TextColor="white" CornerRadius="30" Text="FILTRAGE"></Button>
                 </Frame>
                 <Frame x:Name="added"  HorizontalOptions="FillAndExpand">
-                    <Button Clicked="Button_Clicked_1" VerticalOptions="CenterAndExpand" BackgroundColor="ForestGreen"   HeightRequest="40"  CornerRadius="30" Text="ADD VISIT"></Button>
+                    <Button Clicked="Button_Clicked_1" VerticalOptions="CenterAndExpand" BackgroundColor="ForestGreen" TextColor="white"  HeightRequest="40"  CornerRadius="30" Text="ADD VISIT"></Button>
                 </Frame>
             </StackLayout>
 

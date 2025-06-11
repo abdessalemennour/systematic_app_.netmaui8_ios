@@ -38,278 +38,298 @@ using Command = MvvmHelpers.Commands.Command;
 
 namespace SmartPharma5.ViewModel
 {
-        public partial class OpportunityViewModel : BaseViewModel
+    public partial class OpportunityViewModel : BaseViewModel
+    {
+        /*  public ObservableCollection<Currency> Currencies { get; set; }
+          public Currency SelectedCurrency { get; set; }
+          /**************************************/
+        private int userId = Preferences.Get("iduser", 0);
+
+        private Tuple<uint, string> _selectedCurrency;
+        public Tuple<uint, string> SelectedCurrency
         {
-            /*  public ObservableCollection<Currency> Currencies { get; set; }
-              public Currency SelectedCurrency { get; set; }
-              /**************************************/
-            private Tuple<uint, string> _selectedCurrency;
-            public Tuple<uint, string> SelectedCurrency
+            get => _selectedCurrency;
+            set
             {
-                get => _selectedCurrency;
-                set
-                {
-                    _selectedCurrency = value;
-                    OnPropertyChanged();
-                    OnCurrencyChanged();
-                }
+                _selectedCurrency = value;
+                OnPropertyChanged();
+                OnCurrencyChanged();
             }
-            private int _selectedOpportunityId;
-            public int SelectedOpportunityId
-            {
-                get => _selectedOpportunityId;
-                set
-                {
-                    _selectedOpportunityId = value;
-                    OnPropertyChanged(nameof(SelectedOpportunityId));
-                }
-            }
-            public List<Tuple<uint, string>> Currencies { get; set; }
-
-            private void OnCurrencyChanged()
-            {
-                if (SelectedCurrency != null)
-                {
-                    uint selectedCurrencyId = SelectedCurrency.Item1; // Récupère l'ID de la devise sélectionnée
-                    Opportunity.Currency = selectedCurrencyId; // Met à jour la propriété Currency dans le modèle
-                }
-            }
-
-
-            private Document _temporaryDocument;
-            public Document TemporaryDocument
-            {
-                get => _temporaryDocument;
-                set
-                {
-                    _temporaryDocument = value;
-                    OnPropertyChanged(nameof(TemporaryDocument));
-                }
-            }
-            public ObservableCollection<Document> TemporaryDocuments { get; set; } = new ObservableCollection<Document>();
-            // Méthode pour annuler le document temporaire
-            public void CancelTemporaryDocument()
-            {
-                TemporaryDocument = null;
-            }
-            /************************************/
-
-
-            public Command EnAttenteCommand { get; }
-            public Command BcCommand { get; }
-            public Command QuotationCommand { get; }
-        
-            public Command GangneCommand { get; }
-            public Command PerduCommand { get; }
-            public Command Tryagain { get; }
-        
-            public AsyncCommand ClosePopupWholesalerCommand { get; }
-            public AsyncCommand RefreshCommand { get; }
-        
-            public AsyncCommand<OpportunityLine> RemoveCommand { get; }
-            public AsyncCommand<decimal> DiscountChangeCommand { get; }
-            public AsyncCommand CancelMoreDetailCommand { get; set; }
-            public AsyncCommand GetQuotation { get; }
-
-
-            public AsyncCommand WholeSalerRemoveCommand { get; set; }
-            public AsyncCommand<Partner> WholesalerTapCommand { get; set; }
-            public AsyncCommand AddCommand { get; set; }
-            public AsyncCommand EditCommand { get; set; }
-            public AsyncCommand ExitCommand { get; set; }
-            public AsyncCommand LogoutCommand { get; set; }
-            public AsyncCommand ChangeClientCommand { get; set; }
-            public AsyncCommand GoBackCommand { get; set; }
-            public AsyncCommand<object> QuantityChangeCommand { get; set; }
-            public AsyncCommand SaveMoreDetailCommand { get; }
-            public AsyncCommand MoreDetailCommand { get; }
-            public Command ValidateWithWholeSalerCommand { get; }
-            public AsyncCommand CancelCommand { get; }
-            public AsyncCommand GratuiteCommand { get; }
-            public AsyncCommand ValidateCommand { get; }
-            public AsyncCommand GetForms { get; }
-            private bool successpopup = false;
-            public bool SuccessPopup { get => successpopup; set => SetProperty(ref successpopup, value); }
-            private bool fieldpopup = false;
-            private string successpopupmessage;
-            public string SuccessPopupMessage { get => successpopupmessage; set => SetProperty(ref successpopupmessage, value); }
-
-            private string message;
-            public string Message { get => message; set => SetProperty(ref message, value); }
-        
-            public bool FieldPopup { get => fieldpopup; set => SetProperty(ref fieldpopup, value); }
-            public bool savingpopup = false;
-            public bool SavingPopup { get => savingpopup; set => SetProperty(ref savingpopup, value); }
-
-            private bool toinvoiceedit = true;
-            public bool ToinvoiceEdit { get => toinvoiceedit; set => SetProperty(ref toinvoiceedit, value); }
-            public bool moredetailpopup = false;
-            public bool MoreDetailPopup { get => moredetailpopup; set => SetProperty(ref moredetailpopup, value); }
-            public bool wholesalerpopup = false;
-            public bool WholesalerPopup { get => wholesalerpopup; set => SetProperty(ref wholesalerpopup, value); }
-            public bool actpopup = false;
-            public bool ActPopup { get => actpopup; set => SetProperty(ref actpopup, value); }
-            private bool wholeSalerremoveisvisible;
-            public bool WholeSalerRemoveIsvisible { get => wholeSalerremoveisvisible; set => SetProperty(ref wholeSalerremoveisvisible, value); }
-            private bool wholesalertitlevisible = false;
-            public bool WholesalerTitleVisible { get => wholesalertitlevisible; set => SetProperty(ref wholesalertitlevisible, value); }
-            private bool changeclientactive = true;
-            public bool ChangeClientActive { get => changeclientactive; set => SetProperty(ref changeclientactive, value); }
-            private bool discountedit = false;
-            public bool DiscountEdit { get => discountedit; set => SetProperty(ref discountedit, value); }
-            private bool quantityedit = false;
-            public bool QuantityEdit { get => quantityedit; set => SetProperty(ref quantityedit, value); }
-            private bool removevisible = true;
-
-            public bool IsNotLoaded { get => isNotLoaded; set => SetProperty(ref isNotLoaded, value); }
-            private bool isNotLoaded;
-
-        
-            public bool RemoveVisible { get => removevisible; set => SetProperty(ref removevisible, value); }
-            private bool addactive = false;
-            public bool AddActive { get => addactive; set => SetProperty(ref addactive, value); }
-            private bool aditactive = false;
-            public bool EditActive { get => aditactive; set => SetProperty(ref aditactive, value); }
-            private bool moredetailactive = true;
-            public bool MoreDetailActive { get => moredetailactive; set => SetProperty(ref moredetailactive, value); }
-            private bool wholesaleractive = true;
-            public bool WholesalerActive { get => wholesaleractive; set => SetProperty(ref wholesaleractive, value); }
-            private bool gratuiteactive = false;
-            public bool GratuiteActive { get => gratuiteactive; set => SetProperty(ref gratuiteactive, value); }
-            private bool validateactive = true;
-            public bool ValidateActive { get => validateactive; set => SetProperty(ref validateactive, value); }
-            private decimal discountvalue;
-            public decimal DiscountValue { get => discountvalue; set => SetProperty(ref discountvalue, value); }
-            private bool successsavingpopup;
-            public bool SuccessSavingPopup { get => successsavingpopup; set => SetProperty(ref successsavingpopup, value); }
-            private bool buttonstateisvisible = true;
-            public bool ButtonStateIsVisible { get => buttonstateisvisible; set => SetProperty(ref buttonstateisvisible, value); }
-            private bool bcisenabled = true;
-            public bool BcIsEnabled { get => bcisenabled; set => SetProperty(ref bcisenabled, value); }
-            private bool gangneisenabled = true;
-            public bool GangneIsEnabled { get => gangneisenabled; set => SetProperty(ref gangneisenabled, value); }
-            private bool perduisenabled = true;
-            public bool PerduIsEnabled { get => perduisenabled; set => SetProperty(ref perduisenabled, value); }
-            private bool enattenteisenabled = true;
-            public bool EnAttenteIsEnabled { get => enattenteisenabled; set => SetProperty(ref enattenteisenabled, value); }
-            public NotificationViewModel NotificationVM => App.NotificationVM;
-
-
-            //public uint Currency { get; set; }
-            private bool testCon = true;
-            public bool TestCon { get => testCon; set => SetProperty(ref testCon, value); }
-            public string Note { get; set; } = string.Empty;
-            public bool IsCorrection;
-
-            private ObservableRangeCollection<Partner> wholesalerlist;
-            public ObservableRangeCollection<Partner> WholesalerList { get => wholesalerlist; set => SetProperty(ref wholesalerlist, value); }
-            public Opportunity oppo;
-            public Opportunity Opportunity { get => oppo; set => SetProperty(ref oppo, value); }
-            public ObservableRangeCollection<Product> ProductList { get; set; }
-            /*****************/
-            private bool _isSaveDocumentButtonVisible;
-            public bool IsSaveDocumentButtonVisible
-            {
-                get => _isSaveDocumentButtonVisible;
-                set => SetProperty(ref _isSaveDocumentButtonVisible, value);
-            }
-
-            private bool _isMainButtonVisible;
-            public bool IsMainButtonVisible
+        }
+        private int _selectedOpportunityId;
+        public int SelectedOpportunityId
         {
-                get => _isMainButtonVisible;
-                set => SetProperty(ref _isMainButtonVisible, value);
+            get => _selectedOpportunityId;
+            set
+            {
+                _selectedOpportunityId = value;
+                OnPropertyChanged(nameof(SelectedOpportunityId));
             }
+        }
+        private bool _isVisibleSocietyComboBox;
+        public bool IsVisibleSocietyComboBox
+        {
+            get => _isVisibleSocietyComboBox;
+            set => SetProperty(ref _isVisibleSocietyComboBox, value);
+        }
+        public List<Tuple<uint, string>> Currencies { get; set; }
+
+        private void OnCurrencyChanged()
+        {
+            if (SelectedCurrency != null)
+            {
+                uint selectedCurrencyId = SelectedCurrency.Item1; // Récupère l'ID de la devise sélectionnée
+                Opportunity.Currency = selectedCurrencyId; // Met à jour la propriété Currency dans le modèle
+            }
+        }
+
+
+        private Document _temporaryDocument;
+        public Document TemporaryDocument
+        {
+            get => _temporaryDocument;
+            set
+            {
+                _temporaryDocument = value;
+                OnPropertyChanged(nameof(TemporaryDocument));
+            }
+        }
+        public ObservableCollection<Document> TemporaryDocuments { get; set; } = new ObservableCollection<Document>();
+        // Méthode pour annuler le document temporaire
+        public void CancelTemporaryDocument()
+        {
+            TemporaryDocument = null;
+        }
+        private ObservableRangeCollection<Society> societyList;
+        public ObservableRangeCollection<Society> SocietyList { get => societyList; set => SetProperty(ref societyList, value); }
+
+        private Society societySelectedItem;
+        public Society SocietySelectedItem { get => societySelectedItem; set => SetProperty(ref societySelectedItem, value); }
+
+        public AsyncCommand SocietyChangedCommand { get; }
+        /************************************/
+
+
+        public Command EnAttenteCommand { get; }
+        public Command BcCommand { get; }
+        public Command QuotationCommand { get; }
+
+        public Command GangneCommand { get; }
+        public Command PerduCommand { get; }
+        public Command Tryagain { get; }
+
+        public AsyncCommand ClosePopupWholesalerCommand { get; }
+        public AsyncCommand RefreshCommand { get; }
+
+        public AsyncCommand<OpportunityLine> RemoveCommand { get; }
+        public AsyncCommand<decimal> DiscountChangeCommand { get; }
+        public AsyncCommand CancelMoreDetailCommand { get; set; }
+        public AsyncCommand GetQuotation { get; }
+
+
+        public AsyncCommand WholeSalerRemoveCommand { get; set; }
+        public AsyncCommand<Partner> WholesalerTapCommand { get; set; }
+        public AsyncCommand AddCommand { get; set; }
+        public AsyncCommand EditCommand { get; set; }
+        public AsyncCommand ExitCommand { get; set; }
+        public AsyncCommand LogoutCommand { get; set; }
+        public AsyncCommand ChangeClientCommand { get; set; }
+        public AsyncCommand GoBackCommand { get; set; }
+        public AsyncCommand<object> QuantityChangeCommand { get; set; }
+        public AsyncCommand SaveMoreDetailCommand { get; }
+        public AsyncCommand MoreDetailCommand { get; }
+        public Command ValidateWithWholeSalerCommand { get; }
+        public AsyncCommand CancelCommand { get; }
+        public AsyncCommand GratuiteCommand { get; }
+        public AsyncCommand ValidateCommand { get; }
+        public AsyncCommand GetForms { get; }
+        private bool successpopup = false;
+        public bool SuccessPopup { get => successpopup; set => SetProperty(ref successpopup, value); }
+        private bool fieldpopup = false;
+        private string successpopupmessage;
+        public string SuccessPopupMessage { get => successpopupmessage; set => SetProperty(ref successpopupmessage, value); }
+
+        private string message;
+        public string Message { get => message; set => SetProperty(ref message, value); }
+
+        public bool FieldPopup { get => fieldpopup; set => SetProperty(ref fieldpopup, value); }
+        public bool savingpopup = false;
+        public bool SavingPopup { get => savingpopup; set => SetProperty(ref savingpopup, value); }
+
+        private bool toinvoiceedit = true;
+        public bool ToinvoiceEdit { get => toinvoiceedit; set => SetProperty(ref toinvoiceedit, value); }
+        public bool moredetailpopup = false;
+        public bool MoreDetailPopup { get => moredetailpopup; set => SetProperty(ref moredetailpopup, value); }
+        public bool wholesalerpopup = false;
+        public bool WholesalerPopup { get => wholesalerpopup; set => SetProperty(ref wholesalerpopup, value); }
+        public bool actpopup = false;
+        public bool ActPopup { get => actpopup; set => SetProperty(ref actpopup, value); }
+        private bool wholeSalerremoveisvisible;
+        public bool WholeSalerRemoveIsvisible { get => wholeSalerremoveisvisible; set => SetProperty(ref wholeSalerremoveisvisible, value); }
+        private bool wholesalertitlevisible = false;
+        public bool WholesalerTitleVisible { get => wholesalertitlevisible; set => SetProperty(ref wholesalertitlevisible, value); }
+        private bool changeclientactive = true;
+        public bool ChangeClientActive { get => changeclientactive; set => SetProperty(ref changeclientactive, value); }
+        private bool discountedit = false;
+        public bool DiscountEdit { get => discountedit; set => SetProperty(ref discountedit, value); }
+        private bool quantityedit = false;
+        public bool QuantityEdit { get => quantityedit; set => SetProperty(ref quantityedit, value); }
+        private bool removevisible = true;
+
+        public bool IsNotLoaded { get => isNotLoaded; set => SetProperty(ref isNotLoaded, value); }
+        private bool isNotLoaded;
+
+
+        public bool RemoveVisible { get => removevisible; set => SetProperty(ref removevisible, value); }
+        private bool addactive = false;
+        public bool AddActive { get => addactive; set => SetProperty(ref addactive, value); }
+        private bool aditactive = false;
+        public bool EditActive { get => aditactive; set => SetProperty(ref aditactive, value); }
+        private bool moredetailactive = true;
+        public bool MoreDetailActive { get => moredetailactive; set => SetProperty(ref moredetailactive, value); }
+        private bool wholesaleractive = true;
+        public bool WholesalerActive { get => wholesaleractive; set => SetProperty(ref wholesaleractive, value); }
+        private bool gratuiteactive = false;
+        public bool GratuiteActive { get => gratuiteactive; set => SetProperty(ref gratuiteactive, value); }
+        private bool validateactive = true;
+        public bool ValidateActive { get => validateactive; set => SetProperty(ref validateactive, value); }
+        private decimal discountvalue;
+        public decimal DiscountValue { get => discountvalue; set => SetProperty(ref discountvalue, value); }
+        private bool successsavingpopup;
+        public bool SuccessSavingPopup { get => successsavingpopup; set => SetProperty(ref successsavingpopup, value); }
+        private bool buttonstateisvisible = true;
+        public bool ButtonStateIsVisible { get => buttonstateisvisible; set => SetProperty(ref buttonstateisvisible, value); }
+        private bool bcisenabled = true;
+        public bool BcIsEnabled { get => bcisenabled; set => SetProperty(ref bcisenabled, value); }
+        private bool gangneisenabled = true;
+        public bool GangneIsEnabled { get => gangneisenabled; set => SetProperty(ref gangneisenabled, value); }
+        private bool perduisenabled = true;
+        public bool PerduIsEnabled { get => perduisenabled; set => SetProperty(ref perduisenabled, value); }
+        private bool enattenteisenabled = true;
+        public bool EnAttenteIsEnabled { get => enattenteisenabled; set => SetProperty(ref enattenteisenabled, value); }
+        public NotificationViewModel NotificationVM => App.NotificationVM;
+
+
+        //public uint Currency { get; set; }
+        private bool testCon = true;
+        public bool TestCon { get => testCon; set => SetProperty(ref testCon, value); }
+        public string Note { get; set; } = string.Empty;
+        public bool IsCorrection;
+
+        private ObservableRangeCollection<Partner> wholesalerlist;
+        public ObservableRangeCollection<Partner> WholesalerList { get => wholesalerlist; set => SetProperty(ref wholesalerlist, value); }
+        public Opportunity oppo;
+        public Opportunity Opportunity { get => oppo; set => SetProperty(ref oppo, value); }
+        public ObservableRangeCollection<Product> ProductList { get; set; }
+        /*****************/
+        private bool _isSaveDocumentButtonVisible;
+        public bool IsSaveDocumentButtonVisible
+        {
+            get => _isSaveDocumentButtonVisible;
+            set => SetProperty(ref _isSaveDocumentButtonVisible, value);
+        }
+
+        private bool _isMainButtonVisible;
+        public bool IsMainButtonVisible
+        {
+            get => _isMainButtonVisible;
+            set => SetProperty(ref _isMainButtonVisible, value);
+        }
         private bool _isFormsButtonVisible;
-            public bool IsFormsButtonVisible
-            {
-                get => _isFormsButtonVisible;
-                set => SetProperty(ref _isFormsButtonVisible, value);
-            }
+        public bool IsFormsButtonVisible
+        {
+            get => _isFormsButtonVisible;
+            set => SetProperty(ref _isFormsButtonVisible, value);
+        }
 
-            /*****************/
-            /*public void LoadCurrencies()
-            {
-                Currencies = Partner.AllCurrencies.Select(c => c.Name).ToList();
-            }*/
+        /*****************/
+        /*public void LoadCurrencies()
+        {
+            Currencies = Partner.AllCurrencies.Select(c => c.Name).ToList();
+        }*/
 
-            public OpportunityViewModel(Opportunity opportunity)
-            {
-                // Initialisation des commandes
-                EnAttenteCommand = new Command(EnAttente);
-                BcCommand = new Command(Bc);
-                QuotationCommand = new Command(quotationFun);
-                GangneCommand = new Command(Gangne);
-                PerduCommand = new Command(Perdu);
-                CancelMoreDetailCommand = new AsyncCommand(CancelMoreDetail);
-                AddCommand = new AsyncCommand(AddItems);
-                WholeSalerRemoveCommand = new AsyncCommand(WholeSalerRemove);
-                WholesalerTapCommand = new AsyncCommand<Partner>(WholesalerTap);
-                GoBackCommand = new AsyncCommand(back);
-                EditCommand = new AsyncCommand(Edit);
-                ExitCommand = new AsyncCommand(Exit);
-                LogoutCommand = new AsyncCommand(Logout);
-                SaveMoreDetailCommand = new AsyncCommand(SaveMoreDetail);
-                MoreDetailCommand = new AsyncCommand(MoreDetailAsync);
-                DiscountChangeCommand = new AsyncCommand<decimal>(DiscountChange);
-                QuantityChangeCommand = new AsyncCommand<object>(QuantityChange);
-                RemoveCommand = new AsyncCommand<OpportunityLine>(Remove);
-                ValidateCommand = new AsyncCommand(Validate);
-                GratuiteCommand = new AsyncCommand(Gratuite);
-                ValidateWithWholeSalerCommand = new Command(ValidateWithWholeSaler);
-                CancelCommand = new AsyncCommand(Cancel);
-                GetForms = new AsyncCommand(getForms);
-                ClosePopupWholesalerCommand = new AsyncCommand(ClosePopupWholesaler);
-                Tryagain = new Command(() => FieldPopup = false);
-                Opportunity = opportunity;
-                /*******************************/
-                // Simule une liste de devises (id, nom)
-                Currencies = new List<Tuple<uint, string>>
+        public OpportunityViewModel(Opportunity opportunity)
+        {
+            // Initialisation des commandes
+            EnAttenteCommand = new Command(EnAttente);
+            BcCommand = new Command(Bc);
+            QuotationCommand = new Command(quotationFun);
+            GangneCommand = new Command(Gangne);
+            PerduCommand = new Command(Perdu);
+            CancelMoreDetailCommand = new AsyncCommand(CancelMoreDetail);
+            AddCommand = new AsyncCommand(AddItems);
+            WholeSalerRemoveCommand = new AsyncCommand(WholeSalerRemove);
+            WholesalerTapCommand = new AsyncCommand<Partner>(WholesalerTap);
+            GoBackCommand = new AsyncCommand(back);
+            EditCommand = new AsyncCommand(Edit);
+            ExitCommand = new AsyncCommand(Exit);
+            LogoutCommand = new AsyncCommand(Logout);
+            SaveMoreDetailCommand = new AsyncCommand(SaveMoreDetail);
+            MoreDetailCommand = new AsyncCommand(MoreDetailAsync);
+            DiscountChangeCommand = new AsyncCommand<decimal>(DiscountChange);
+            QuantityChangeCommand = new AsyncCommand<object>(QuantityChange);
+            RemoveCommand = new AsyncCommand<OpportunityLine>(Remove);
+            ValidateCommand = new AsyncCommand(Validate);
+            GratuiteCommand = new AsyncCommand(Gratuite);
+            ValidateWithWholeSalerCommand = new Command(ValidateWithWholeSaler);
+            CancelCommand = new AsyncCommand(Cancel);
+            GetForms = new AsyncCommand(getForms);
+            ClosePopupWholesalerCommand = new AsyncCommand(ClosePopupWholesaler);
+            Tryagain = new Command(() => FieldPopup = false);
+            Opportunity = opportunity;
+            /*******************************/
+            // Simule une liste de devises (id, nom)
+            Currencies = new List<Tuple<uint, string>>
                 {
                     new Tuple<uint, string>(1, "TND"),
                     new Tuple<uint, string>(2, "USD"),
                     new Tuple<uint, string>(3, "EURO"),
                 };
 
-                // Sélectionne la devise correspondant à Opportunity.Currency
-                SelectedCurrency = Currencies.FirstOrDefault(c => c.Item1 == Opportunity.Currency);
+            // Sélectionne la devise correspondant à Opportunity.Currency
+            SelectedCurrency = Currencies.FirstOrDefault(c => c.Item1 == Opportunity.Currency);
 
-                /*******************************/
-                RefreshCommand = new AsyncCommand(Refresh);
-                GetQuotation = new AsyncCommand(GetQuotationFun);
-                Title = "Opportunity";
+            /*******************************/
+            RefreshCommand = new AsyncCommand(Refresh);
+            GetQuotation = new AsyncCommand(GetQuotationFun);
+            Title = "Opportunity";
 
-                if (Opportunity.Id == 0)
-                {
-                    // Mode ajout (nouvelle opportunité)
-                    IsSaveDocumentButtonVisible = false;
-                    IsMainButtonVisible = false;
-                    IsFormsButtonVisible = false; 
-                }
-                else
-                {
-                    // Mode affichage (opportunité existante)
-                    IsSaveDocumentButtonVisible = true;
-                    IsMainButtonVisible = true;
-                    IsFormsButtonVisible = true;
-                }
-
-                Task.Run(async () => await LoadProductAndWholesaler());
-
-                // Contrôler la visibilité du titre du grossiste
-                if (Opportunity.Dealer != 0)
-                {
-                    WholesalerTitleVisible = true;
-                }
-                else
-                {
-                    WholesalerTitleVisible = false;
-                }
-
-                ValidatedControl(Opportunity.validated);
-                ActPopup = false;
-
+            if (Opportunity.Id == 0)
+            {
+                // Mode ajout (nouvelle opportunité)
+                IsSaveDocumentButtonVisible = false;
+                IsMainButtonVisible = false;
+                IsFormsButtonVisible = false;
             }
+            else
+            {
+                // Mode affichage (opportunité existante)
+                IsSaveDocumentButtonVisible = true;
+                IsMainButtonVisible = true;
+                IsFormsButtonVisible = true;
+            }
+
+            Task.Run(async () => await LoadProductAndWholesaler());
+
+            // Contrôler la visibilité du titre du grossiste
+            if (Opportunity.Dealer != 0)
+            {
+                WholesalerTitleVisible = true;
+            }
+            else
+            {
+                WholesalerTitleVisible = false;
+            }
+
+            ValidatedControl(Opportunity.validated);
+            ActPopup = false;
+
+
+            // Initialize Society
+            SocietyList = new ObservableRangeCollection<Society>();
+            SocietyChangedCommand = new AsyncCommand(SocietyChanged);
+            Task.Run(() => LoadSocieties());
+        }
 
 
 
@@ -334,7 +354,7 @@ namespace SmartPharma5.ViewModel
             {
                 UserDialogs.Instance.ShowLoading("Loading Pleae wait ...");
                 await Task.Delay(500);
-                await App.Current.MainPage.Navigation.PushAsync(new NavigationPage(new PartnerFormView(Opportunity.Id,Opportunity.IdPartner)));
+                await App.Current.MainPage.Navigation.PushAsync(new NavigationPage(new PartnerFormView(Opportunity.Id, Opportunity.IdPartner)));
                 UserDialogs.Instance.HideLoading();
             }
             catch (Exception ex)
@@ -400,9 +420,9 @@ namespace SmartPharma5.ViewModel
             if (await checkPermissionState(iduser))
             {
 
-                
-                    ButtonStateIsVisible = true;
-                    StateButtonEnable();
+
+                ButtonStateIsVisible = true;
+                StateButtonEnable();
 
             }
             else
@@ -642,8 +662,8 @@ namespace SmartPharma5.ViewModel
             {
                 // Handle the exception (log it, show a message, etc.)
                 Console.WriteLine(ex.Message);
-                await UserDialogs.Instance.AlertAsync("Échec de la connexion: " , "Erreur", "OK");
-               // var r = await App.Current.MainPage.DisplayAlert("Warning", "Are you sure you want to exit!", "Yes", "No");
+                await UserDialogs.Instance.AlertAsync("Échec de la connexion: ", "Erreur", "OK");
+                // var r = await App.Current.MainPage.DisplayAlert("Warning", "Are you sure you want to exit!", "Yes", "No");
 
                 // Important: on vérifie quand même si on doit activer le bouton
                 //if (Opportunity.Id == 0)
@@ -707,8 +727,8 @@ namespace SmartPharma5.ViewModel
             var r = await App.Current.MainPage.DisplayAlert("Warning", "Are you sure you want to exit!", "Yes", "No");
             if (r)
             {
-                 await App.Current.MainPage.Navigation.PopAsync();
-               //await  Shell.Current.GoToAsync("..");
+                await App.Current.MainPage.Navigation.PopAsync();
+                //await  Shell.Current.GoToAsync("..");
             }
         }
         private void ValidateWithWholeSaler()
@@ -863,7 +883,7 @@ namespace SmartPharma5.ViewModel
         {
             Opportunity.Opportunity_lines.Remove(arg);
             Opportunity.totalAmount = Opportunity.getTotalAmount();
-            
+
         }
         void Checkbutton()
         {
@@ -963,11 +983,12 @@ namespace SmartPharma5.ViewModel
                 await App.Current.MainPage.Navigation.PushAsync(new ProductListView(Opportunity, ProductList));
                 UserDialogs.Instance.HideLoading();
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
 
             }
-           
+
         }
 
         private Task CancelMoreDetail()
@@ -984,5 +1005,80 @@ namespace SmartPharma5.ViewModel
                 await App.Current.MainPage.Navigation.PopAsync();
             }
         }
+        private async Task SocietyChanged()
+        {
+            if (SocietySelectedItem != null)
+            {
+                // Met à jour l'ID de la société dans l'opportunité
+                Opportunity.Socity = SocietySelectedItem.Id;
+                Console.WriteLine($"Selected society ID: {Opportunity.Socity}");
+            }
+        }
+        //private async Task LoadSocieties()
+        //{
+        //    // 1. Vider le cache avant de recharger
+        //    await Society.ClearSocietiesCache();
+
+        //    // 2. Charger les sociétés pour le nouvel utilisateur
+        //    var societies = await Society.GetAllSocietiesAsync();
+
+        //    // 3. Mettre à jour la liste
+        //    SocietyList.Clear();
+        //    foreach (var society in societies)
+        //    {
+        //        SocietyList.Add(society);
+        //    }
+
+        //    // 4. Sélectionner la première société comme valeur par défaut
+        //    if (SocietyList.Count > 0)
+        //    {
+        //        SocietySelectedItem = SocietyList[0];
+        //    }
+
+        //    // 5. Notifier les changements
+        //    OnPropertyChanged(nameof(SocietyList));
+        //    OnPropertyChanged(nameof(SocietySelectedItem));
+        //}
+        private async Task LoadSocieties()
+        {
+            try
+            {
+                // 1. Vider le cache avant de recharger
+                await Society.ClearSocietiesCache();
+
+                // 2. Charger les sociétés
+                var societies = await Society.GetAllSocietiesAsync();
+
+                // 3. Mettre à jour la liste
+                SocietyList.ReplaceRange(societies);
+                IsVisibleSocietyComboBox = SocietyList.Count > 1;
+
+                // 4. Conserver la sélection existante ou sélectionner la société correspondant à Opportunity.Socity
+                if (SocietyList.Count > 0)
+                {
+                    if (Opportunity.Socity.HasValue)
+                    {
+                        // Recherche de la société correspondant à l'ID stocké dans Opportunity
+                        var matchingSociety = SocietyList.FirstOrDefault(s => s.Id == Opportunity.Socity.Value);
+                        SocietySelectedItem = matchingSociety ?? SocietyList[0];
+                    }
+                    else
+                    {
+                        // Sélection par défaut seulement si aucune société n'est déjà sélectionnée
+                        SocietySelectedItem = SocietyList[0];
+                    }
+                }
+
+                // 5. Notifier les changements
+                OnPropertyChanged(nameof(SocietyList));
+                OnPropertyChanged(nameof(SocietySelectedItem));
+                OnPropertyChanged(nameof(IsVisibleSocietyComboBox));
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading societies: {ex.Message}");
+            }
+        }
     }
-}
+    }

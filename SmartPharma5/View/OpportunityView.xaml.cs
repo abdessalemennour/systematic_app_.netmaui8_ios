@@ -512,8 +512,8 @@ public partial class OpportunityView : ContentPage
         }
         else
         {
-           /* string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");*/
+            /* string buttonName = button.Source.ToString().Replace("File: ", "");
+             await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");*/
         }
         UserDialogs.Instance.HideLoading();
 
@@ -522,8 +522,8 @@ public partial class OpportunityView : ContentPage
     {
         var button = sender as ImageButton;
 
-      /*  UserDialogs.Instance.ShowLoading("Chargement...");
-        await Task.Delay(400);*/
+        /*  UserDialogs.Instance.ShowLoading("Chargement...");
+          await Task.Delay(400);*/
         if (button.Source.ToString().Contains("activity.png"))
         {
             await Navigation.PushAsync(new FloatingActionButton.ActivityView());
@@ -533,7 +533,7 @@ public partial class OpportunityView : ContentPage
             string buttonName = button.Source.ToString().Replace("File: ", "");
             await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
         }
-       // UserDialogs.Instance.HideLoading();
+        // UserDialogs.Instance.HideLoading();
 
     }
     private async void OnActionButtonClickedchat(object sender, EventArgs e)
@@ -574,7 +574,7 @@ public partial class OpportunityView : ContentPage
             UserDialogs.Instance.HideLoading();
         }
     }
-        
+
     private async void OnActionButtonClickedlogs(object sender, EventArgs e)
     {
         var button = sender as ImageButton;

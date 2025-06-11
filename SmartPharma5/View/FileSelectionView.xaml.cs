@@ -11,6 +11,7 @@ using MySqlConnector;
 using SmartPharma5.Model;
 using SmartPharma5.View.FloatingActionButton;
 using SmartPharma5.ViewModel;
+using Microsoft.Maui.ApplicationModel;
 
 namespace SmartPharma5.View
 {
@@ -84,9 +85,10 @@ namespace SmartPharma5.View
                 {
                     PickerTitle = "Please select a file",
                     FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-                {
-                    { DevicePlatform.Android, new[] { "image/*", "application/pdf" } }
-                })
+                    {
+                        { DevicePlatform.Android, new[] { "image/*", "application/pdf" } },
+                        { DevicePlatform.iOS, new[] { "public.image", "com.adobe.pdf" } }
+                    })
                 });
 
                 if (result != null)
@@ -110,11 +112,34 @@ namespace SmartPharma5.View
         {
             try
             {
+                // Vérifier d'abord la permission de la caméra
+                var status = await Permissions.RequestAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Permission refusée", 
+                        "L'accès à la caméra est nécessaire pour prendre des photos. Veuillez l'autoriser dans les paramètres.", 
+                        "OK");
+                    
+                    if (DeviceInfo.Platform == DevicePlatform.iOS)
+                    {
+                        // Ouvrir les paramètres sur iOS
+                        AppInfo.ShowSettingsUI();
+                    }
+                    return;
+                }
+
                 UserDialogs.Instance.ShowLoading("Loading...");
-                var photo = await MediaPicker.CapturePhotoAsync();
+
+                var options = new MediaPickerOptions
+                {
+                    Title = "Prendre une photo"
+                };
+
+                var photo = await MediaPicker.Default.CapturePhotoAsync(options);
 
                 if (photo != null)
                 {
+                    // Sur iOS, utiliser le dossier temporaire pour un meilleur nettoyage automatique
                     string filePath = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
 
                     using (var stream = await photo.OpenReadAsync())
@@ -125,11 +150,30 @@ namespace SmartPharma5.View
 
                     string fileName = photo.FileName;
                     await _viewModel.ProcessFile(filePath, fileName);
+
+                    // Nettoyer le fichier temporaire après traitement
+                    try
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            File.Delete(filePath);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Ignorer les erreurs de nettoyage
+                    }
                 }
+            }
+            catch (PermissionException)
+            {
+                await DisplayAlert("Erreur de permission", 
+                    "L'application n'a pas la permission d'accéder à la caméra.", 
+                    "OK");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"An error has occurred: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Une erreur s'est produite : {ex.Message}", "OK");
             }
             finally
             {

@@ -12,9 +12,9 @@
 
         <StackLayout>
             <dxe:AutoCompleteEdit PlaceholderText="Partner" x:Name="AutoComp" TextChanged="AutoCompleteEdit_TextChanged" 
- ItemsSource="{Binding OpportunityList}"               
- LoadingProgressMode="Manual"
- SubmitIconVisibility="Always" SubmitIconColor="#4B9EE8" BorderColor="#4B9EE8" CornerRadius="27" Margin="20,5,8,0"  />
+         ItemsSource="{Binding OpportunityList}"               
+         LoadingProgressMode="Manual"
+         SubmitIconVisibility="Always" SubmitIconColor="#4B9EE8" BorderColor="#4B9EE8" CornerRadius="27" Margin="20,5,8,0"  />
 
             <StackLayout  Orientation="Horizontal" Margin="10,20,10,10">
                 <Label Text="PROFILES REQUESTS" FontAttributes="Bold" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
@@ -23,9 +23,9 @@
             </StackLayout>
           
             <StackLayout Grid.Row="4" Spacing="5" Orientation="Horizontal" Margin="10,20,10,10">
-                <Button Text="Pending" BackgroundColor="Orange" WidthRequest="100" Clicked="Button_Clicked" Command="{Binding CurrentCommand,Mode=TwoWay}"></Button>
-                <Button Text="Accepted" BackgroundColor="Green" WidthRequest="100" Clicked="Button_Clicked_2" Command="{Binding AccHistoriqueCommand,Mode=TwoWay}"></Button>
-                <Button Text="Refused" BackgroundColor="Red" WidthRequest="100"  Clicked="Button_Clicked_1" Command="{Binding RefHistoriqueCommand,Mode=TwoWay}"></Button>
+                <Button Text="Pending" TextColor="White" BackgroundColor="Orange" WidthRequest="100" Clicked="Button_Clicked" Command="{Binding CurrentCommand,Mode=TwoWay}"></Button>
+                <Button Text="Accepted" TextColor="White" BackgroundColor="Green" WidthRequest="100" Clicked="Button_Clicked_2" Command="{Binding AccHistoriqueCommand,Mode=TwoWay}"></Button>
+                <Button Text="Refused" TextColor="White" BackgroundColor="Red" WidthRequest="100"  Clicked="Button_Clicked_1" Command="{Binding RefHistoriqueCommand,Mode=TwoWay}"></Button>
 
             </StackLayout>
 

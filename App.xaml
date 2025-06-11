@@ -1,0 +1,59 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             x:Class="SmartPharma5.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Couleurs globales -->
+            <Color x:Key="PrimaryTextColor">Black</Color>
+            <Color x:Key="PrimaryBackgroundColor">White</Color>
+            <Color x:Key="PrimaryBorderColor">Black</Color>
+
+            <!-- Propriétés communes pour les éditeurs DevExpress -->
+            <x:Double x:Key="EditorHeight">45</x:Double>
+            <LayoutOptions x:Key="CenterLayout">Center</LayoutOptions>
+            <TextAlignment x:Key="CenterTextAlignment">Center</TextAlignment>
+
+            <!-- Style pour NumericEdit -->
+            <Style x:Key="DefaultNumericEditStyle" TargetType="dxe:NumericEdit">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+                <Setter Property="BorderColor" Value="{StaticResource PrimaryBorderColor}" />
+                <Setter Property="HeightRequest" Value="{StaticResource EditorHeight}" />
+                <Setter Property="VerticalOptions" Value="{StaticResource CenterLayout}" />
+                <Setter Property="TextHorizontalAlignment" Value="{StaticResource CenterTextAlignment}" />
+            </Style>
+
+            <!-- Style pour ComboBoxEdit -->
+            <Style x:Key="DefaultComboBoxEditStyle" TargetType="dxe:ComboBoxEdit">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+                <Setter Property="BorderColor" Value="{StaticResource PrimaryBorderColor}" />
+                <Setter Property="HeightRequest" Value="{StaticResource EditorHeight}" />
+                <Setter Property="VerticalOptions" Value="{StaticResource CenterLayout}" />
+                <Setter Property="TextHorizontalAlignment" Value="{StaticResource CenterTextAlignment}" />
+            </Style>
+
+            <!-- Style pour TextEdit -->
+            <Style x:Key="DefaultTextEditStyle" TargetType="dxe:TextEdit">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+                <Setter Property="BorderColor" Value="{StaticResource PrimaryBorderColor}" />
+                <Setter Property="HeightRequest" Value="{StaticResource EditorHeight}" />
+                <Setter Property="VerticalOptions" Value="{StaticResource CenterLayout}" />
+                <Setter Property="TextHorizontalAlignment" Value="{StaticResource CenterTextAlignment}" />
+            </Style>
+
+            <!-- Style pour DateEdit -->
+            <Style x:Key="DefaultDateEditStyle" TargetType="dxe:DateEdit">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
+                <Setter Property="BorderColor" Value="{StaticResource PrimaryBorderColor}" />
+                <Setter Property="HeightRequest" Value="{StaticResource EditorHeight}" />
+                <Setter Property="VerticalOptions" Value="{StaticResource CenterLayout}" />
+                <Setter Property="TextHorizontalAlignment" Value="{StaticResource CenterTextAlignment}" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application> 

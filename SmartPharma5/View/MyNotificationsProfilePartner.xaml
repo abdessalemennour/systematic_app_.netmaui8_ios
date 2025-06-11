@@ -40,9 +40,9 @@
 
         </StackLayout>
         <StackLayout Grid.Row="4" Spacing="5" Orientation="Horizontal" Margin="10,20,10,10">
-            <Button Text="Pending" BackgroundColor="Orange" WidthRequest="100" Clicked="Button_Clicked"></Button>
-            <Button Text="Accepted" BackgroundColor="Green" WidthRequest="100" Clicked="Button_Clicked_1" ></Button>
-            <Button Text="Refused" BackgroundColor="Red" WidthRequest="100" Clicked="Button_Clicked_2"  ></Button>
+            <Button Text="Pending" BackgroundColor="Orange" WidthRequest="100" TextColor="White" Clicked="Button_Clicked"></Button>
+            <Button Text="Accepted" BackgroundColor="Green" WidthRequest="100" TextColor="White" Clicked="Button_Clicked_1" ></Button>
+            <Button Text="Refused" BackgroundColor="Red" WidthRequest="100" Clicked="Button_Clicked_2" TextColor="White"  ></Button>
 
         </StackLayout>
 

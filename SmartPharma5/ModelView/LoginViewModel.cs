@@ -259,6 +259,11 @@ namespace SmartPharma5.ViewModel
 
 
                             uint IdAgent = (uint)Preferences.Get("idagent", Convert.ToUInt32(null));
+                            int userId = Preferences.Get("iduser", 0);
+                            Task.Run(async () =>
+                            {
+                                var societies = await Society.GetSocietiesByUserIdAsync(userId);
+                            }).GetAwaiter().GetResult();
 
                             ActPopup = false;
                             await Task.Delay(1000);
@@ -276,6 +281,8 @@ namespace SmartPharma5.ViewModel
                             {
                                 homeViewModel.CurrentConnection = this.CurrentConnection;
                                 await homeViewModel.LoadConnections();
+
+
                             }
 
                             //string historyContent = await configService.GetFormattedHistoryAsync();

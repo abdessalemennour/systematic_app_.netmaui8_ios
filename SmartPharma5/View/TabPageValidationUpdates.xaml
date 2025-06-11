@@ -7,15 +7,36 @@
          
             >
 
-    <TabbedPage.ToolbarItems>
+    <!--<TabbedPage.ToolbarItems>
         <ToolbarItem Text="Home" Order="Primary" Priority="1" IconImageSource="home.png" Clicked="ToolbarItem_Clicked"/>
 
-    </TabbedPage.ToolbarItems>
+    </TabbedPage.ToolbarItems>-->
 
 
-    <local:NotificationsProfilePartner  x:Name="first"  IconImageSource="update_temp.png"></local:NotificationsProfilePartner>
-    <local:ValidateUpdateOfProfile  x:Name="second" IsVisible="true"    IconImageSource="update_temp.png"></local:ValidateUpdateOfProfile>
-    <local:PartnerTempView  IsVisible="true"  x:Name="third"   IconImageSource="add_partner_temp.png"></local:PartnerTempView>
+    <local:NotificationsProfilePartner  x:Name="first">
+        <local:NotificationsProfilePartner.IconImageSource>
+            <OnPlatform x:TypeArguments="ImageSource">
+                <On Platform="Android" Value="update_temp.png" />
+                <On Platform="iOS" Value="" />
+            </OnPlatform>
+        </local:NotificationsProfilePartner.IconImageSource>
+    </local:NotificationsProfilePartner>
+    <local:ValidateUpdateOfProfile  x:Name="second" IsVisible="true">
+        <local:ValidateUpdateOfProfile.IconImageSource>
+            <OnPlatform x:TypeArguments="ImageSource">
+                <On Platform="Android" Value="update_temp.png" />
+                <On Platform="iOS" Value="" />
+            </OnPlatform>
+        </local:ValidateUpdateOfProfile.IconImageSource>
+    </local:ValidateUpdateOfProfile>
+    <local:PartnerTempView  IsVisible="true"  x:Name="third">
+        <local:PartnerTempView.IconImageSource>
+            <OnPlatform x:TypeArguments="ImageSource">
+                <On Platform="Android" Value="add_partner_temp.png" />
+                <On Platform="iOS" Value="" />
+            </OnPlatform>
+        </local:PartnerTempView.IconImageSource>
+    </local:PartnerTempView>
 
 
 

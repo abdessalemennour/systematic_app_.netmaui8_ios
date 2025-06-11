@@ -21,17 +21,15 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<UseInterpreter Condition="$(TargetFramework.Contains('-ios')) AND '$(Configuration)' == 'Release'">True</UseInterpreter>
+
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
-
-		<!--<MauiIcon Include="Resources\AppIcon\icon11.jpeg" />-->
-		<MauiIcon Include="Resources\AppIcon\icon11.png" BaseSize="128,128" Scale="1.0" />
-
+		<!--<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />-->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Images\logo_systematic2.png" Color="#FFFFFF" />
-
+        <MauiSplashScreen Include="Resources\Images\logo_systematic2.png" Color="#FFFF" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 
@@ -40,6 +38,7 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\workmanlogo.jpeg" />
 		<None Remove="Resources\Images\activity.png" />
 		<None Remove="Resources\Images\activity_icon.png" />

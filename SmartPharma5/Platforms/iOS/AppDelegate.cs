@@ -6,8 +6,10 @@ using Microsoft.Maui;
 namespace SmartPharma5
 {
     [Register("AppDelegate")]
+
     public class AppDelegate : MauiUIApplicationDelegate
     {
+
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             try

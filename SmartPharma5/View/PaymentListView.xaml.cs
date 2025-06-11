@@ -14,6 +14,7 @@ public partial class PaymentListView : ContentPage
     {
         InitializeComponent();
         BindingContext = new PaymentListViewModel();
+
     }
     public PaymentListView(int agent)
     {
@@ -21,6 +22,8 @@ public partial class PaymentListView : ContentPage
         isMy = true;
         BindingContext = new PaymentListViewModel(agent);
     }
+
+
     private void AutoCompleteEdit_TextChanged(object sender, DevExpress.Maui.Editors.AutoCompleteEditTextChangedEventArgs e)
     {
         AutoCompleteEdit edit = sender as AutoCompleteEdit;

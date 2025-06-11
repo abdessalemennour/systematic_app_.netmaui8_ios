@@ -9,10 +9,10 @@ namespace SmartPharma5.View;
 
 public partial class PaymentCustomers : ContentPage
 {
-	public PaymentCustomers()
-	{
-		InitializeComponent();
-		BindingContext = new PaymentCustomersVM();
+    public PaymentCustomers()
+    {
+        InitializeComponent();
+        BindingContext = new PaymentCustomersVM();
 
     }
 
@@ -45,7 +45,7 @@ public partial class PaymentCustomers : ContentPage
         if (sender is Frame frame && frame.BindingContext is Partner partner)
         {
             var ovm = BindingContext as PaymentCustomersVM;
-            
+
             await Task.Delay(500);
             uint idagent = (uint)Preferences.Get("idagent", Convert.ToUInt32(null));
             ovm.Payment = new Payment((int)idagent, partner as Partner);
@@ -70,12 +70,12 @@ public class BooleanToImageConverter : IValueConverter
         return isAscending ? "up_filled.png" : "up.png"; // Adjust based on the button state
     }
 
-    
+
 
     public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }
 
-   
+
 }

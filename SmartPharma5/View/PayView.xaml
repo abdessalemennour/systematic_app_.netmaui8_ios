@@ -47,9 +47,9 @@
                              Padding="10"
                              BackgroundColor="#F5F5F5">
 
-                            <!-- Activity Button -->
-                            <StackLayout Orientation="Vertical" Spacing="0">
-                                <ImageButton 
+                        <!-- Activity Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
                              Source="activity.png"
                              BackgroundColor="Transparent"
                              WidthRequest="50"
@@ -58,15 +58,15 @@
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
                              Clicked="OnActionButtonClickedactivity"/>
-                                <Label Text="Activité" 
+                            <Label Text="Activité" 
                                HorizontalOptions="Center"
                                FontSize="10"
                                TextColor="Black"
                                FontAttributes="Bold"/>
-                            </StackLayout>
-                            <!-- Memo Button -->
-                            <StackLayout Orientation="Vertical" Spacing="0">
-                                <ImageButton 
+                        </StackLayout>
+                        <!-- Memo Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
                              Source="note3.png"
                              BackgroundColor="Transparent"
                              WidthRequest="50"
@@ -75,24 +75,24 @@
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
                              Clicked="OnActionButtonClickedmemo"/>
-                                <Label Text="Note" 
+                            <Label Text="Note" 
                                HorizontalOptions="Center"
                                FontSize="10"
                                TextColor="Black"
                                FontAttributes="Bold"/>
-                            </StackLayout>
-                            <!-- Chat Button -->
-                            <StackLayout Orientation="Vertical" HorizontalOptions="Center" Spacing="2">
-                                <Grid>
-                                    <ImageButton 
+                        </StackLayout>
+                        <!-- Chat Button -->
+                        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Spacing="2">
+                            <Grid>
+                                <ImageButton 
                                     Source="chat.png"
                                     BackgroundColor="Transparent"
                                     WidthRequest="50"
                                     HeightRequest="50"
                                     CornerRadius="10"
                                     Clicked="OnActionButtonClickedchat"/>
-                                    <!-- Badge pour messages non lus -->
-                                    <Frame 
+                                <!-- Badge pour messages non lus -->
+                                <Frame 
                                     IsVisible="False"
                                     x:Name="UnreadBadgeFrame"
                                     BackgroundColor="Red"
@@ -104,8 +104,8 @@
                                     VerticalOptions="Start"
                                     Margin="0,-5,-5,0"
                                     HasShadow="False">
-                                        <Grid>
-                                            <Label 
+                                    <Grid>
+                                        <Label 
                                             x:Name="UnreadBadgeLabel"
                                             Text="0"
                                             TextColor="White"
@@ -115,20 +115,20 @@
                                             VerticalTextAlignment="Center"
                                             HorizontalOptions="Center"
                                             VerticalOptions="Center"/>
-                                        </Grid>
-                                    </Frame>
-                                </Grid>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
 
-                                <Label Text="Chat" 
+                            <Label Text="Chat" 
                                    HorizontalOptions="Center"
                                    FontSize="12"
                                    TextColor="Black"
                                    FontAttributes="Bold"/>
-                            </StackLayout>
+                        </StackLayout>
 
-                            <!-- Document Button -->
-                            <StackLayout Orientation="Vertical" Spacing="0">
-                                <ImageButton 
+                        <!-- Document Button -->
+                        <StackLayout Orientation="Vertical" Spacing="0">
+                            <ImageButton 
                              Source="document.png"
                              BackgroundColor="Transparent"
                              WidthRequest="50"
@@ -137,12 +137,12 @@
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
                              Clicked="OnActionButtonClickeddocument"/>
-                                <Label Text="Document" 
+                            <Label Text="Document" 
                                HorizontalOptions="Center"
                                FontSize="10"
                                TextColor="Black"
                                FontAttributes="Bold"/>
-                            </StackLayout>
+                        </StackLayout>
                         <!-- report Button -->
                         <!--<StackLayout Orientation="Vertical" Spacing="0">
                             <ImageButton 
@@ -185,7 +185,7 @@
         </SwipeView.RightItems>
 
         <Grid>
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -225,7 +225,8 @@
                   IsReadOnly="True"
                   IsVisible="{Binding IsLabelVisible}"
                   IsEnabled="True"  
-                  BorderColor="Black"  />
+                  BorderColor="Black"  />
+
 
 
                     <!--<Label Text="{Binding NameCurrency}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center"></Label>
@@ -244,14 +245,16 @@
 
 
                 </Grid>
+                <dxe:ComboBoxEdit HeightRequest="45" LabelText="Socity" TextHorizontalAlignment="Center" ItemsSource="{Binding SocietyList}" SelectedItem="{Binding SocietySelectedItem}" BorderColor="Black" DisplayMember="name" SelectionChangedCommand="{Binding SocietyChangedCommand}" IsReadOnly="True" IsVisible="{Binding IsVisibleSocietyComboBox}" />
                 <dxe:ComboBoxEdit LabelText="Bank Account" IsVisible="{Binding IsVisibleBankAccount, Mode=TwoWay}" HeightRequest="45" TextHorizontalAlignment="Center" VerticalOptions="Center" BorderColor="Black" ItemsSource="{Binding BankList}" SelectedItem="{Binding BankListSelectedItem}" DisplayMember="name" IsReadOnly="True"/>
                 <dxe:ComboBoxEdit HeightRequest="45" LabelText="Payment Type" TextHorizontalAlignment="Center" ItemsSource="{Binding PaymentTypeList}" SelectedItem="{Binding PaymentTypeListSelectedItem}" BorderColor="Black" DisplayMember="name" SelectionChangedCommand="{Binding Payment_typeChangedCommand}" IsReadOnly="True"/>
                 <dxe:NumericEdit IsVisible="{Binding IsVisibleEffectedAmount, Mode=TwoWay}" HeightRequest="40" LabelText="Affected Amount" Value="{Binding Effected_Amount}" IsReadOnly="True"/>
                 <dxe:DateEdit HeightRequest="45" LabelText="Due Date" Date="{Binding Due_date, Mode=TwoWay}" IsVisible="{Binding IsVisibledue_date}" DisplayFormat="dd/MM/yyyy" IsReadOnly="True"/>
                 <dxe:TextEdit HeightRequest="45" LabelText="Reference" Text="{Binding Payment.reference, Mode=TwoWay}" IsVisible="{Binding IsVisiblereference}" IsReadOnly="True"/>
             </StackLayout>
+            <!--si societylist > 1-->
 
-            <dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0">
+            <dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0"  IsVisible="{Binding IsVisibleSocietyComboBox}" >
 
                 <dxcv:DXCollectionView.ItemTemplate>
                     <DataTemplate>
@@ -266,25 +269,14 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
                                     <RowDefinition Height="10"/>
                                 </Grid.RowDefinitions>
 
                                 <Label Grid.Row="0" Grid.Column="0"  Text="{Binding piece_typeName, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="#00B780" VerticalOptions="Center"/>
                                 <Label Grid.Row="0" Grid.Column="1"  Text="{Binding PieceCode, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>
 
-                                <StackLayout Grid.Row="2" Padding="3" Grid.Column="1" Orientation="Horizontal" HeightRequest="50"  HorizontalOptions="Start">
-                                    <dxe:NumericEdit Margin="10"  TextHorizontalAlignment="Center" TextVerticalAlignment="Center" HorizontalOptions="Start" WidthRequest="120" VerticalOptions="CenterAndExpand" HeightRequest="40"  TextColor="#55575c" DisplayFormat="{Binding Source={RelativeSource AncestorType={x:Type viewModel:PaymentViewModel}}, Path=DisplayFormat}"  IsReadOnly="{Binding Source={x:Reference PaymentPay},Path=BindingContext.IsReadOnlyOnValidated}"  Value="{Binding amount}" >
-                                        <dxe:NumericEdit.Behaviors>
-                                            <xct:EventToCommandBehavior
-                                            EventName="Unfocused"
-                                                                        Command="{Binding Source={x:Reference PaymentPay} ,Path=BindingContext.Payment_pieceAmountChangeCommand}"
-                                                                        CommandParameter="{Binding .}">
-                                            </xct:EventToCommandBehavior>
-                                        </dxe:NumericEdit.Behaviors >
-                                    </dxe:NumericEdit>
-                                </StackLayout>
 
-                                <Label Grid.Row="2" Grid.Column="0" Text="Amount :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
                                 <StackLayout Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center">
                                     <!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay,StringFormat=Total : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
                                     <Label Text="{Binding Piece_totalAmont, Mode=OneWay, Converter={StaticResource DecimalFormatter}, StringFormat='Total : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
@@ -298,6 +290,91 @@
                                     <!--<Label Text="{Binding Piece_restAmount, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>-->
                                     <Label Text="{Binding CurrencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
                                 </StackLayout>
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="Amount :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+                                <StackLayout Grid.Row="2" Padding="3" Grid.Column="1" Orientation="Horizontal" HeightRequest="50"  HorizontalOptions="Start">
+                                    <dxe:NumericEdit Margin="10"  TextHorizontalAlignment="Center" TextVerticalAlignment="Center" HorizontalOptions="Start" WidthRequest="120" VerticalOptions="CenterAndExpand" HeightRequest="40"  TextColor="#55575c" DisplayFormat="{Binding Source={RelativeSource AncestorType={x:Type viewModel:PaymentViewModel}}, Path=DisplayFormat}"  IsReadOnly="{Binding Source={x:Reference PaymentPay},Path=BindingContext.IsReadOnlyOnValidated}"  Value="{Binding amount}" >
+                                        <dxe:NumericEdit.Behaviors>
+                                            <xct:EventToCommandBehavior
+                                            EventName="Unfocused"
+                                              Command="{Binding Source={x:Reference PaymentPay} ,Path=BindingContext.Payment_pieceAmountChangeCommand}"
+                                              CommandParameter="{Binding .}">
+                                            </xct:EventToCommandBehavior>
+                                        </dxe:NumericEdit.Behaviors >
+                                    </dxe:NumericEdit>
+                                </StackLayout>
+
+
+                                <StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center" >
+                                    <Label Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding NameSociety, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />
+                                </StackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+
+            </dxcv:DXCollectionView>
+
+            <!--si societylist = 1-->
+
+            <dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView_SingleSociety" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0" IsVisible="{Binding SocietyComboBox}" >
+
+                <dxcv:DXCollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame VerticalOptions="FillAndExpand" Padding="10" HasShadow="True" BorderColor="#1B7D6A" CornerRadius="5" BackgroundColor="#EEEAEA">
+                            <Grid VerticalOptions="FillAndExpand">
+                                <Grid.ColumnDefinitions >
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions >
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <!--<RowDefinition Height="*"/>-->
+                                    <RowDefinition Height="10"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0"  Text="{Binding piece_typeName, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="#00B780" VerticalOptions="Center"/>
+                                <Label Grid.Row="0" Grid.Column="1"  Text="{Binding PieceCode, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>
+
+
+                                <StackLayout Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center">
+                                    <!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay,StringFormat=Total : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
+                                    <Label Text="{Binding Piece_totalAmont, Mode=OneWay, Converter={StaticResource DecimalFormatter}, StringFormat='Total : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                                    <!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
+                                    <Label Text="{Binding CurrencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
+                                </StackLayout>
+                                <!--<Label Grid.Row="1" Grid.Column="1" Text="{Binding Piece_restAmount, Mode=OneWay,StringFormat=Rest :    '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
+                                <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalOptions="Center">
+                                    <!-- <Label Text="{Binding Piece_restAmount, Mode=OneWay, StringFormat=Rest : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>-->
+                                    <Label Text="{Binding Piece_restAmount, Mode=OneWay, Converter={StaticResource DecimalFormatter}, StringFormat='Rest : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
+                                    <!--<Label Text="{Binding Piece_restAmount, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>-->
+                                    <Label Text="{Binding CurrencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
+                                </StackLayout>
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="Amount :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+                                <StackLayout Grid.Row="2" Padding="3" Grid.Column="1" Orientation="Horizontal" HeightRequest="50"  HorizontalOptions="Start">
+                                    <dxe:NumericEdit Margin="10"  TextHorizontalAlignment="Center" TextVerticalAlignment="Center" HorizontalOptions="Start" WidthRequest="120" VerticalOptions="CenterAndExpand" HeightRequest="40"  TextColor="#55575c" DisplayFormat="{Binding Source={RelativeSource AncestorType={x:Type viewModel:PaymentViewModel}}, Path=DisplayFormat}"  IsReadOnly="{Binding Source={x:Reference PaymentPay},Path=BindingContext.IsReadOnlyOnValidated}"  Value="{Binding amount}" >
+                                        <dxe:NumericEdit.Behaviors>
+                                            <xct:EventToCommandBehavior
+                                            EventName="Unfocused"
+                                              Command="{Binding Source={x:Reference PaymentPay} ,Path=BindingContext.Payment_pieceAmountChangeCommand}"
+                                              CommandParameter="{Binding .}">
+                                            </xct:EventToCommandBehavior>
+                                        </dxe:NumericEdit.Behaviors >
+                                    </dxe:NumericEdit>
+                                </StackLayout>
+
+
+                                <!--<StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center" >
+                                    <Label Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding NameSociety, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />
+                                </StackLayout>-->
+
                             </Grid>
                         </Frame>
                     </DataTemplate>

@@ -76,7 +76,7 @@ namespace SmartPharma5.ViewModel
         {
             SaveDocumentCommand = new AsyncCommand<int>(SaveDocumentAsync); // <-- Utiliser AsyncCommand<int>
             LoadDocumentTypesCommand = new AsyncCommand(LoadDocumentTypesAsync);
-
+            IsIOS = DeviceInfo.Platform == DevicePlatform.iOS;
         }
         #endregion
         #region Methods
@@ -306,6 +306,23 @@ namespace SmartPharma5.ViewModel
             }
         }
         #endregion
+
+        private bool _isIOS;
+        public bool IsIOS
+        {
+            get => _isIOS;
+            set
+            {
+                if (_isIOS != value)
+                {
+                    _isIOS = value;
+                    OnPropertyChanged(nameof(IsIOS));
+                    OnPropertyChanged(nameof(IsNotIOS));
+                }
+            }
+        }
+
+        public bool IsNotIOS => !IsIOS;
 
     }
     public enum EntityType
