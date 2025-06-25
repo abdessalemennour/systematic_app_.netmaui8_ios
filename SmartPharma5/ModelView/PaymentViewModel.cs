@@ -279,6 +279,8 @@ namespace SmartPharma5.ViewModel
                             piece.currencySymbol,
                             piece.DecimalNumbre
                         ));
+                        this.Payment.Payment_pieceList.Last().IsVisibleSociety = IsVisibleSocietyComboBox;
+                        UpdateSocietyVisibility();
                         restEffectedAmount -= piece.rest_amount;
                     }
                     else if (restEffectedAmount > 0)
@@ -430,9 +432,37 @@ namespace SmartPharma5.ViewModel
         public bool IsVisibleSocietyComboBox
         {
             get => _isVisibleSocietyComboBox;
-            set => SetProperty(ref _isVisibleSocietyComboBox, value);
+            set
+            {
+                if (SetProperty(ref _isVisibleSocietyComboBox, value))
+                {
+                    // Mettre à jour ShowSociety pour toutes les pièces dans UnpaiedList
+                    if (UnpaiedList != null)
+                    {
+                        foreach (var piece in UnpaiedList)
+                        {
+                            piece.ShowSociety = value;
+
+                        }
+                    }
+                    if (Payment?.Payment_pieceList != null)
+                    {
+                        foreach (var paymentPiece in Payment.Payment_pieceList)
+                        {
+                            paymentPiece.IsVisibleSociety = value;
+                        }
+                    }
+                    if (!(Payment.Id > 0)) 
+                    {
+                        foreach (var paymentPiece in Payment.Payment_pieceList)
+                        {
+                            paymentPiece.IsVisibleSociety = IsVisibleSocietyComboBox;
+                        }
+                    }
+                }
+            }
         }
-       //public bool SocietyComboBox => !IsVisibleSocietyComboBox;
+        //public bool SocietyComboBox => !IsVisibleSocietyComboBox;
 
         private int? _decimalNumber;
         public int? DecimalNumber
@@ -503,8 +533,8 @@ namespace SmartPharma5.ViewModel
             SocietyChangedCommand = new AsyncCommand(SocietyChanged);
 
             setSaveVisibility();
-            Task.Run(() => LoadList());
             Task.Run(() => LoadSocieties());
+            Task.Run(() => LoadList());
             UpdateDisplayFormat();
         }
         private async Task SocietyChanged()
@@ -513,6 +543,14 @@ namespace SmartPharma5.ViewModel
             {
                 // Vous pouvez ajouter ici la logique asynchrone nécessaire quand une société est sélectionnée
                 await Task.CompletedTask; // Pour respecter la signature async
+            }
+        }
+        private void UpdateSocietyVisibility()
+        {
+            if (Payment?.Payment_pieceList != null)
+            {
+                foreach (var paymentPiece in Payment.Payment_pieceList)
+                    paymentPiece.IsVisibleSociety = IsVisibleSocietyComboBox;
             }
         }
         private async Task LoadSocieties()
@@ -640,7 +678,13 @@ namespace SmartPharma5.ViewModel
         {
             var unpaiedPieces = await Payment.GetUnpaiedPiece(partnerId, null); // Ne pas passer currencyId
             UnpaiedList.Clear();
+            foreach (var piece in unpaiedPieces)
+            {
+                piece.ShowSociety = IsVisibleSocietyComboBox;
+            }
             UnpaiedList.AddRange(unpaiedPieces);
+            UpdateSocietyVisibility(); 
+
         }
         #endregion
         #region Payment_piece Amount Changed
@@ -851,6 +895,7 @@ namespace SmartPharma5.ViewModel
             if (r)
             {
                 Preferences.Set("idagent", Convert.ToUInt32(null));
+                await Society.ClearSocietiesCache();
                 await App.Current.MainPage.Navigation.PushAsync(new LoginView());
             }
         }
@@ -920,8 +965,14 @@ namespace SmartPharma5.ViewModel
             if (!(Payment.Id > 0))
             {
                 var unpaiedPiecesTask = Task.Run(() => Payment.GetUnpaiedPiece(Payment.IdPartner, null)); // Ne pas passer currencyId
+                var unpaiedPieces = await unpaiedPiecesTask;
+                // Mettre à jour ShowSociety pour chaque pièce
+                foreach (var piece in unpaiedPieces)
+                {
+                    piece.ShowSociety = IsVisibleSocietyComboBox;
+                }
                 UnpaiedList = new ObservableRangeCollection<Payment.Piece>(await unpaiedPiecesTask);
-
+                UpdateSocietyVisibility();
                 var totalUnpaiedPiecesTask = Task.Run(() => Payment.GettotalUnpaiedPiece(Payment.IdPartner));
                 var totalUnpaiedPieces = await totalUnpaiedPiecesTask;
                 Total_unpaied = totalUnpaiedPieces.Sum(p => p.rest_amount);
@@ -1126,4 +1177,3 @@ namespace SmartPharma5.ViewModel
         // Ajoutez cette méthode dans la classe Society si elle n'existe pas déjà
     }
 }
-

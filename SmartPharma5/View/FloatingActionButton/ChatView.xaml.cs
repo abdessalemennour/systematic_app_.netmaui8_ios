@@ -43,7 +43,7 @@ public partial class ChatView : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        MessagingCenter.Unsubscribe<ChatViewModel>(this, "ScrollToLastMessage");
+        MessagingCenter.Unsubscribe<ChatViewModel>(this, "ScrollToLastMessageWithoutAnimation");
         viewModel.StopTimer();
     }
 
@@ -55,10 +55,9 @@ public partial class ChatView : ContentPage
         string currentnoteModule = CurrentData.CurrentNoteModule;
         string currentavtivityModule = CurrentData.CurrentActivityModule;
         int moduleId = CurrentData.CurrentModuleId;
-        //viewModel.ScrollToLastMessage = ScrollToLastMessage;
-
-        // Les messages scrolleront automatiquement vers le bas apr�s le chargement.
-        MessagingCenter.Subscribe<ChatViewModel>(this, "ScrollToLastMessage", (sender) =>
+        
+        // Écouter le message pour scroller vers le dernier message sans animation
+        MessagingCenter.Subscribe<ChatViewModel>(this, "ScrollToLastMessageWithoutAnimation", (sender) =>
         {
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -66,12 +65,20 @@ public partial class ChatView : ContentPage
                 {
                     MessagesCollectionView.ScrollTo(MessagesCollectionView.ItemsSource.Cast<object>().Last(),
                                                     position: ScrollToPosition.End,
-                                                    animate: true);
+                                                    animate: false);
                 }
             });
         });
-
-
+        
+        // Marquer les messages comme lus quand l'utilisateur fait défiler
+        MessagesCollectionView.Scrolled += async (sender, e) =>
+        {
+            // Si l'utilisateur fait défiler vers le bas (vers les nouveaux messages)
+            if (e.VerticalOffset > 0)
+            {
+                await viewModel.MarkMessagesAsRead();
+            }
+        };
     }
 
     private void OnTabClicked(object sender, EventArgs e)
@@ -95,7 +102,7 @@ public partial class ChatView : ContentPage
                 await Navigation.PushAsync(new ChatView());
                 break;
             default:
-                await DisplayAlert("Erreur", "Vue non trouv�e", "OK");
+                await DisplayAlert("Erreur", "Vue non trouvée", "OK");
                 break;
         }
     }
@@ -111,7 +118,7 @@ public partial class ChatView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqu� sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
         }
 
     }
@@ -128,7 +135,7 @@ public partial class ChatView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqu� sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
         }
 
     }
@@ -143,7 +150,7 @@ public partial class ChatView : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqu� sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
         }
 
     }

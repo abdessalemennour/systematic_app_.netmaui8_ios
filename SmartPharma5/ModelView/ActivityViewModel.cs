@@ -10,7 +10,7 @@ using static SmartPharma5.Model.Activity;
 
 namespace SmartPharma5.ModelView
 {
-    public class ActivityViewModel : INotifyPropertyChanged
+    public class ActivityViewModel : INotifyPropertyChanged, IDisposable
     {
         // Variables et propriétés privées
         private int userId = Preferences.Get("iduser", 0);
@@ -40,6 +40,18 @@ namespace SmartPharma5.ModelView
         private bool _isActivityFormVisible;
         private string _selectedView = "Memo";
         private string _selectedState;
+        private bool _isLateChecked;
+        private bool _isTodayChecked;
+        private bool _isFutureChecked;
+        private bool _isComboBoxEnabled = true;
+        private bool _showDoneMessage;
+        private bool _isIndividualStateChange = false; // Variable pour distinguer les changements d'état individuels
+        private bool _isLoadingFromFilter = false; // Variable pour désactiver l'événement pendant le chargement des filtres
+        private string _parentObjectDisplay;
+        private int? _parentObject;
+        private string _parentObjectType;
+        private string _formDisplay; // Nouvelle propriété pour l'affichage du formulaire
+        private string _previousActivityEmployeeName;
 
         // Commandes
         public ICommand EnableSelectionModeCommand => new Command<UserModel>((user) =>
@@ -172,7 +184,37 @@ namespace SmartPharma5.ModelView
                 {
                     _selectedStateActivity = value;
                     OnPropertyChanged(nameof(SelectedStateActivity));
-                    LoadFilteredActivities(); // Charger les activités quand l'état change
+                    OnPropertyChanged(nameof(AreSwitchesEnabled)); // Notifier le changement de l'état des switches
+                    
+                    // Ne pas déclencher de chargement pendant l'initialisation
+                    if (!_isLoadingFromFilter)
+                    {
+                        // Marquer que c'est un changement de filtre global (pas individuel)
+                        _isLoadingFromFilter = true;
+                        
+                        // Appliquer le filtrage combiné seulement si "In Progress" est sélectionné ET que des switches sont actifs
+                        if (value?.Name == "In Progress" && (IsLateChecked || IsTodayChecked || IsFutureChecked))
+                        {
+                            Task.Run(async () => 
+                            {
+                                await ApplyCombinedFilter();
+                                _isLoadingFromFilter = false;
+                            });
+                        }
+                        else if (value != null)
+                        {
+                            // Sinon, utiliser le filtre normal par état (ignorer les switches)
+                            Task.Run(async () => 
+                            {
+                                await LoadFilteredActivities();
+                                _isLoadingFromFilter = false;
+                            });
+                        }
+                        else
+                        {
+                            _isLoadingFromFilter = false;
+                        }
+                    }
                 }
             }
         }
@@ -352,6 +394,220 @@ namespace SmartPharma5.ModelView
             }
         }
 
+        public bool IsLateChecked
+        {
+            get => _isLateChecked;
+            set
+            {
+                if (_isLateChecked != value)
+                {
+                    _isLateChecked = value;
+                    OnPropertyChanged(nameof(IsLateChecked));
+                    OnPropertyChanged(nameof(AreSwitchesEnabled));
+                    
+                    // Ne pas déclencher de chargement pendant l'initialisation
+                    if (!_isLoadingFromFilter)
+                    {
+                        // Appliquer le filtrage combiné seulement si "In Progress" est sélectionné
+                        if (SelectedStateActivity?.Name == "In Progress")
+                        {
+                            if (value)
+                            {
+                                Task.Run(async () => await ApplyCombinedFilter());
+                            }
+                            else if (IsTodayChecked || IsFutureChecked)
+                            {
+                                Task.Run(async () => await ApplyCombinedFilter());
+                            }
+                            else
+                            {
+                                // Si aucune checkbox n'est cochée, utiliser le filtre par état
+                                Task.Run(async () => await LoadFilteredActivities());
+                            }
+                        }
+                        else
+                        {
+                            // Si ce n'est pas "In Progress", ignorer les switches et utiliser le filtre normal
+                            Task.Run(async () => await LoadFilteredActivities());
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool IsTodayChecked
+        {
+            get => _isTodayChecked;
+            set
+            {
+                if (_isTodayChecked != value)
+                {
+                    _isTodayChecked = value;
+                    OnPropertyChanged(nameof(IsTodayChecked));
+                    OnPropertyChanged(nameof(AreSwitchesEnabled));
+                    
+                    // Ne pas déclencher de chargement pendant l'initialisation
+                    if (!_isLoadingFromFilter)
+                    {
+                        // Appliquer le filtrage combiné seulement si "In Progress" est sélectionné
+                        if (SelectedStateActivity?.Name == "In Progress")
+                        {
+                            if (value)
+                            {
+                                Task.Run(async () => await ApplyCombinedFilter());
+                            }
+                            else if (IsLateChecked || IsFutureChecked)
+                            {
+                                Task.Run(async () => await ApplyCombinedFilter());
+                            }
+                            else
+                            {
+                                // Si aucune checkbox n'est cochée, utiliser le filtre par état
+                                Task.Run(async () => await LoadFilteredActivities());
+                            }
+                        }
+                        else
+                        {
+                            // Si ce n'est pas "In Progress", ignorer les switches et utiliser le filtre normal
+                            Task.Run(async () => await LoadFilteredActivities());
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool IsFutureChecked
+        {
+            get => _isFutureChecked;
+            set
+            {
+                if (_isFutureChecked != value)
+                {
+                    _isFutureChecked = value;
+                    OnPropertyChanged(nameof(IsFutureChecked));
+                    OnPropertyChanged(nameof(AreSwitchesEnabled));
+                    
+                    // Ne pas déclencher de chargement pendant l'initialisation
+                    if (!_isLoadingFromFilter)
+                    {
+                        // Appliquer le filtrage combiné seulement si "In Progress" est sélectionné
+                        if (SelectedStateActivity?.Name == "In Progress")
+                        {
+                            if (value)
+                            {
+                                Task.Run(async () => await ApplyCombinedFilter());
+                            }
+                            else if (IsLateChecked || IsTodayChecked)
+                            {
+                                Task.Run(async () => await ApplyCombinedFilter());
+                            }
+                            else
+                            {
+                                // Si aucune checkbox n'est cochée, utiliser le filtre par état
+                                Task.Run(async () => await LoadFilteredActivities());
+                            }
+                        }
+                        else
+                        {
+                            // Si ce n'est pas "In Progress", ignorer les switches et utiliser le filtre normal
+                            Task.Run(async () => await LoadFilteredActivities());
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public bool IsComboBoxEnabled
+        {
+            get => _isComboBoxEnabled;
+            set
+            {
+                if (_isComboBoxEnabled != value)
+                {
+                    _isComboBoxEnabled = value;
+                    OnPropertyChanged(nameof(IsComboBoxEnabled));
+                    if (!value)
+                    {
+                        SelectedStateActivity = null;
+                    }
+                }
+            }
+        }
+
+        public bool IsComboBoxReadOnly
+        {
+            get => false; // Permettre toujours la sélection dans le ComboBox
+        }
+
+        // Nouvelle propriété pour l'état des switches
+        public bool AreSwitchesEnabled
+        {
+            get => SelectedStateActivity?.Name == "In Progress"; // Activer les switches seulement si "In Progress" est sélectionné
+        }
+
+        public bool ShowDoneMessage
+        {
+            get => _showDoneMessage;
+            set
+            {
+                _showDoneMessage = value;
+                OnPropertyChanged(nameof(ShowDoneMessage));
+            }
+        }
+
+        public string ParentObjectDisplay
+        {
+            get => _parentObjectDisplay;
+            set
+            {
+                _parentObjectDisplay = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int? ParentObject
+        {
+            get => _parentObject;
+            set
+            {
+                _parentObject = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ParentObjectType
+        {
+            get => _parentObjectType;
+            set
+            {
+                _parentObjectType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string FormDisplay
+        {
+            get => _formDisplay;
+            set => SetProperty(ref _formDisplay, value);
+        }
+
+        // Propriété pour afficher le nom de l'employé assigné de l'activité précédente
+        public string PreviousActivityEmployeeName
+        {
+            get => _previousActivityEmployeeName;
+            set => SetProperty(ref _previousActivityEmployeeName, value);
+        }
+
+        // Événement pour notifier la fermeture du popup
+        public event EventHandler ActivityAdded;
+
+        // Propriété pour réinitialiser le flag de changement d'état individuel
+        public void ResetIndividualStateChangeFlag()
+        {
+            _isIndividualStateChange = false;
+        }
+
         // Méthode utilitaire
         protected bool SetProperty<T>(ref T backingField, T value, [CallerMemberName] string propertyName = "")
         {
@@ -364,20 +620,37 @@ namespace SmartPharma5.ModelView
         }
         public ActivityViewModel(int entityId, string entityType, string entityActivityType)
         {
-            LoadEmployeesAsync();
-            if (CurrentActivity?.AssignedEmployee > 0 && Employees != null)
-            {
-                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == CurrentActivity.AssignedEmployee);
-            }
             EntityId = entityId;
             EntityType = entityType;
             EntityActivityType = entityActivityType;
+            EntityFormType = CurrentData.CurrentFormModule;
             AddActivityCommand = new Command(async () => await SaveActivityAsync());
-            ActivityTypes = new ObservableCollection<ActivityType>();
             Activities = new ObservableCollection<Activity>();
-            SmartPharma5.Model.Activity.ActivityState
-            SelectedStateActivity = Activity.selectStates.First(s => s.Name == "All");
-            Task.Run(async () => await LoadFilteredActivities());
+            
+            // Désactiver les événements pendant l'initialisation
+            _isLoadingFromFilter = true;
+            
+            // Initialiser les switches
+            IsLateChecked = true;
+            IsTodayChecked = true;
+            IsFutureChecked = false;
+            
+            // Définir l'état par défaut avant d'activer les événements
+            SelectedStateActivity = Activity.ActivityState.selectStates.FirstOrDefault(s => s.Name == "In Progress");
+            
+            // Réactiver les événements
+            _isLoadingFromFilter = false;
+            
+            // S'abonner à l'événement de changement d'état des activités
+            Activity.ActivityStateChanged += OnActivityStateChanged;
+
+            // Charger les activités initiales
+            Task.Run(async () => 
+            {
+                await LoadActivityTypesAsync();
+                await ApplyCombinedFilter();
+            });
+            
             NavigateToChatCommand = new Command(() => CurrentViewIndex = 2);
             States = new ObservableCollection<string> { "All", "In Progress", "Done", "Cancelled" };
             SaveActivityEditCommand = new Command(OnSaveActivityEdit);
@@ -389,7 +662,6 @@ namespace SmartPharma5.ModelView
             {
                 ShowCheckboxes = !ShowCheckboxes;
             });
-            LoadActivityTypesAsync();
         }
 
 
@@ -406,9 +678,37 @@ namespace SmartPharma5.ModelView
             EntityFormType = CurrentData.CurrentFormModule;
             AddActivityCommand = new Command(async () => await SaveActivityAsync());
             Activities = new ObservableCollection<Activity>();
-            SmartPharma5.Model.Activity.ActivityState
-            SelectedStateActivity = Activity.selectStates.First(s => s.Name == "All");
-            Task.Run(async () => await LoadFilteredActivities());
+            
+            // Désactiver les événements pendant l'initialisation
+            _isLoadingFromFilter = true;
+            
+            // Initialiser les switches comme dans ActivityNotifViewModel
+            IsLateChecked = true;
+            IsTodayChecked = true;
+            IsFutureChecked = false;
+            
+            // Définir l'état par défaut avant d'activer les événements
+            SelectedStateActivity = Activity.ActivityState.selectStates.FirstOrDefault(s => s.Name == "In Progress");
+            
+            // Réactiver les événements
+            _isLoadingFromFilter = false;
+            
+            // Notifier les changements après avoir réactivé les événements
+            OnPropertyChanged(nameof(IsLateChecked));
+            OnPropertyChanged(nameof(IsTodayChecked));
+            OnPropertyChanged(nameof(IsFutureChecked));
+            OnPropertyChanged(nameof(AreSwitchesEnabled)); // Notifier l'état des switches
+            
+            // S'abonner à l'événement de changement d'état des activités
+            Activity.ActivityStateChanged += OnActivityStateChanged;
+
+            // Charger les activités initiales
+            Task.Run(async () => 
+            {
+                await LoadActivityTypesAsync();
+                await ApplyCombinedFilter();
+            });
+
             NavigateToActivityCommand = new Command(() => LoadActivityView());
             DueDate = DateTime.Now;
             ActivityTypes = new ObservableCollection<ActivityType>();
@@ -422,8 +722,6 @@ namespace SmartPharma5.ModelView
             {
                 ShowCheckboxes = !ShowCheckboxes;
             });
-            LoadActivityTypesAsync();
-
         }
 
         public async Task LoadActivityTypesAsync()
@@ -472,11 +770,26 @@ namespace SmartPharma5.ModelView
                     return -1; // Pour "All"
             }
         }
+        private void OnEditActivityClicked(object sender, EventArgs e)
+        {
+            var button = sender as ImageButton;
+            if (button != null && button.CommandParameter is int activityId)
+            {
+                SelectedActivity = Activities.FirstOrDefault(a => a.Id == activityId);
+                if (SelectedActivity != null)
+                {
+                    LoadEmployeeForSelectedActivity(); // Charge l'employé actuel
+                    _isIndividualStateChange = true; // Marquer que les changements d'état suivants sont individuels
+                    IsActivityFormVisible = true;
+                }
+            }
+        }
+
         private async void OnEditActivityClicked(int activityId)
         {
             SelectedActivity = Activities.FirstOrDefault(a => a.Id == activityId);
             LoadEmployeeForSelectedActivity();
-
+            _isIndividualStateChange = true; // Marquer que les changements d'état suivants sont individuels
             IsActivityFormVisible = true;
         }
 
@@ -510,12 +823,23 @@ namespace SmartPharma5.ModelView
 
                 if (isUpdated)
                 {
-                    SmartPharma5.Model.Activity.ActivityState
-                    // Initialiser avec l'état "All" (premier élément de la liste)
-                    SelectedState = Activity.selectStates.FirstOrDefault();
-
-                    // Charger les activités initiales
-                    Task.Run(async () => await LoadFilteredActivities());
+                    // Recharger les activités selon les filtres actifs
+                    if (IsLateChecked || IsTodayChecked || IsFutureChecked)
+                    {
+                        await ApplyCombinedFilter();
+                    }
+                    else if (SelectedStateActivity != null)
+                    {
+                        await LoadFilteredActivities();
+                    }
+                    else
+                    {
+                        await LoadActivities();
+                    }
+                    
+                    // Fermer le formulaire
+                    IsActivityFormVisible = false;
+                    ShowDoneMessage = false;
                 }
                 else
                 {
@@ -523,27 +847,8 @@ namespace SmartPharma5.ModelView
                 }
             }
             UserDialogs.Instance.HideLoading();
-
         }
 
-        private void OnEditActivityClicked(object sender, EventArgs e)
-        {
-            var button = sender as ImageButton;
-            if (button != null && button.CommandParameter is int activityId)
-            {
-                SelectedActivity = Activities.FirstOrDefault(a => a.Id == activityId);
-                if (SelectedActivity != null)
-                {
-                    LoadEmployeeForSelectedActivity(); // Charge l'employé actuel
-
-                }
-            }
-        }
-        //private async Task NavigateToMemoAsync()
-        //{
-        //    await LoadMemos();
-        //    CurrentViewIndex = 0;
-        //}
         private void LoadEmployeeForSelectedActivity()
         {
             if (SelectedActivity != null && Employees != null)
@@ -565,26 +870,29 @@ namespace SmartPharma5.ModelView
             Testcon = await P;
             if (Testcon == false)
             {
-
-
                 TestLoad = true;
-                //IsBusy = false;
-
                 return;
             }
             TestLoad = false;
             /*********************/
             try
             {
+                _isLoadingFromFilter = true;
                 UserDialogs.Instance.ShowLoading("Chargement...");
 
                 if (activities != null && activities.Any())
                 {
+                    // Trier par état (In Progress, Done, Cancelled) puis par date
+                    var sortedActivities = activities
+                        .OrderBy(a => a.State) // 1=In Progress, 2=Done, 3=Cancelled
+                        .ThenBy(a => a.DueDate)
+                        .ToList();
+
                     // Mettre à jour la collection sur le thread UI
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         Activities.Clear();
-                        foreach (var activity in activities)
+                        foreach (var activity in sortedActivities)
                         {
                             Activities.Add(activity);
                         }
@@ -601,10 +909,10 @@ namespace SmartPharma5.ModelView
             }
             finally
             {
+                _isLoadingFromFilter = false;
                 UserDialogs.Instance.HideLoading();
             }
             ActPopup = false;
-
         }
 
 
@@ -660,50 +968,67 @@ namespace SmartPharma5.ModelView
 
             try
             {
-                // Afficher immédiatement l'indicateur de chargement
+                _isLoadingFromFilter = true;
                 UserDialogs.Instance.ShowLoading("Chargement...");
 
-                // Charger les activités selon l'état sélectionné
-                switch (SelectedStateActivity?.Name)
+                if (SelectedStateActivity != null)
                 {
-                    case "In Progress":
-                        activities = await Activity.GetInProgressActivities(entityId, entityType);
-                        break;
-                    case "Done":
-                        activities = await Activity.GetDoneActivities(entityId, entityType);
-                        break;
-                    case "Cancelled":
-                        activities = await Activity.GetCancelledActivities(entityId, entityType);
-                        break;
-                    default: // "All" ou autre
-                        activities = await Activity.GetAllActivitiesForDrawerControl(entityId, entityType);
-                        break;
-                }
+                    switch (SelectedStateActivity.Name)
+                    {
+                        case "In Progress":
+                            activities = await Activity.GetInProgressActivities(entityId, entityType);
+                            break;
+                        case "Done":
+                            activities = await Activity.GetDoneActivities(entityId, entityType);
+                            break;
+                        case "Cancelled":
+                            activities = await Activity.GetCancelledActivities(entityId, entityType);
+                            break;
+                        default: // "All" ou autre
+                            activities = await Activity.GetAllActivitiesForDrawerControl(entityId, entityType);
+                            break;
+                    }
 
-                // Mettre à jour l'UI sur le thread principal
-                await Device.InvokeOnMainThreadAsync(() =>
-                {
-                    try
+                    // Trier les activités selon l'état sélectionné
+                    if (SelectedStateActivity.Name == "All")
                     {
-                        Activities.Clear();
-                        foreach (var activity in activities)
+                        // Pour "All", trier par état (In Progress, Done, Cancelled) puis par date
+                        activities = activities
+                            .OrderBy(a => a.State) // 1=In Progress, 2=Done, 3=Cancelled
+                            .ThenBy(a => a.DueDate)
+                            .ToList();
+                    }
+                    else
+                    {
+                        // Pour les autres états, trier seulement par date d'échéance
+                        activities = activities
+                            .OrderBy(a => a.DueDate)
+                            .ToList();
+                    }
+
+                    await Device.InvokeOnMainThreadAsync(() =>
+                    {
+                        try
                         {
-                            Activities.Add(activity);
+                            Activities.Clear();
+                            foreach (var activity in activities)
+                            {
+                                Activities.Add(activity);
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Erreur lors de la mise à jour de l'interface : {ex.Message}");
-                        TestLoad = true;
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Erreur lors de la mise à jour de l'interface : {ex.Message}");
+                            TestLoad = true;
+                        }
+                    });
+                }
             }
-            catch (Exception ex)  // Gestion spécifique des erreurs
+            catch (Exception ex)
             {
                 TestLoad = true;
                 Console.WriteLine($"Erreur lors du chargement des activités : {ex.Message}");
 
-                // Afficher une alerte à l'utilisateur
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     await Application.Current.MainPage.DisplayAlert("Erreur",
@@ -712,7 +1037,7 @@ namespace SmartPharma5.ModelView
             }
             finally
             {
-                // Masquer l'indicateur de chargement dans tous les cas
+                _isLoadingFromFilter = false;
                 UserDialogs.Instance.HideLoading();
             }
         }
@@ -769,7 +1094,12 @@ namespace SmartPharma5.ModelView
                     SelectedEmployee = null;
                     SelectedActivityType = null;
                     IsActivityFormVisible = false;
-                    await LoadActivities();
+                    PreviousActivityEmployeeName = string.Empty;
+                    
+                    // Recharger la liste selon les paramètres de filtrage existants
+                    await ReloadCurrentInterface();
+                    
+                    ActivityAdded?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
@@ -827,6 +1157,379 @@ namespace SmartPharma5.ModelView
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async Task FilterLateActivities()
+        {
+            try
+            {
+                UserDialogs.Instance.ShowLoading("Chargement...");
+                List<Activity> activities = await Activity.GetInProgressActivitiesOverdue(EntityId, EntityActivityType);
+
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    Activities.Clear();
+                    foreach (var activity in activities)
+                    {
+                        Activities.Add(activity);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du filtrage des activités en retard : {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Erreur",
+                    "Impossible de filtrer les activités en retard", "OK");
+            }
+            finally
+            {
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        private async Task FilterTodayActivities()
+        {
+            try
+            {
+                UserDialogs.Instance.ShowLoading("Chargement...");
+                List<Activity> activities = await Activity.GetInProgressActivitiesToday(EntityId, EntityActivityType);
+
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    Activities.Clear();
+                    foreach (var activity in activities)
+                    {
+                        Activities.Add(activity);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du filtrage des activités d'aujourd'hui : {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Erreur",
+                    "Impossible de filtrer les activités d'aujourd'hui", "OK");
+            }
+            finally
+            {
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        private async Task FilterFutureActivities()
+        {
+            try
+            {
+                UserDialogs.Instance.ShowLoading("Chargement...");
+                List<Activity> activities = await Activity.GetInProgressActivitiesFuture(EntityId, EntityActivityType);
+
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    Activities.Clear();
+                    foreach (var activity in activities)
+                    {
+                        Activities.Add(activity);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du filtrage des activités futures : {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Erreur",
+                    "Impossible de filtrer les activités futures", "OK");
+            }
+            finally
+            {
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        public async Task FilterAllActivities()
+        {
+            try
+            {
+                UserDialogs.Instance.ShowLoading("Chargement...");
+                List<Activity> allActivities = new List<Activity>();
+
+                if (IsLateChecked)
+                {
+                    var lateActivities = await Activity.GetInProgressActivitiesOverdue(EntityId, EntityActivityType);
+                    allActivities.AddRange(lateActivities);
+                }
+                if (IsTodayChecked)
+                {
+                    var todayActivities = await Activity.GetInProgressActivitiesToday(EntityId, EntityActivityType);
+                    allActivities.AddRange(todayActivities);
+                }
+                if (IsFutureChecked)
+                {
+                    var futureActivities = await Activity.GetInProgressActivitiesFuture(EntityId, EntityActivityType);
+                    allActivities.AddRange(futureActivities);
+                }
+
+                // Supprimer les doublons et trier par date d'échéance
+                var combinedActivities = allActivities.Distinct(new ActivityComparer())
+                                                    .OrderBy(a => a.DueDate)
+                                                    .ToList();
+
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    Activities.Clear();
+                    foreach (var activity in combinedActivities)
+                    {
+                        Activities.Add(activity);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du filtrage des activités : {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Erreur",
+                    "Impossible de filtrer les activités", "OK");
+            }
+            finally
+            {
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        // Méthode pour gérer l'événement ActivityStateChanged du modèle Activity
+        private void OnActivityStateChanged(object sender, Activity activity)
+        {
+            try
+            {
+                Console.WriteLine($"OnActivityStateChanged (événement): Activité ID={activity.Id}, État={activity.State}");
+                Console.WriteLine($"OnActivityStateChanged (événement): ShowDoneMessage avant = {ShowDoneMessage}");
+                Console.WriteLine($"OnActivityStateChanged (événement): _isLoadingFromFilter = {_isLoadingFromFilter}");
+                
+                // Ne pas déclencher l'affichage du formulaire si on charge depuis un filtre
+                if (_isLoadingFromFilter)
+                {
+                    Console.WriteLine("OnActivityStateChanged (événement): Ignoré car _isLoadingFromFilter = true");
+                    return;
+                }
+                
+                // Marquer que c'est un changement individuel
+                _isIndividualStateChange = true;
+                
+                // Définir l'activité sélectionnée
+                SelectedActivity = activity;
+                Console.WriteLine($"OnActivityStateChanged (événement): SelectedActivity défini = {SelectedActivity?.Id}");
+                
+                // Afficher le formulaire Done seulement si l'état est "Done"
+                if (activity.State == 2) // État "Done"
+                {
+                    Console.WriteLine("OnActivityStateChanged (événement): Affichage du formulaire Done");
+                    ShowDoneMessage = true;
+                    IsActivityFormVisible = false; // Cacher l'autre formulaire
+                    
+                    Console.WriteLine($"OnActivityStateChanged (événement): ShowDoneMessage après = {ShowDoneMessage}");
+                    Console.WriteLine($"OnActivityStateChanged (événement): IsActivityFormVisible = {IsActivityFormVisible}");
+                }
+                
+                // Réinitialiser le flag après utilisation
+                _isIndividualStateChange = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"OnActivityStateChanged (événement): Erreur - {ex.Message}");
+                _isIndividualStateChange = false;
+            }
+        }
+
+        public async Task PrefillNewActivityFromCompletedActivity(Activity completedActivity)
+        {
+            try
+            {
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Début - Activité ID={completedActivity.Id}");
+
+                // Pré-remplir les informations de base
+                ParentObject = EntityId = CurrentData.CurrentModuleId;
+                ParentObjectType = CurrentData.CurrentActivityModule;
+                ParentObjectDisplay = $"{completedActivity.PieceAcronym}/{completedActivity.PieceCode}";
+                
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Objet parent défini - Object={ParentObject}, Type={ParentObjectType}, Display={ParentObjectDisplay}");
+                
+                // Pré-remplir le formulaire
+                FormDisplay = completedActivity.Form;
+                EntityFormType = CurrentData.CurrentFormModule;
+                
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Formulaire défini - Form={FormDisplay}");
+                
+                // Pré-remplir l'employé assigné
+                if (completedActivity.AssignedEmployee > 0 && Employees != null)
+                {
+                    SelectedEmployee = Employees.FirstOrDefault(e => e.Id == completedActivity.AssignedEmployee);
+                    Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Employé assigné - {SelectedEmployee?.NameEmployee}");
+                }
+                
+                // Récupérer le nom de l'employé assigné de l'activité précédente
+                PreviousActivityEmployeeName = completedActivity.AssignedEmployeeName ?? "Non assigné";
+                
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Nom employé activité précédente - {PreviousActivityEmployeeName}");
+                
+                // Réinitialiser les autres champs
+                Summary = string.Empty;
+                ActivityMemo = string.Empty;
+                DueDate = DateTime.Now.AddDays(1); // Date d'échéance par défaut : demain
+
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Champs réinitialisés");
+                
+                // Charger les types d'activité si pas encore fait
+                if (ActivityTypes == null || ActivityTypes.Count == 0)
+                {
+                    await LoadActivityTypesAsync();
+                }
+                
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Terminé avec succès");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PrefillNewActivityFromCompletedActivity: Erreur - {ex.Message}");
+                throw;
+            }
+        }
+
+        // Classe pour comparer les activités et supprimer les doublons
+        private class ActivityComparer : IEqualityComparer<Activity>
+        {
+            public bool Equals(Activity x, Activity y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (x is null || y is null) return false;
+                return x.Id == y.Id;
+            }
+
+            public int GetHashCode(Activity obj)
+            {
+                return obj.Id.GetHashCode();
+            }
+        }
+
+        // Méthode pour se désabonner de l'événement
+        public void Dispose()
+        {
+            Activity.ActivityStateChanged -= OnActivityStateChanged;
+        }
+
+        // Nouvelle méthode pour recharger l'interface selon les filtres actifs
+        private async Task ReloadCurrentInterface()
+        {
+            try
+            {
+                // Vérifier les filtres actifs et recharger en conséquence
+                // Appliquer le filtrage combiné seulement si "In Progress" est sélectionné ET que des switches sont actifs
+                if (SelectedStateActivity?.Name == "In Progress" && (IsLateChecked || IsTodayChecked || IsFutureChecked))
+                {
+                    // Si "In Progress" est sélectionné et que des switches sont actifs, utiliser le filtre combiné
+                    await ApplyCombinedFilter();
+                }
+                else if (SelectedStateActivity != null)
+                {
+                    // Si un état est sélectionné dans le ComboBox, utiliser le filtre par état (ignorer les switches)
+                    await LoadFilteredActivities();
+                }
+                else
+                {
+                    // Sinon, recharger toutes les activités
+                    await LoadActivities();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du rechargement de l'interface : {ex.Message}");
+                // En cas d'erreur, essayer de recharger toutes les activités
+                await LoadActivities();
+            }
+        }
+
+        // Nouvelle méthode pour appliquer le filtrage combiné
+        public async Task ApplyCombinedFilter()
+        {
+            try
+            {
+                // Vérifier que "In Progress" est sélectionné
+                if (SelectedStateActivity?.Name != "In Progress")
+                {
+                    // Si ce n'est pas "In Progress", utiliser le filtre normal
+                    await LoadFilteredActivities();
+                    return;
+                }
+
+                _isLoadingFromFilter = true;
+                UserDialogs.Instance.ShowLoading("Chargement...");
+                int entityId = EntityId;
+                string entityType = EntityActivityType;
+                List<Activity> allActivities = new List<Activity>();
+                // Déterminer l'état à filtrer (toujours "In Progress" pour le filtrage combiné)
+                string targetState = "In Progress";
+
+                // Appliquer les filtres de date selon les checkboxes cochées
+                if (IsLateChecked)
+                {
+                    var lateActivities = await GetActivitiesByStateAndDate(entityId, entityType, targetState, "overdue");
+                    allActivities.AddRange(lateActivities);
+                }
+                if (IsTodayChecked)
+                {
+                    var todayActivities = await GetActivitiesByStateAndDate(entityId, entityType, targetState, "today");
+                    allActivities.AddRange(todayActivities);
+                }
+                if (IsFutureChecked)
+                {
+                    var futureActivities = await GetActivitiesByStateAndDate(entityId, entityType, targetState, "future");
+                    allActivities.AddRange(futureActivities);
+                }
+
+                // Supprimer les doublons
+                var combinedActivities = allActivities.Distinct(new ActivityComparer()).ToList();
+
+                // Trier les activités par date d'échéance
+                combinedActivities = combinedActivities
+                    .OrderBy(a => a.DueDate)
+                    .ToList();
+
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    Activities.Clear();
+                    foreach (var activity in combinedActivities)
+                    {
+                        Activities.Add(activity);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du filtrage combiné : {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Erreur",
+                    "Impossible de filtrer les activités", "OK");
+            }
+            finally
+            {
+                _isLoadingFromFilter = false;
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        // Méthode helper pour obtenir les activités par état et période
+        private async Task<List<Activity>> GetActivitiesByStateAndDate(int entityId, string entityType, string state, string dateFilter)
+        {
+            // Pour le filtrage combiné, on ne gère que "In Progress"
+            if (state != "In Progress")
+            {
+                return new List<Activity>();
+            }
+
+            switch (dateFilter)
+            {
+                case "overdue":
+                    return await Activity.GetInProgressActivitiesOverdue(entityId, entityType);
+                case "today":
+                    return await Activity.GetInProgressActivitiesToday(entityId, entityType);
+                case "future":
+                    return await Activity.GetInProgressActivitiesFuture(entityId, entityType);
+                default:
+                    return await Activity.GetInProgressActivities(entityId, entityType);
+            }
         }
     }
 

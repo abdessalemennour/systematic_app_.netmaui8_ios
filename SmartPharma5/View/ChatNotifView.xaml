@@ -121,8 +121,26 @@
                         <StackLayout  IsVisible="{Binding TestLoad,Mode=TwoWay}" Orientation="Horizontal" Margin="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                             <Label Text="Failed Connection" FontAttributes="Bold" VerticalOptions="CenterAndExpand"></Label>
                             <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
-
                         </StackLayout>
+                        
+                        <!-- Indicateur de chargement "vers dernier message" -->
+                        <StackLayout IsVisible="{Binding IsLoadingToLastMessage}" 
+                                     Orientation="Horizontal" 
+                                     Margin="20" 
+                                     HorizontalOptions="CenterAndExpand" 
+                                     VerticalOptions="CenterAndExpand"
+                                     Spacing="10">
+                            <ActivityIndicator IsRunning="True" 
+                                              Color="#2196F3" 
+                                              HeightRequest="20" 
+                                              WidthRequest="20" 
+                                              VerticalOptions="Center" />
+                            <Label Text="Chargement vers dernier message..." 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2196F3"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        
                         <!-- Liste des messages dynamiques -->
                         <CollectionView x:Name="MessagesCollectionView" ItemsSource="{Binding Messages}" VerticalOptions="FillAndExpand">
                             <CollectionView.ItemTemplate>
@@ -170,6 +188,21 @@
                                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="0" />
                             </CollectionView.ItemsLayout>
                         </CollectionView>
+                        
+                        <!-- Bouton flottant pour scroller vers le dernier message -->
+                        <Button Text="↓"
+                                Command="{Binding ScrollToLastMessageCommand}"
+                                BackgroundColor="#2196F3"
+                                TextColor="White"
+                                CornerRadius="25"
+                                WidthRequest="50"
+                                HeightRequest="50"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                HorizontalOptions="End"
+                                VerticalOptions="End"
+                                Margin="0,0,10,10"
+                                IsVisible="{Binding HasNewUnreadMessages}" />
                     </StackLayout>
 
                     <!-- Zone de saisie et bouton -->

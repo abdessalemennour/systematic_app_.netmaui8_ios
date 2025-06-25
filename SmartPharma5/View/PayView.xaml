@@ -2,18 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SmartPharma5.View.PayView"
-                 xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewModel="clr-namespace:SmartPharma5.ViewModel"
-              xmlns:local="clr-namespace:SmartPharma5.Converters"
-
+             xmlns:local="clr-namespace:SmartPharma5.Converters"
              x:Name="PaymentPay"
              Title="PayView">
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:DecimalFormatter x:Key="DecimalFormatter"/>
+            <local:BoolToRowHeightConverter x:Key="BoolToRowHeightConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <NavigationPage.TitleView>
@@ -254,7 +255,7 @@
             </StackLayout>
             <!--si societylist > 1-->
 
-            <dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0"  IsVisible="{Binding IsVisibleSocietyComboBox}" >
+            <dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0" >
 
                 <dxcv:DXCollectionView.ItemTemplate>
                     <DataTemplate>
@@ -269,7 +270,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*" />
                                     <RowDefinition Height="10"/>
                                 </Grid.RowDefinitions>
 
@@ -305,7 +306,7 @@
                                 </StackLayout>
 
 
-                                <StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center" >
+                                <StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center" IsVisible="{Binding IsVisibleSociety}">
                                     <Label Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
                                     <Label Text="{Binding NameSociety, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />
                                 </StackLayout>
@@ -319,7 +320,7 @@
 
             <!--si societylist = 1-->
 
-            <dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView_SingleSociety" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0" IsVisible="{Binding SocietyComboBox}" >
+            <!--<dxcv:DXCollectionView Grid.Row="1" x:Name="UnpaiedCollectionView_SingleSociety" ItemsSource="{Binding Payment.Payment_pieceList}" ItemSpacing="5"  Margin="5,8,8,0" IsVisible="{Binding SocietyComboBox}" >
 
                 <dxcv:DXCollectionView.ItemTemplate>
                     <DataTemplate>
@@ -334,7 +335,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
-                                    <!--<RowDefinition Height="*"/>-->
+                                    --><!--<RowDefinition Height="*"/>--><!--
                                     <RowDefinition Height="10"/>
                                 </Grid.RowDefinitions>
 
@@ -343,16 +344,16 @@
 
 
                                 <StackLayout Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center">
-                                    <!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay,StringFormat=Total : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
+                                    --><!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay,StringFormat=Total : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>--><!--
                                     <Label Text="{Binding Piece_totalAmont, Mode=OneWay, Converter={StaticResource DecimalFormatter}, StringFormat='Total : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
-                                    <!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
+                                    --><!--<Label Text="{Binding Piece_totalAmont, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>--><!--
                                     <Label Text="{Binding CurrencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
                                 </StackLayout>
-                                <!--<Label Grid.Row="1" Grid.Column="1" Text="{Binding Piece_restAmount, Mode=OneWay,StringFormat=Rest :    '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>-->
+                                --><!--<Label Grid.Row="1" Grid.Column="1" Text="{Binding Piece_restAmount, Mode=OneWay,StringFormat=Rest :    '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>--><!--
                                 <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalOptions="Center">
-                                    <!-- <Label Text="{Binding Piece_restAmount, Mode=OneWay, StringFormat=Rest : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>-->
+                                    --><!-- <Label Text="{Binding Piece_restAmount, Mode=OneWay, StringFormat=Rest : '{0:F3}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>--><!--
                                     <Label Text="{Binding Piece_restAmount, Mode=OneWay, Converter={StaticResource DecimalFormatter}, StringFormat='Rest : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
-                                    <!--<Label Text="{Binding Piece_restAmount, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>-->
+                                    --><!--<Label Text="{Binding Piece_restAmount, Mode=OneWay, Converter={StaticResource DecimalFormatter}, ConverterParameter={Binding DecimalNumber}}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>--><!--
                                     <Label Text="{Binding CurrencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
                                 </StackLayout>
 
@@ -370,17 +371,17 @@
                                 </StackLayout>
 
 
-                                <!--<StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center" >
+                                --><!--<StackLayout Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalOptions="Center" >
                                     <Label Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
                                     <Label Text="{Binding NameSociety, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />
-                                </StackLayout>-->
+                                </StackLayout>--><!--
 
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </dxcv:DXCollectionView.ItemTemplate>
 
-            </dxcv:DXCollectionView>
+            </dxcv:DXCollectionView>-->
 
 
             <StackLayout Grid.Row="2" Margin="0,0,0,3">

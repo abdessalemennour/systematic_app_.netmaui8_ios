@@ -25,7 +25,6 @@ namespace SmartPharma5
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 }).UseSkiaSharp();
                 
-
                 ;
 
 

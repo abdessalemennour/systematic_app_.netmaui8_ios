@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:converters="clr-namespace:SmartPharma5.Converters"
+             x:Class="SmartPharma5.View.FloatingActionButton.ActivityAddPopupView">
+    
+    <ContentView.Resources>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    </ContentView.Resources>
+    
+    <Grid BackgroundColor="#80000000">
+        <Frame BackgroundColor="White"
+               CornerRadius="10"
+               Padding="20"
+               Margin="20"
+               HasShadow="True"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="400"
+               HeightRequest="600">
+            <ScrollView>
+                <StackLayout Spacing="15">
+                    <Label Text="Ajouter une nouvelle activité" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center" 
+                           Margin="0,0,0,10"/>
+
+                    <!-- Objet (CurrentData.CurrentModuleId) -->
+                    <Label Text="Objet" FontAttributes="Bold" />
+                    <Label Text="{Binding ParentObject}" 
+                           TextColor="#666666" BackgroundColor="#F5F5F5" Padding="10,5" />
+                    
+                    <Label Text="Type d'activité" FontAttributes="Bold" />
+                    <dxe:ComboBoxEdit 
+                        ItemsSource="{Binding ActivityTypes}"
+                        DisplayMember="Name"
+                        ValueMember="Id"
+                        SelectedItem="{Binding SelectedActivityType, Mode=TwoWay}"
+                        HeightRequest="50"
+                        TextHorizontalAlignment="Center"
+                        VerticalOptions="Center" />
+
+                    <Label Text="Résumé" FontAttributes="Bold" />
+                    <Entry Placeholder="Entrer le résumé" 
+                           Text="{Binding Summary, Mode=TwoWay}" 
+                           IsEnabled="True" />
+
+                    <Label Text="Date d'échéance" FontAttributes="Bold" />
+                    <DatePicker Date="{Binding DueDate, Mode=TwoWay}" />
+
+                    <Label Text="Note" FontAttributes="Bold" />
+                    <Editor Placeholder="Ajouter une note" 
+                            Text="{Binding ActivityMemo, Mode=TwoWay}" 
+                            HeightRequest="100" />
+
+                    <!-- Employé assigné de l'activité précédente -->
+                    <Label Text="Attribué à (activité précédente)" FontAttributes="Bold" 
+                           IsVisible="{Binding PreviousActivityEmployeeName, Converter={StaticResource StringToVisibilityConverter}}" />
+                    <Label Text="{Binding PreviousActivityEmployeeName}" 
+                           IsVisible="{Binding PreviousActivityEmployeeName, Converter={StaticResource StringToVisibilityConverter}}"
+                           TextColor="#666666" BackgroundColor="#F5F5F5" Padding="10,5" />
+
+                    <StackLayout Orientation="Horizontal" 
+                                HorizontalOptions="Center" 
+                                Spacing="20"
+                                Margin="0,10,0,0">
+                        <Button Text="Annuler" 
+                                BackgroundColor="Red" 
+                                TextColor="#FFFFFFFF" 
+                                CornerRadius="10" 
+                                WidthRequest="120" 
+                                Clicked="OnCancelClicked" />
+                        <Button Text="Sauvegarder" 
+                                BackgroundColor="Green" 
+                                TextColor="#FFFFFFFF" 
+                                CornerRadius="10" 
+                                WidthRequest="120" 
+                                Command="{Binding AddActivityCommand}" />
+                    </StackLayout>
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+    </Grid>
+</ContentView> 

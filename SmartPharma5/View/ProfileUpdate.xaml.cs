@@ -24,7 +24,7 @@ public partial class ProfileUpdate : ContentPage
     {
         InitializeComponent();
 
-        // Lier le contexte de données ici si nécessaire
+        // Lier le contexte de donnï¿½es ici si nï¿½cessaire
         BindingContext = new DocumentViewModel();
 
     }
@@ -60,13 +60,13 @@ public partial class ProfileUpdate : ContentPage
     {
         base.OnAppearing();
 
-        // Activer le rafraîchissement périodique
+        // Activer le rafraï¿½chissement pï¿½riodique
         _refreshEnabled = true;
 
-        // Exécuter le premier rafraîchissement
+        // Exï¿½cuter le premier rafraï¿½chissement
         await RefreshMessages();
 
-        // Démarrer le timer pour les rafraîchissements périodiques
+        // Dï¿½marrer le timer pour les rafraï¿½chissements pï¿½riodiques
         Device.StartTimer(TimeSpan.FromSeconds(3), () =>
         {
             if (!_refreshEnabled) return false;
@@ -89,7 +89,7 @@ public partial class ProfileUpdate : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        // Désactiver le rafraîchissement périodique
+        // Dï¿½sactiver le rafraï¿½chissement pï¿½riodique
         _refreshEnabled = false;
     }
 
@@ -111,13 +111,13 @@ public partial class ProfileUpdate : ContentPage
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erreur lors du rafraîchissement: {ex.Message}");
+            Console.WriteLine($"Erreur lors du rafraï¿½chissement: {ex.Message}");
         }
     }
 
     private async Task AnimateSwipeHint()
     {
-        // Faire apparaître l'indicateur
+        // Faire apparaï¿½tre l'indicateur
         await swipeHint.FadeTo(0.8, 300);
 
         // Animation de balayage (2 cycles)
@@ -154,7 +154,7 @@ public partial class ProfileUpdate : ContentPage
             UserDialogs.Instance.ShowLoading("Chargement...");
             await Task.Delay(200);
 
-            // Vérifier les permissions (garder votre code existant)
+            // Vï¿½rifier les permissions (garder votre code existant)
             var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
 
             if (status != PermissionStatus.Granted)
@@ -163,9 +163,9 @@ public partial class ProfileUpdate : ContentPage
 
                 if (status != PermissionStatus.Granted)
                 {
-                    bool openSettings = await DisplayAlert("Permission refusée",
-                        "L'accès à la localisation est nécessaire pour cette fonctionnalité. Voulez-vous l'activer dans les paramètres?",
-                        "Ouvrir les paramètres", "Annuler");
+                    bool openSettings = await DisplayAlert("Permission refusï¿½e",
+                        "L'accï¿½s ï¿½ la localisation est nï¿½cessaire pour cette fonctionnalitï¿½. Voulez-vous l'activer dans les paramï¿½tres?",
+                        "Ouvrir les paramï¿½tres", "Annuler");
 
                     if (openSettings)
                     {
@@ -177,7 +177,7 @@ public partial class ProfileUpdate : ContentPage
                 }
             }
 
-            // Vérifier si la localisation est activée
+            // Vï¿½rifier si la localisation est activï¿½e
             var locationEnabled = false;
             try
             {
@@ -196,15 +196,15 @@ public partial class ProfileUpdate : ContentPage
 
             if (!locationEnabled)
             {
-                bool activateLocation = await DisplayAlert("Localisation désactivée",
-                    "Le service de localisation est désactivé sur votre appareil. Voulez-vous l'activer maintenant?",
+                bool activateLocation = await DisplayAlert("Localisation dï¿½sactivï¿½e",
+                    "Le service de localisation est dï¿½sactivï¿½ sur votre appareil. Voulez-vous l'activer maintenant?",
                     "Activer", "Annuler");
 
                 if (activateLocation)
                 {
                     AppInfo.ShowSettingsUI();
                     await DisplayAlert("Instructions",
-                        "Après avoir activé la localisation, revenez à l'application et appuyez à nouveau sur le bouton.",
+                        "Aprï¿½s avoir activï¿½ la localisation, revenez ï¿½ l'application et appuyez ï¿½ nouveau sur le bouton.",
                         "OK");
 
                     UserDialogs.Instance.HideLoading();
@@ -213,7 +213,7 @@ public partial class ProfileUpdate : ContentPage
                 else
                 {
                     await DisplayAlert("Information",
-                        "Cette fonctionnalité nécessite l'accès à votre localisation.",
+                        "Cette fonctionnalitï¿½ nï¿½cessite l'accï¿½s ï¿½ votre localisation.",
                         "OK");
 
                     UserDialogs.Instance.HideLoading();
@@ -232,7 +232,7 @@ public partial class ProfileUpdate : ContentPage
             }
             else
             {
-                await DisplayAlert("Erreur", "Impossible de récupérer votre position GPS.", "OK");
+                await DisplayAlert("Erreur", "Impossible de rï¿½cupï¿½rer votre position GPS.", "OK");
             }
         }
         catch (Exception ex)
@@ -257,7 +257,7 @@ public partial class ProfileUpdate : ContentPage
                 mapView.Map = new Mapsui.Map();
                 mapView.Map.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer());
 
-                // Récupérer les coordonnées existantes
+                // Rï¿½cupï¿½rer les coordonnï¿½es existantes
                 var viewModel = BindingContext as UpdateProfileMV;
                 double currentLat = 0, currentLon = 0;
                 if (viewModel?.Partner != null)
@@ -279,7 +279,7 @@ public partial class ProfileUpdate : ContentPage
                     }
                 }
 
-                // Création du layout principal avec proportions précises
+                // Crï¿½ation du layout principal avec proportions prï¿½cises
                 var mainLayout = new Grid
                 {
                     RowDefinitions =
@@ -330,13 +330,13 @@ public partial class ProfileUpdate : ContentPage
                 Grid.SetRow(googleMapsButton, 1);
                 Grid.SetColumn(googleMapsButton, 1);
 
-                // Gestion des événements
+                // Gestion des ï¿½vï¿½nements
                 closeButton.Clicked += async (s, e) => await Navigation.PopModalAsync();
                 googleMapsButton.Clicked += async (s, e) =>
                 {
                     if (currentLat != 0 && currentLon != 0)
                     {
-                        // Utilisation de CultureInfo.InvariantCulture pour garantir le point comme séparateur décimal
+                        // Utilisation de CultureInfo.InvariantCulture pour garantir le point comme sï¿½parateur dï¿½cimal
                         var latStr = currentLat.ToString(CultureInfo.InvariantCulture);
                         var lonStr = currentLon.ToString(CultureInfo.InvariantCulture);
                         var uri = $"https://www.google.com/maps/search/?api=1&query={latStr},{lonStr}";
@@ -409,26 +409,26 @@ public partial class ProfileUpdate : ContentPage
 
         // Demander confirmation
         bool confirm = await DisplayAlert("Confirmation",
-            $"Voulez-vous définir cette position?\nLat: {lat:F6}\nLon: {lon:F6}",
+            $"Voulez-vous dï¿½finir cette position?\nLat: {lat:F6}\nLon: {lon:F6}",
             "Oui", "Non");
 
         if (confirm)
         {
-            // Ajouter/mettre à jour le marqueur
+            // Ajouter/mettre ï¿½ jour le marqueur
             AddMarker(mapView, worldPosition.X, worldPosition.Y);
-            // Mettre à jour la base de données
+            // Mettre ï¿½ jour la base de donnï¿½es
             var viewModel = BindingContext as UpdateProfileMV;
             if (viewModel?.Partner != null)
             {
                 await Partner.UpdateManualGpsCoordinates(viewModel.Partner.Id, lat, lon);
-                await DisplayAlert("Succès", "Position mise à jour avec succès", "OK");
+                await DisplayAlert("Succï¿½s", "Position mise ï¿½ jour avec succï¿½s", "OK");
             }
         }
 
     }
     private Mapsui.MPoint ConvertScreenToWorld(Mapsui.UI.Maui.MapView mapView, MPoint screenPosition)
     {
-        // Solution alternative pour la conversion des coordonnées
+        // Solution alternative pour la conversion des coordonnï¿½es
         if (mapView.Map?.Navigator != null)
         {
             return mapView.Map.Navigator.Viewport.ScreenToWorld(screenPosition);
@@ -446,7 +446,7 @@ public partial class ProfileUpdate : ContentPage
             string formattedLongitude = longitude.ToString("F6", CultureInfo.InvariantCulture);
             string gpsCoordinates = $"{formattedLatitude},{formattedLongitude}";
 
-            // Mettre à jour la base de données
+            // Mettre ï¿½ jour la base de donnï¿½es
             var viewModel = BindingContext as UpdateProfileMV;
             if (viewModel != null && viewModel.Partner != null)
             {
@@ -464,7 +464,7 @@ public partial class ProfileUpdate : ContentPage
                 }
 
                 // Afficher une confirmation
-                await DisplayAlert("Succès", "Les coordonnées GPS ont été mises à jour.", "OK");
+                await DisplayAlert("Succï¿½s", "Les coordonnï¿½es GPS ont ï¿½tï¿½ mises ï¿½ jour.", "OK");
 
                 // Ouvrir Google Maps
 
@@ -488,24 +488,24 @@ public partial class ProfileUpdate : ContentPage
     //        UserDialogs.Instance.ShowLoading("Loading...");
     //        await Task.Delay(200);
 
-    //        // Vérifier si l'application a la permission d'accéder à la localisation
+    //        // Vï¿½rifier si l'application a la permission d'accï¿½der ï¿½ la localisation
     //        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
 
     //        if (status != PermissionStatus.Granted)
     //        {
-    //            // Demander la permission à l'utilisateur
+    //            // Demander la permission ï¿½ l'utilisateur
     //            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
 
     //            if (status != PermissionStatus.Granted)
     //            {
-    //                // Si l'utilisateur refuse, lui proposer d'aller dans les paramètres
-    //                bool openSettings = await DisplayAlert("Permission refusée",
-    //                    "L'accès à la localisation est nécessaire pour cette fonctionnalité. Voulez-vous l'activer dans les paramètres?",
-    //                    "Ouvrir les paramètres", "Annuler");
+    //                // Si l'utilisateur refuse, lui proposer d'aller dans les paramï¿½tres
+    //                bool openSettings = await DisplayAlert("Permission refusï¿½e",
+    //                    "L'accï¿½s ï¿½ la localisation est nï¿½cessaire pour cette fonctionnalitï¿½. Voulez-vous l'activer dans les paramï¿½tres?",
+    //                    "Ouvrir les paramï¿½tres", "Annuler");
 
     //                if (openSettings)
     //                {
-    //                    // Ouvrir les paramètres de l'application où l'utilisateur peut activer les permissions
+    //                    // Ouvrir les paramï¿½tres de l'application oï¿½ l'utilisateur peut activer les permissions
     //                    AppInfo.ShowSettingsUI();
     //                }
 
@@ -514,7 +514,7 @@ public partial class ProfileUpdate : ContentPage
     //            }
     //        }
 
-    //        // Essayer d'obtenir la localisation rapidement pour vérifier si le service est activé
+    //        // Essayer d'obtenir la localisation rapidement pour vï¿½rifier si le service est activï¿½
     //        var locationEnabled = false;
     //        try
     //        {
@@ -531,21 +531,21 @@ public partial class ProfileUpdate : ContentPage
     //            locationEnabled = false;
     //        }
 
-    //        // Si la localisation est désactivée, inviter l'utilisateur à l'activer
+    //        // Si la localisation est dï¿½sactivï¿½e, inviter l'utilisateur ï¿½ l'activer
     //        if (!locationEnabled)
     //        {
-    //            bool activateLocation = await DisplayAlert("Localisation désactivée",
-    //                "Le service de localisation est désactivé sur votre appareil. Voulez-vous l'activer maintenant?",
+    //            bool activateLocation = await DisplayAlert("Localisation dï¿½sactivï¿½e",
+    //                "Le service de localisation est dï¿½sactivï¿½ sur votre appareil. Voulez-vous l'activer maintenant?",
     //                "Activer", "Annuler");
 
     //            if (activateLocation)
     //            {
-    //                // Sur Android et iOS, cela ouvre les paramètres de localisation du système
+    //                // Sur Android et iOS, cela ouvre les paramï¿½tres de localisation du systï¿½me
     //                AppInfo.ShowSettingsUI();
 
-    //                // Message indiquant à l'utilisateur de revenir à l'application après avoir activé la localisation
+    //                // Message indiquant ï¿½ l'utilisateur de revenir ï¿½ l'application aprï¿½s avoir activï¿½ la localisation
     //                await DisplayAlert("Instructions",
-    //                    "Après avoir activé la localisation, revenez à l'application et appuyez à nouveau sur le bouton.",
+    //                    "Aprï¿½s avoir activï¿½ la localisation, revenez ï¿½ l'application et appuyez ï¿½ nouveau sur le bouton.",
     //                    "OK");
 
     //                UserDialogs.Instance.HideLoading();
@@ -553,9 +553,9 @@ public partial class ProfileUpdate : ContentPage
     //            }
     //            else
     //            {
-    //                // L'utilisateur a refusé d'activer la localisation
+    //                // L'utilisateur a refusï¿½ d'activer la localisation
     //                await DisplayAlert("Information",
-    //                    "Cette fonctionnalité nécessite l'accès à votre localisation.",
+    //                    "Cette fonctionnalitï¿½ nï¿½cessite l'accï¿½s ï¿½ votre localisation.",
     //                    "OK");
 
     //                UserDialogs.Instance.HideLoading();
@@ -563,31 +563,31 @@ public partial class ProfileUpdate : ContentPage
     //            }
     //        }
 
-    //        // Si nous arrivons ici, la localisation devrait être disponible
-    //        // Obtenir la localisation avec une meilleure précision
+    //        // Si nous arrivons ici, la localisation devrait ï¿½tre disponible
+    //        // Obtenir la localisation avec une meilleure prï¿½cision
     //        var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
     //        var location = await Geolocation.GetLocationAsync(request);
 
     //        if (location != null)
     //        {
-    //            // Formater les coordonnées GPS
+    //            // Formater les coordonnï¿½es GPS
     //            string formattedLatitude = location.Latitude.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
     //            string formattedLongitude = location.Longitude.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
 
-    //            // Construire les coordonnées GPS sous forme de chaîne
+    //            // Construire les coordonnï¿½es GPS sous forme de chaï¿½ne
     //            string gpsCoordinates = $"{formattedLatitude},{formattedLongitude}";
 
-    //            // Mettre à jour la base de données avec les coordonnées GPS
+    //            // Mettre ï¿½ jour la base de donnï¿½es avec les coordonnï¿½es GPS
     //            var viewModel = BindingContext as UpdateProfileMV;
     //            if (viewModel != null && viewModel.Partner != null)
     //            {
-    //                // Appeler la méthode pour mettre à jour la colonne DeliveryNumber dans la base de données
+    //                // Appeler la mï¿½thode pour mettre ï¿½ jour la colonne DeliveryNumber dans la base de donnï¿½es
     //                await Partner.UpdateGpsCoordinates(viewModel.Partner.Id);
 
 
 
-    //                // Afficher une confirmation que les coordonnées ont été mises à jour
-    //                await DisplayAlert("Succès", "Les coordonnées GPS ont été mises à jour.", "OK");
+    //                // Afficher une confirmation que les coordonnï¿½es ont ï¿½tï¿½ mises ï¿½ jour
+    //                await DisplayAlert("Succï¿½s", "Les coordonnï¿½es GPS ont ï¿½tï¿½ mises ï¿½ jour.", "OK");
 
     //                // Ouvrir Google Maps pour afficher la position actuelle
     //                string uri = $"https://www.google.com/maps/search/?api=1&query={formattedLatitude},{formattedLongitude}";
@@ -596,12 +596,12 @@ public partial class ProfileUpdate : ContentPage
     //        }
     //        else
     //        {
-    //            await DisplayAlert("Erreur", "Impossible de récupérer votre position GPS.", "OK");
+    //            await DisplayAlert("Erreur", "Impossible de rï¿½cupï¿½rer votre position GPS.", "OK");
     //        }
     //    }
     //    catch (Exception ex)
     //    {
-    //        // Gérer les erreurs qui peuvent survenir
+    //        // Gï¿½rer les erreurs qui peuvent survenir
     //        await DisplayAlert("Erreur", $"Une erreur s'est produite : {ex.Message}", "OK");
     //    }
     //    finally
@@ -615,29 +615,29 @@ public partial class ProfileUpdate : ContentPage
     //    {
     //        UserDialogs.Instance.ShowLoading("Loading...");
     //        await Task.Delay(200);
-    //        // Récupérer la localisation de l'utilisateur
+    //        // Rï¿½cupï¿½rer la localisation de l'utilisateur
     //        var location = await Geolocation.GetLocationAsync();
 
     //        if (location != null)
     //        {
-    //            // Formater les coordonnées GPS
+    //            // Formater les coordonnï¿½es GPS
     //            string formattedLatitude = location.Latitude.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
     //            string formattedLongitude = location.Longitude.ToString("F6", System.Globalization.CultureInfo.InvariantCulture);
 
-    //            // Construire les coordonnées GPS sous forme de chaîne
+    //            // Construire les coordonnï¿½es GPS sous forme de chaï¿½ne
     //            string gpsCoordinates = $"{formattedLatitude},{formattedLongitude}";
 
-    //            // Afficher une confirmation que la position a été récupérée
-    //            //await DisplayAlert("Succès", "Votre position a été récupérée avec succès.", "OK");
+    //            // Afficher une confirmation que la position a ï¿½tï¿½ rï¿½cupï¿½rï¿½e
+    //            //await DisplayAlert("Succï¿½s", "Votre position a ï¿½tï¿½ rï¿½cupï¿½rï¿½e avec succï¿½s.", "OK");
 
-    //            // Mettre à jour la base de données avec les coordonnées GPS
+    //            // Mettre ï¿½ jour la base de donnï¿½es avec les coordonnï¿½es GPS
     //            var viewModel = BindingContext as UpdateProfileMV;
     //            if (viewModel != null && viewModel.Partner != null)
     //            {
-    //                // Appeler la méthode pour mettre à jour la colonne DeliveryNumber dans la base de données
+    //                // Appeler la mï¿½thode pour mettre ï¿½ jour la colonne DeliveryNumber dans la base de donnï¿½es
     //                await Partner.UpdateGpsCoordinates(viewModel.Partner.Id);
 
-    //                // Afficher une confirmation que les coordonnées ont été mises à jour
+    //                // Afficher une confirmation que les coordonnï¿½es ont ï¿½tï¿½ mises ï¿½ jour
     //                await DisplayAlert("Success", "The GPS coordinates have been updated.", "OK");
 
     //                // Ouvrir Google Maps pour afficher la position actuelle
@@ -647,12 +647,12 @@ public partial class ProfileUpdate : ContentPage
     //        }
     //        else
     //        {
-    //            await DisplayAlert("Erreur", "Impossible de récupérer votre position GPS.", "OK");
+    //            await DisplayAlert("Erreur", "Impossible de rï¿½cupï¿½rer votre position GPS.", "OK");
     //        }
     //    }
     //    catch (Exception ex)
     //    {
-    //        // Gérer les erreurs qui peuvent survenir
+    //        // Gï¿½rer les erreurs qui peuvent survenir
     //        await DisplayAlert("Erreur", $"Une erreur s'est produite : {ex.Message}", "OK");
     //    }
     //    UserDialogs.Instance.HideLoading();
@@ -665,14 +665,14 @@ public partial class ProfileUpdate : ContentPage
     //        var partnerId = (int)this.Partner.Id;
 
 
-    //        // Passer l'ID du partenaire à ProfileUpdateFileSelectionView
+    //        // Passer l'ID du partenaire ï¿½ ProfileUpdateFileSelectionView
     //        //await Navigation.PushAsync(new ProfileUpdateFileSelectionView(partnerId));
     //        await Navigation.PushAsync(new FileSelectionView(partnerId, EntityType.Partner));
 
     //    }
     //    else
     //    {
-    //        await DisplayAlert("Erreur", "Aucun partenaire trouvé.", "OK");
+    //        await DisplayAlert("Erreur", "Aucun partenaire trouvï¿½.", "OK");
     //    }
     //}
 
@@ -690,7 +690,7 @@ public partial class ProfileUpdate : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         UserDialogs.Instance.HideLoading();
 
@@ -708,7 +708,7 @@ public partial class ProfileUpdate : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         //UserDialogs.Instance.HideLoading();
 
@@ -726,7 +726,7 @@ public partial class ProfileUpdate : ContentPage
         else
         {
             /* string buttonName = button.Source.ToString().Replace("File: ", "");
-             await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");*/
+             await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");*/
         }
         UserDialogs.Instance.HideLoading();
 
@@ -744,7 +744,7 @@ public partial class ProfileUpdate : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         UserDialogs.Instance.HideLoading();
 
@@ -757,7 +757,7 @@ public partial class ProfileUpdate : ContentPage
         {
             var partnerId = (int)this.Partner.Id;
 
-            // Appeler la même navigation que l'ancien bouton
+            // Appeler la mï¿½me navigation que l'ancien bouton
             await Navigation.PushAsync(new FileSelectionView(partnerId, EntityType.Partner));
         }
         catch (Exception ex)
@@ -779,16 +779,16 @@ public partial class ProfileUpdate : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
     }
 
     /* private async void OnDocumentButtonClicked(object sender, EventArgs e)
      {
-         // Vérifie si le partenaire existe
+         // Vï¿½rifie si le partenaire existe
          if (this.Partner != null)
          {
-             // Si le partenaire existe, récupérer son ID
+             // Si le partenaire existe, rï¿½cupï¿½rer son ID
              var partnerId = this.Partner.Id;
 
              // Naviguer vers une nouvelle page en passant l'ID du partenaire
@@ -796,8 +796,8 @@ public partial class ProfileUpdate : ContentPage
          }
          else
          {
-             // Si aucun partenaire trouvé, afficher un message d'erreur
-             await DisplayAlert("Erreur", "Aucun partenaire trouvé.", "OK");
+             // Si aucun partenaire trouvï¿½, afficher un message d'erreur
+             await DisplayAlert("Erreur", "Aucun partenaire trouvï¿½.", "OK");
          }
      }
     */

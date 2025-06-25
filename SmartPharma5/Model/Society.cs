@@ -49,7 +49,7 @@ namespace SmartPharma5.Model
             return societies?.FirstOrDefault(s => s.Id == id);
         }
 
-        // Nouvelle méthode avec userId en paramètre
+        // Nouvelle mÃ©thode avec userId en paramÃ¨tre
         public static async Task<List<Society>> GetSocietiesByUserIdAsync(int userId)
         {
             if (userId <= 0)
@@ -113,12 +113,17 @@ namespace SmartPharma5.Model
             return societies;
         }
 
-        // Ancienne méthode conservée sans modification
+        // Ancienne mÃ©thode conservÃ©e sans modification
         public static async Task<List<Society>> GetAllSocietiesAsync()
         {
             int userId = Preferences.Get("iduser", 0);
-            if (CachedSocieties != null)
+            
+            // VÃ©rifier si le cache existe et s'il correspond au bon utilisateur
+            if (CachedSocieties != null && CachedSocieties.Count > 0)
+            {
+                // Si le cache existe, on peut le retourner
                 return CachedSocieties;
+            }
 
             List<Society> societies = new List<Society>();
             MySqlConnection connection = null;
@@ -181,6 +186,7 @@ namespace SmartPharma5.Model
         public static async Task ClearSocietiesCache()
         {
             CachedSocieties = null;
+            Count = 0;
         }
         #endregion
     }

@@ -1,5 +1,4 @@
-﻿
-/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
+﻿/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
 Avant :
 using SmartPharma5.Model;
 using SmartPharma5.Services;
@@ -500,6 +499,7 @@ namespace SmartPharma5.ViewModel
             {
                 Preferences.Set("idagent", Convert.ToUInt32(null));
                 await User_Module_Groupe_Services.DeleteAll();
+                await Society.ClearSocietiesCache();
                 UserDialogs.Instance.ShowLoading("Chargement en cours Veuillez patienter ...");
                 await Task.Delay(1500);
                 await App.Current.MainPage.Navigation.PushAsync(new LoginView());
@@ -699,7 +699,7 @@ namespace SmartPharma5.ViewModel
         //        }
         //        else
         //        {
-        //            await App.Current.MainPage.DisplayAlert("Erreur", "Échec de l’authentification", "OK");
+        //            await App.Current.MainPage.DisplayAlert("Erreur", "Échec de l'authentification", "OK");
         //        }
 
         //    }
@@ -1611,6 +1611,7 @@ namespace SmartPharma5.ViewModel
             {
                 Preferences.Set("idagent", Convert.ToUInt32(null));
                 await User_Module_Groupe_Services.DeleteAll();
+                await Society.ClearSocietiesCache();
                 UserDialogs.Instance.ShowLoading("Loading Pleae wait ...");
                 await Task.Delay(1500);
                 await App.Current.MainPage.Navigation.PushAsync(new LoginView());

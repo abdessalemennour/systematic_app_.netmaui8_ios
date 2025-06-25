@@ -2,13 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SmartPharma5.View.TypePaymentView"
-                 xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:converters="clr-namespace:SmartPharma5.Converters"
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
               xmlns:local="clr-namespace:SmartPharma5.ViewModel"
              Title="TypePaymentView">
 
+    <!--<ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToRowHeightConverter x:Key="BoolToRowHeightConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>-->
 
     <ScrollView  VerticalOptions="FillAndExpand">
 
@@ -72,8 +78,9 @@
                 <dxe:DateEdit LabelText="Due Date" UseNativePicker="True" IsVisible="{Binding IsVisibledue_date}" DisplayFormat="dd/MM/yyyy" Date="{Binding Due_date, Mode=TwoWay}"></dxe:DateEdit>
                 <dxe:TextEdit HeightRequest="50" LabelText="Reference" Text="{Binding Payment.reference, Mode=TwoWay}" IsVisible="{Binding IsVisiblereference}"></dxe:TextEdit>
             </StackLayout>
+            
             <!-- Si plusieurs sociétés (SocietyList.Count > 1) -->
-            <dxcv:DXCollectionView VerticalOptions="FillAndExpand" x:Name="UnpaiedCollectionView" ItemsSource="{Binding UnpaiedList}" SelectionMode="{Binding SelectionModePiece}" SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"  ItemSpacing="5"  Margin="5,8,8,0"  IsVisible="{Binding IsVisibleSocietyComboBox}" >
+            <dxcv:DXCollectionView VerticalOptions="FillAndExpand" x:Name="UnpaiedCollectionView" ItemsSource="{Binding UnpaiedList}" SelectionMode="{Binding SelectionModePiece}" SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"  ItemSpacing="5"  Margin="5,8,8,0" >
 
                 <dxcv:DXCollectionView.ItemTemplate>
                     <DataTemplate>
@@ -95,11 +102,6 @@
                                 </Grid.RowDefinitions>
 
                                 <Label Grid.Row="0" Grid.Column="0"  Text="{Binding piece_type_name, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="{Binding stateColor}" VerticalOptions="Center"/>
-                                <!--                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay, StringFormat='Total : {0:{Binding DisplayFormat}}'}"  FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
---> 
-                                <!--<Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay,StringFormat=Total :'{0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
-                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
-                               -->
                                 <FlexLayout Grid.Row="1" Grid.Column="0" 
                                             Direction="Row" 
                                             Wrap="Wrap" 
@@ -117,19 +119,16 @@
                                            TextColor="Black"/>
                                 </FlexLayout>
                                 <Label Grid.Row="0" Grid.Column="1"  Text="{Binding code, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>
-                                <!--<Label Grid.Row="0" Grid.Column="1"  Text="{Binding SocietyName, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>-->
-                                
-                                
-                               <!-- <Label Grid.Row="1" Grid.Column="1" Text="{Binding rest_amount, Mode=OneWay,StringFormat=Rest :'{0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
-                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
-                             -->
+
                                 <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalOptions="Center">
                                     <Label Text="{Binding rest_amount, Mode=OneWay, StringFormat='Rest : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
                                     <Label Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
                                 </StackLayout>
                                 <Label Grid.Row="2" Grid.Column="0" Text="{Binding date,StringFormat='Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="Black"/>
-                                <Label Grid.Row="3" Grid.Column="0" Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"  />
-                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding societe, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />
+                                <StackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalOptions="Center" IsVisible="{Binding ShowSociety}">
+                                    <Label Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding societe, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center"/>
+                                </StackLayout>
                                 <Label Grid.Row="2" Grid.Column="1" Text="{Binding due_date,StringFormat='Due Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="{Binding due_dateColor}"/>
                                 <dxe:CheckEdit IsEnabled="False" Grid.Row="0" Grid.Column="2"  IsChecked="{Binding Is_checked, Mode=TwoWay}" VerticalOptions="Start" HorizontalOptions="Center"></dxe:CheckEdit>
                             </Grid>
@@ -140,7 +139,7 @@
             </dxcv:DXCollectionView>
 
             <!-- Si une seule société -->
-            <dxcv:DXCollectionView VerticalOptions="FillAndExpand" x:Name="UnpaiedCollectionView_SingleSociety" ItemsSource="{Binding UnpaiedList}" SelectionMode="{Binding SelectionModePiece}" SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"  ItemSpacing="5"  Margin="5,8,8,0"  IsVisible="{Binding SocietyComboBox}" >
+            <!--<dxcv:DXCollectionView VerticalOptions="FillAndExpand" x:Name="UnpaiedCollectionView_SingleSociety" ItemsSource="{Binding UnpaiedList}" SelectionMode="{Binding SelectionModePiece}" SelectedItem="{Binding SelectedPiece, Mode=TwoWay}"  ItemSpacing="5"  Margin="5,8,8,0"  IsVisible="{Binding SocietyComboBox}" >
 
                 <dxcv:DXCollectionView.ItemTemplate>
                     <DataTemplate>
@@ -161,11 +160,11 @@
                                 </Grid.RowDefinitions>
 
                                 <Label Grid.Row="0" Grid.Column="0"  Text="{Binding piece_type_name, Mode=OneWay}" FontSize="Medium" FontAttributes="Bold" TextColor="{Binding stateColor}" VerticalOptions="Center"/>
-                                <!--                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay, StringFormat='Total : {0:{Binding DisplayFormat}}'}"  FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                                --><!--                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay, StringFormat='Total : {0:{Binding DisplayFormat}}'}"  FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
 -->
                                 <!--<Label Grid.Row="1" Grid.Column="0" Text="{Binding total_amount, Mode=OneWay,StringFormat=Total :'{0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
                                 <Label Grid.Row="1" Grid.Column="0" Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
-                               -->
+                               --><!--
                                 <FlexLayout Grid.Row="1" Grid.Column="0" 
                                             Direction="Row" 
                                             Wrap="Wrap" 
@@ -183,12 +182,12 @@
                                            TextColor="Black"/>
                                 </FlexLayout>
                                 <Label Grid.Row="0" Grid.Column="1"  Text="{Binding code, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>
-                                <!--<Label Grid.Row="0" Grid.Column="1"  Text="{Binding SocietyName, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>-->
+                                --><!--<Label Grid.Row="0" Grid.Column="1"  Text="{Binding SocietyName, Mode=OneWay}" FontSize="Default" FontAttributes="None" TextColor="Black" VerticalOptions="Center"/>-->
 
 
                                 <!-- <Label Grid.Row="1" Grid.Column="1" Text="{Binding rest_amount, Mode=OneWay,StringFormat=Rest :'{0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
                                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="End"/>
-                             -->
+                             --><!--
                                 <StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalOptions="Center">
                                     <Label Text="{Binding rest_amount, Mode=OneWay, StringFormat='Rest : {0}'}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
                                     <Label Text="{Binding currencySymbol, Mode=OneWay}" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black"/>
@@ -196,15 +195,15 @@
                                 <Label Grid.Row="2" Grid.Column="0" Text="{Binding date,StringFormat='Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="Black"/>
 
                                 <Label Grid.Row="2" Grid.Column="1" Text="{Binding due_date,StringFormat='Due Date : {0:dd/MM/yyyy}',Mode=OneWay}" TextColor="{Binding due_dateColor}"/>
-                                <!--<Label Grid.Row="3" Grid.Column="0" Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"  />
-                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding societe, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />-->
+                                --><!--<Label Grid.Row="3" Grid.Column="0" Text="Society :" FontSize="Subtitle" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"  />
+                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding societe, Mode=OneWay}" FontSize="Default" TextColor="Black" VerticalOptions="Center" />--><!--
                                 <dxe:CheckEdit IsEnabled="False" Grid.Row="0" Grid.Column="2"  IsChecked="{Binding Is_checked, Mode=TwoWay}" VerticalOptions="Start" HorizontalOptions="Center"></dxe:CheckEdit>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </dxcv:DXCollectionView.ItemTemplate>
 
-            </dxcv:DXCollectionView>
+            </dxcv:DXCollectionView>-->
 
             <dxco:DXPopup IsOpen="{Binding VerifPopup}" AllowScrim="True" >
                 <StackLayout WidthRequest="200">

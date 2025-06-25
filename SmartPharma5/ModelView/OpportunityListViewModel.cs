@@ -1,5 +1,4 @@
-﻿
-/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
+﻿/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
 Avant :
 using SmartPharma5.Model;
 
@@ -292,6 +291,7 @@ namespace SmartPharma5.ViewModel
             if (r)
             {
                 Preferences.Set("idagent", Convert.ToUInt32(null));
+                await Society.ClearSocietiesCache();
                 await App.Current.MainPage.Navigation.PushAsync(new LoginView());
             }
         }

@@ -395,6 +395,7 @@ namespace SmartPharma5.ModelView
             {
                 Preferences.Set("idagent", Convert.ToUInt32(null));
                 await User_Module_Groupe_Services.DeleteAll();
+                await Society.ClearSocietiesCache();
                 await App.Current.MainPage.Navigation.PushAsync(new NavigationPage(new LoginView()));
             }
         }

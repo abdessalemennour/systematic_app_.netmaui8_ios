@@ -56,6 +56,7 @@ namespace SmartPharma5.ViewModel
         public Command NavigateToActivityCommand { get; }
         public Command NavigateToChatCommand { get; }
         public Command<int> EditActivityCommand { get; }
+        public Command ScrollToLastMessageCommand { get; }
 
         /*********memo*********/
         private ObservableCollection<Memo> _memos = new ObservableCollection<Memo>(); // Liste des mémos
@@ -224,6 +225,7 @@ namespace SmartPharma5.ViewModel
                 if (_selectedUser != null)
                 {
                     _selectedUser.IsSelected = true; //✅ Cocher la checkbox liée à cet utilisateur
+                    IsLoadingToLastMessage = true; // Activer l'indicateur quand on sélectionne un utilisateur
                     LoadMessagesAsync();
                 }
             }
@@ -268,6 +270,8 @@ namespace SmartPharma5.ViewModel
         }
 
         private Timer _messageCheckTimer;
+        private Timer _refreshMessagesTimer; // Timer pour rafraîchir les messages toutes les 2 secondes
+        private Timer _markAsReadTimer; // Nouveau timer pour marquer comme lu
 
         // public Action ScrollToLastMessage { get; set; } // Définir l'action pour faire défiler
 
@@ -526,42 +530,66 @@ namespace SmartPharma5.ViewModel
         public ObservableCollection<string> States { get; set; }
         public ObservableCollection<Activity> FilteredActivities { get; set; }
 
+        private bool _isLoadingToLastMessage;
+        public bool IsLoadingToLastMessage
+        {
+            get => _isLoadingToLastMessage;
+            set => SetProperty(ref _isLoadingToLastMessage, value);
+        }
 
+        // Nouvelle propriété pour suivre si l'utilisateur fait défiler manuellement
+        private bool _isUserScrolling;
+        public bool IsUserScrolling
+        {
+            get => _isUserScrolling;
+            set => SetProperty(ref _isUserScrolling, value);
+        }
+
+        // Nouvelle propriété pour suivre s'il y a de nouveaux messages non lus
+        private bool _hasNewUnreadMessages;
+        public bool HasNewUnreadMessages
+        {
+            get => _hasNewUnreadMessages;
+            set => SetProperty(ref _hasNewUnreadMessages, value);
+        }
 
         public ChatNotifViewModel(int entityId, string entityType, string entityActivityType)
         {
-            LoadEmployeesAsync();
-            if (CurrentActivity?.AssignedEmployee > 0 && Employees != null)
-            {
-                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == CurrentActivity.AssignedEmployee);
-            }
             EntityId = entityId;
             EntityType = entityType;
             EntityActivityType = entityActivityType;
-            ActivityTypes = new ObservableCollection<ActivityType>();
+            EntityFormType = entityType;
+
+            // Initialiser les commandes
+            SendMessageCommand = new Command(async () => await SendMessageAsync());
+            ToggleCheckboxesCommand = new Command(() => ShowCheckboxes = !ShowCheckboxes);
+            ScrollToLastMessageCommand = new Command(() => 
+            {
+                // Forcer le scroll vers le dernier message
+                MessagingCenter.Send(this, "ScrollToLastMessageWithoutAnimation");
+                // Réinitialiser le flag des nouveaux messages
+                HasNewUnreadMessages = false;
+            });
+
+            // Initialiser les collections
+            FilteredUsers = new ObservableCollection<UserModel>();
+            Recipients = new ObservableCollection<UserModel>();
+            Messages = new ObservableCollection<MessageModel>();
             Activities = new ObservableCollection<Activity>();
-            SmartPharma5.Model.Activity.ActivityState
-            SelectedStateActivity = Activity.selectStates.First(s => s.Name == "All");
-            _messageCheckTimer = new Timer(CheckForNewMessages, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
-            NavigateToChatCommand = new Command(() => CurrentViewIndex = 2);
-            States = new ObservableCollection<string> { "All", "In Progress", "Done", "Cancelled" };
-            FilteredActivities = new ObservableCollection<Activity>(Activities);
+            Memos = new ObservableCollection<Memo>();
+            ActivityTypes = new ObservableCollection<ActivityType>();
+            Employees = new ObservableCollection<EmployeeDto>();
+
+            // Charger les utilisateurs
             LoadUsers();
-            _timer = Dispatcher.GetForCurrentThread().CreateTimer();
-            _timer.Interval = TimeSpan.FromSeconds(5); // Met à jour toutes les 2 secondes
-            _timer.Tick += async (s, e) => await RefreshUnreadMessages();
-            _timer.Start();
-            // juste pour l'afficher de checkbox
-            ToggleCheckboxesCommand = new Command(() =>
-            {
-                ShowCheckboxes = !ShowCheckboxes;
-            });
-            // SmartPharma5.Model.Activity.ActivityState.InitializeStates();
-            SendMessageCommand = new Command(async () =>
-            {
-                await SendMessageAsync();
-                LoadUsers(); // ou await RefreshUnreadMessages();
-            });
+
+            // Démarrer les timers
+            _messageCheckTimer = new Timer(CheckForNewMessages, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
+            _refreshMessagesTimer = new Timer(RefreshMessagesStatus, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            _markAsReadTimer = new Timer(MarkAsReadPeriodically, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            
+            // S'assurer que l'indicateur est désactivé au démarrage
+            IsLoadingToLastMessage = false;
         }
 
 
@@ -577,15 +605,32 @@ namespace SmartPharma5.ViewModel
             Activities = new ObservableCollection<Activity>();
             SmartPharma5.Model.Activity.ActivityState
             SelectedStateActivity = Activity.selectStates.First(s => s.Name == "All");
-            _messageCheckTimer = new Timer(CheckForNewMessages, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
-            NavigateToChatCommand = new Command(() => CurrentViewIndex = 2);
+            
+            // Initialiser les commandes avec la nouvelle logique
+            ScrollToLastMessageCommand = new Command(() => 
+            {
+                // Forcer le scroll vers le dernier message
+                MessagingCenter.Send(this, "ScrollToLastMessageWithoutAnimation");
+                // Réinitialiser le flag des nouveaux messages
+                HasNewUnreadMessages = false;
+            });
+            
             States = new ObservableCollection<string> { "All", "In Progress", "Done", "Cancelled" };
             FilteredActivities = new ObservableCollection<Activity>(Activities);
             LoadUsers();
+            
+            // Démarrer les timers avec les nouveaux intervalles
+            _messageCheckTimer = new Timer(CheckForNewMessages, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
+            _markAsReadTimer = new Timer(MarkAsReadPeriodically, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _refreshMessagesTimer = new Timer(RefreshMessagesStatus, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            
+            NavigateToChatCommand = new Command(() => CurrentViewIndex = 2);
+            
             _timer = Dispatcher.GetForCurrentThread().CreateTimer();
-            _timer.Interval = TimeSpan.FromSeconds(5); // Met à jour toutes les 2 secondes
+            _timer.Interval = TimeSpan.FromSeconds(5);
             _timer.Tick += async (s, e) => await RefreshUnreadMessages();
             _timer.Start();
+            
             // juste pour l'afficher de checkbox
             ToggleCheckboxesCommand = new Command(() =>
             {
@@ -594,8 +639,11 @@ namespace SmartPharma5.ViewModel
             SendMessageCommand = new Command(async () =>
             {
                 await SendMessageAsync();
-                LoadUsers(); // ou await RefreshUnreadMessages();
+                LoadUsers();
             });
+            
+            // S'assurer que l'indicateur est désactivé au démarrage
+            IsLoadingToLastMessage = false;
         }
 
 
@@ -627,6 +675,8 @@ namespace SmartPharma5.ViewModel
             {
                 FilteredUsers.Add(user);
             }
+            
+            // Ne pas modifier IsLoadingToLastMessage ici car ce n'est pas un chargement de conversation
         }
 
 
@@ -643,8 +693,48 @@ namespace SmartPharma5.ViewModel
 
         private async void CheckForNewMessages(object state)
         {
-            await LoadMessagesAsync();
-
+            // Vérifier s'il y a de nouveaux messages
+            if (SelectedUser != null && Messages.Any())
+            {
+                try
+                {
+                    // Récupérer les messages depuis la base de données
+                    var currentMessages = await MessageModel.GetAllMessagesAsync(SelectedUser.Id, userId);
+                    
+                    // Trouver le dernier message dans la base de données
+                    var lastMessageInDb = currentMessages.OrderByDescending(m => m.CreateDate).FirstOrDefault();
+                    
+                    // Trouver le dernier message dans l'interface
+                    var lastMessageInUI = Messages.OrderByDescending(m => m.CreateDate).FirstOrDefault();
+                    
+                    // Vérifier s'il y a un nouveau message (plus récent que le dernier dans l'interface)
+                    if (lastMessageInDb != null && lastMessageInUI != null)
+                    {
+                        if (lastMessageInDb.CreateDate > lastMessageInUI.CreateDate)
+                        {
+                            // Il y a un nouveau message
+                            HasNewUnreadMessages = true;
+                            
+                            // Recharger les messages
+                            await LoadMessagesAsync();
+                            
+                            // Marquer automatiquement les nouveaux messages comme lus
+                            await MarkMessagesAsRead();
+                            
+                            // Scroller automatiquement seulement si l'utilisateur ne fait pas défiler manuellement
+                            // ou s'il y a de nouveaux messages non lus
+                            if (!IsUserScrolling || HasNewUnreadMessages)
+                            {
+                                ScrollToLastMessage();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la vérification des nouveaux messages : {ex.Message}");
+                }
+            }
         }
         public void AddNewMessage(MessageModel newMessage)
         {
@@ -659,11 +749,11 @@ namespace SmartPharma5.ViewModel
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                // Envoyer le message pour le scroll
-                MessagingCenter.Send(this, "ScrollToLastMessage");
-
                 // Marquer les messages comme lus
                 await MarkMessagesAsRead();
+                
+                // Envoyer un message pour indiquer qu'il faut scroller vers le dernier message
+                MessagingCenter.Send(this, "ScrollToLastMessageWithoutAnimation");
             });
         }
 
@@ -714,6 +804,8 @@ namespace SmartPharma5.ViewModel
         public void StopTimer()
         {
             _messageCheckTimer?.Change(Timeout.Infinite, 0);
+            _markAsReadTimer?.Change(Timeout.Infinite, 0);
+            _refreshMessagesTimer?.Change(Timeout.Infinite, 0);
         }
         private void FilterUsers()
         {
@@ -778,6 +870,8 @@ namespace SmartPharma5.ViewModel
                             BackgroundColor = Color.FromArgb("#D0E8FF"),
                             Alignment = LayoutOptions.End,
                             CreateDate = DateTime.Now,
+                            Sender = userId, // Définir l'expéditeur
+                            IsRead = false,  // Message non lu au début
                             IsLastSentMessage = true
                         });
                     }
@@ -787,7 +881,15 @@ namespace SmartPharma5.ViewModel
             if (allSucceeded)
             {
                 MessageText = string.Empty;
-                ScrollToLastMessage();
+                
+                // Marquer les messages reçus comme lus après l'envoi
+                await MarkMessagesAsRead();
+                
+                // Scroller vers le dernier message seulement si l'utilisateur ne fait pas défiler manuellement
+                if (!IsUserScrolling)
+                {
+                    ScrollToLastMessage();
+                }
 
                 // Optionnel : vider la liste après envoi ou la garder pour le prochain message
                 // Recipients.Clear(); 
@@ -817,15 +919,13 @@ namespace SmartPharma5.ViewModel
         {
             bool Testcon = false;
             ActPopup = true;
+            // IsLoadingToLastMessage est déjà activé par SelectedUser, pas besoin de le réactiver ici
             var P = Task.Run(() => DbConnection.Connecter3());
             Testcon = await P;
             if (Testcon == false)
             {
-
-
                 TestLoad = true;
-                //IsBusy = false;
-
+                IsLoadingToLastMessage = false; // Désactiver l'indicateur en cas d'erreur
                 return;
             }
             TestLoad = false;
@@ -857,22 +957,33 @@ namespace SmartPharma5.ViewModel
                     lastSentMessage.IsLastSentMessage = true;
                 }
 
-                Device.BeginInvokeOnMainThread(() =>
+                Device.BeginInvokeOnMainThread(async () =>
                 {
                     Messages.Clear();
                     foreach (var message in sortedMessages)
                     {
                         Messages.Add(message);
                     }
-                    ScrollToLastMessage();
+                    
+                    // Scroller vers le dernier message seulement si c'est un nouveau message ou si l'utilisateur ne fait pas défiler manuellement
+                    if (HasNewUnreadMessages && !IsUserScrolling)
+                    {
+                        MessagingCenter.Send(this, "ScrollToLastMessageWithoutAnimation");
+                        HasNewUnreadMessages = false; // Réinitialiser le flag
+                    }
+                    
+                    // Marquer automatiquement les messages comme lus après le chargement
+                    await MarkMessagesAsRead();
+                    
+                    IsLoadingToLastMessage = false; // Désactiver l'indicateur après le chargement
                 });
             }
             catch (Exception ex)
             {
                 TestLoad = true;
+                IsLoadingToLastMessage = false; // Désactiver l'indicateur en cas d'erreur
             }
             ActPopup = false;
-
         }
 
         /****************************************/
@@ -914,6 +1025,64 @@ namespace SmartPharma5.ViewModel
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async void MarkAsReadPeriodically(object state)
+        {
+            // Marquer les messages comme lus seulement si l'utilisateur est dans une conversation active
+            if (SelectedUser != null && Messages.Any())
+            {
+                await MarkMessagesAsRead();
+            }
+        }
+
+        private async void RefreshMessagesStatus(object state)
+        {
+            // Rafraîchir le statut des messages seulement si l'utilisateur est dans une conversation active
+            if (SelectedUser != null)
+            {
+                try
+                {
+                    // Récupérer les messages depuis la base de données (même principe que LoadMessagesAsync)
+                    var messages = await MessageModel.GetAllMessagesAsync(SelectedUser.Id, userId);
+                    var sortedMessages = messages.OrderBy(m => m.CreateDate).ToList();
+
+                    // Trouver le dernier message envoyé par l'utilisateur actuel
+                    var lastSentMessage = sortedMessages
+                        .Where(m => m.Sender == userId)
+                        .OrderByDescending(m => m.CreateDate)
+                        .FirstOrDefault();
+
+                    if (lastSentMessage != null)
+                    {
+                        // Désactiver l'indicateur pour tous les messages
+                        foreach (var msg in sortedMessages.Where(m => m.Sender == userId))
+                        {
+                            msg.IsLastSentMessage = false;
+                        }
+
+                        // Activer seulement pour le dernier message
+                        lastSentMessage.IsLastSentMessage = true;
+                    }
+
+                    // Mettre à jour l'interface avec les nouveaux statuts (même principe que LoadMessagesAsync)
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        Messages.Clear();
+                        foreach (var message in sortedMessages)
+                        {
+                            Messages.Add(message);
+                        }
+                        
+                        // Ne pas scroller automatiquement lors du rafraîchissement du statut
+                        // Le scroll se fera seulement pour les nouveaux messages
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors du rafraîchissement du statut : {ex.Message}");
+                }
+            }
         }
     }
 }

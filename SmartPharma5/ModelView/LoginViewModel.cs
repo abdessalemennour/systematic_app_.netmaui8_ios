@@ -1,5 +1,4 @@
-﻿
-/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
+﻿/* Modification non fusionnée à partir du projet 'SmartPharma5 (net7.0-ios)'
 Avant :
 using SmartPharma5.Models;
 using SmartPharma5.Services;
@@ -175,6 +174,8 @@ namespace SmartPharma5.ViewModel
                     ActPopup = true;
         */
         {
+            // Vider le cache des sociétés avant de commencer la connexion
+            await Society.ClearSocietiesCache();
 
             ActPopup = true;
             await Task.Delay(1000);
@@ -376,6 +377,9 @@ namespace SmartPharma5.ViewModel
         }
         public async Task<bool> TryLoginAsync(ServerSettings connection, User user = null)
         {
+            // Vider le cache des sociétés avant de commencer la connexion
+            await Society.ClearSocietiesCache();
+            
             ActPopup = true;
             await Task.Delay(1000);
 

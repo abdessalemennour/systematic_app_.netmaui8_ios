@@ -333,6 +333,7 @@ namespace SmartPharma5.ViewModel
             if (r)
             {
                 Preferences.Set("idagent", Convert.ToUInt32(null));
+                await Society.ClearSocietiesCache();
                 await App.Current.MainPage.Navigation.PushAsync(new LoginView());
             }
         }

@@ -122,13 +122,13 @@ public partial class QuizForm2 : ContentPage
     {
         base.OnAppearing();
 
-        // Activer le rafraîchissement périodique
+        // Activer le rafraï¿½chissement pï¿½riodique
         _refreshEnabled = true;
 
-        // Exécuter le premier rafraîchissement
+        // Exï¿½cuter le premier rafraï¿½chissement
         await RefreshMessages();
 
-        // Démarrer le timer pour les rafraîchissements périodiques
+        // Dï¿½marrer le timer pour les rafraï¿½chissements pï¿½riodiques
         Device.StartTimer(TimeSpan.FromSeconds(3), () =>
         {
             if (!_refreshEnabled) return false;
@@ -151,7 +151,7 @@ public partial class QuizForm2 : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        // Désactiver le rafraîchissement périodique
+        // Dï¿½sactiver le rafraï¿½chissement pï¿½riodique
         _refreshEnabled = false;
     }
 
@@ -173,13 +173,13 @@ public partial class QuizForm2 : ContentPage
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erreur lors du rafraîchissement: {ex.Message}");
+            Console.WriteLine($"Erreur lors du rafraï¿½chissement: {ex.Message}");
         }
     }
 
     private async Task AnimateSwipeHint()
     {
-        // Faire apparaître l'indicateur
+        // Faire apparaï¿½tre l'indicateur
         await swipeHint.FadeTo(0.8, 300);
 
         // Animation de balayage (2 cycles)
@@ -2371,7 +2371,7 @@ public partial class QuizForm2 : ContentPage
 
         try
         {
-            // Tentative de récupération de la localisation avec timeout
+            // Tentative de rï¿½cupï¿½ration de la localisation avec timeout
             var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
             Location location = await Geolocation.GetLocationAsync(request);
 
@@ -2382,8 +2382,8 @@ public partial class QuizForm2 : ContentPage
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Erreur de géolocalisation (non bloquante) : " + ex.Message);
-            // On continue sans les coordonnées GPS
+            Console.WriteLine("Erreur de gï¿½olocalisation (non bloquante) : " + ex.Message);
+            // On continue sans les coordonnï¿½es GPS
         }
 
         try
@@ -2410,7 +2410,7 @@ public partial class QuizForm2 : ContentPage
             catch (Exception ex)
             {
                 Console.WriteLine("Erreur SQL lors de l'enregistrement du log : " + ex.Message);
-                Console.WriteLine("Requête SQL: " + sqlCmd); // Pour débogage
+                Console.WriteLine("Requï¿½te SQL: " + sqlCmd); // Pour dï¿½bogage
             }
             finally
             {
@@ -2419,7 +2419,7 @@ public partial class QuizForm2 : ContentPage
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Erreur générale lors de l'enregistrement du log : " + ex.Message);
+            Console.WriteLine("Erreur gï¿½nï¿½rale lors de l'enregistrement du log : " + ex.Message);
         }
     }
     /**********************************************/
@@ -2568,15 +2568,15 @@ public partial class QuizForm2 : ContentPage
                 await Task.Delay(1000);
                 SuccessPopup.IsOpen = false;
                 Partner_Form.UpdateMacAdresse(partner_Form.Id);
-                // Nouveau: Appel de la méthode de log
+                // Nouveau: Appel de la mï¿½thode de log
                 try
                 {
-                    await Log("update"); // ou une autre actionType appropriée
+                    await Log("update"); // ou une autre actionType appropriï¿½e
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Erreur lors du logging: " + ex.Message);
-                    // Ne pas bloquer le flux même si le logging échoue
+                    // Ne pas bloquer le flux mï¿½me si le logging ï¿½choue
                 }
                 await App.Current.MainPage.Navigation.PopAsync();
             }
@@ -2606,7 +2606,7 @@ public partial class QuizForm2 : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         UserDialogs.Instance.HideLoading();
 
@@ -2624,7 +2624,7 @@ public partial class QuizForm2 : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         //UserDialogs.Instance.HideLoading();
 
@@ -2642,7 +2642,7 @@ public partial class QuizForm2 : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
         UserDialogs.Instance.HideLoading();
 
@@ -2653,9 +2653,9 @@ public partial class QuizForm2 : ContentPage
 
         try
         {
-            var partnerform = this.partner_Form; // Assurez-vous que cette propriété est accessible
+            var partnerform = this.partner_Form; // Assurez-vous que cette propriï¿½tï¿½ est accessible
 
-            // Appeler la même navigation que l'ancien bouton
+            // Appeler la mï¿½me navigation que l'ancien bouton
             await Navigation.PushAsync(new FileSelectionView(partnerform.Id, EntityType.Partner_Form));
         }
         catch (Exception ex)
@@ -2680,7 +2680,7 @@ public partial class QuizForm2 : ContentPage
         else
         {
             /* string buttonName = button.Source.ToString().Replace("File: ", "");
-             await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");*/
+             await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");*/
         }
         UserDialogs.Instance.HideLoading();
 
@@ -2695,7 +2695,7 @@ public partial class QuizForm2 : ContentPage
         else
         {
             string buttonName = button.Source.ToString().Replace("File: ", "");
-            await DisplayAlert("Action", $"Vous avez cliqué sur {buttonName}", "OK");
+            await DisplayAlert("Action", $"Vous avez cliquï¿½ sur {buttonName}", "OK");
         }
     }
 }

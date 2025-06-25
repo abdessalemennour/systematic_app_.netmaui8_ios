@@ -145,9 +145,6 @@ namespace SmartPharma5.Model
             if (memo == null)
                 throw new ArgumentNullException(nameof(memo));
 
-            //if (string.IsNullOrWhiteSpace(memo.Name) || string.IsNullOrWhiteSpace(memo.Description))
-            //    throw new InvalidOperationException("Le nom et la description du mémo ne peuvent pas être vides.");
-
             const string sqlCmd = @"INSERT INTO atooerp_note 
             (name, description, piece, piece_type, create_date, create_user, modify_user) 
             VALUES 
@@ -161,14 +158,12 @@ namespace SmartPharma5.Model
                     using (MySqlCommand cmd = new MySqlCommand(sqlCmd, DbConnection.con))
                     {
                         // Ajouter les paramètres
-                        //cmd.Parameters.AddWithValue("@Name", memo.Name ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@Name", "default name");
+                        cmd.Parameters.AddWithValue("@Name", memo.Name ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Description", memo.Description ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@CreateDate", memo.CreateDate);
                         cmd.Parameters.AddWithValue("@Piece", memo.Piece ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@PieceType", memo.PieceType ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@CreateUser", memo.Create_user); // L'ID utilisateur dynamique
-                                                                                      //cmd.Parameters.AddWithValue("@ModifyDate", memo.ModifyDate);
+                        cmd.Parameters.AddWithValue("@CreateUser", memo.Create_user);
                         cmd.Parameters.AddWithValue("@ModifyUser", memo.Modify_user ?? (object)DBNull.Value);
 
                         // Exécuter la commande
@@ -967,6 +962,8 @@ namespace SmartPharma5.Model
         {
             _modelView = modelView;
         }
+        public event EventHandler<bool> DoneFormVisibilityChanged;
+
         private int _state;
         public int State
         {
@@ -978,15 +975,22 @@ namespace SmartPharma5.Model
                     _state = value;
                     OnPropertyChanged(nameof(State)); // Notifier le changement de State
                     OnPropertyChanged(nameof(StateColor)); // Notifier le changement de StateColor
+
                     UpdateStateName(); // Mettre à jour le nom de l'état
 
                     // Mettre à jour SelectedState en fonction du nouveau State
                     SelectedState = States.FirstOrDefault(s => s.Id == value) ?? States.First();
 
-                    // Mettre à jour la base de données
-                    _ = UpdateStateInDatabaseAsync();
-
-
+                    // Si l'état est "Done", déclencher l'événement pour ouvrir le formulaire
+                    if (value == 2)
+                    {
+                        ActivityStateChanged?.Invoke(this, this);
+                    }
+                    else
+                    {
+                        // Pour les autres états, mettre à jour la base de données
+                        _ = UpdateStateInDatabaseAsync();
+                    }
                 }
             }
         }
@@ -1029,6 +1033,31 @@ namespace SmartPharma5.Model
 
 
         private ActivityState _selectedState;
+        //public ActivityState SelectedState
+        //{
+        //    get => _selectedState;
+        //    set
+        //    {
+        //        if (_selectedState != value)
+        //        {
+        //            _selectedState = value;
+        //            OnPropertyChanged(nameof(SelectedState));
+
+        //            // Si l'état est "Done" (id=2), on ne met pas à jour immédiatement
+        //            if (value?.Id == 2)
+        //            {
+        //                // Déclencher l'événement pour ouvrir le formulaire
+        //                ActivityStateChanged?.Invoke(this, this);
+        //            }
+        //            else
+        //            {
+        //                // Pour les autres états, mettre à jour immédiatement
+        //                State = value?.Id ?? 0;
+        //                _ = UpdateStateInDatabaseAsync();
+        //            }
+        //        }
+        //    }
+        //}
         public ActivityState SelectedState
         {
             get => _selectedState;
@@ -1042,26 +1071,49 @@ namespace SmartPharma5.Model
                     // Mettre à jour la propriété State avec la valeur Id de l'état sélectionné
                     State = value?.Id ?? 0;
 
+                    // Déclencher l'événement seulement si l'état change vers "Done"
+                    if (value?.Id == 2) // État "Done"
+                    {
+                        ActivityStateChanged?.Invoke(this, this);
+                    }
+
                     // Mettre à jour la base de données
                     _ = UpdateStateInDatabaseAsync();
                 }
             }
         }
+
         public Color StateColor
         {
             get
             {
                 switch (State)
                 {
-                    case 1:
-                        return Color.FromArgb("#f59042"); // Couleur orange pour l'état 1
-                    case 2:
-                        return Color.FromArgb("#31f55f"); // Couleur verte pour l'état 2
-                    case 3:
-                        return Color.FromArgb("#f03824"); // Couleur rouge pour l'état 3
-                    default:
-                        return Color.FromArgb("#F0F0F0"); ; // Couleur par défaut
+                    case 1: return Color.FromArgb("#f59042"); // Couleur orange pour l'état 1
+                    case 2: return Color.FromArgb("#31f55f"); // Couleur verte pour l'état 2
+                    case 3: return Color.FromArgb("#f03824"); // Couleur rouge pour l'état 3
+                    default: return Color.FromArgb("#F0F0F0"); ; // Couleur par défaut
                 }
+            }
+        }
+
+        // Propriété simple pour la couleur de la date d'échéance
+        public Color DueDateColor
+        {
+            get
+            {
+                // Seulement pour les activités "In Progress"
+                if (State != 1) return Color.FromArgb("#959aa0");
+
+                var today = DateTime.Today;
+                var dueDate = DueDate.Date;
+
+                if (dueDate < today)
+                    return Color.FromArgb("#FF6F61"); // Rouge pour en retard
+                else if (dueDate == today)
+                    return Color.FromArgb("#ffe000"); // Jaune pour aujourd'hui
+                else
+                    return Color.FromArgb("#4CAF50"); // Vert pour future
             }
         }
 
@@ -1085,6 +1137,10 @@ namespace SmartPharma5.Model
 
         public bool ShowPartnerInfo => !string.IsNullOrEmpty(PartnerName);
 
+        public bool ShowGpsInfo => !string.IsNullOrEmpty(Gps);
+
+        public bool IsGpsVisible => !string.IsNullOrEmpty(Gps);
+
         public string State_name { get; private set; }
         public string Author_name { get; private set; }
         public string Parent_name { get; private set; }
@@ -1098,9 +1154,11 @@ namespace SmartPharma5.Model
 
         public Activity()
         {
+
             // Initialiser SelectedState en fonction de State
             SelectedState = States.FirstOrDefault(s => s.Id == State) ?? States.First();
             OnPropertyChanged(nameof(SelectedState));
+
         }
 
 
@@ -1201,28 +1259,26 @@ namespace SmartPharma5.Model
             }
         }
 
-
-
+        public static event EventHandler<Activity> ActivityStateChanged;
 
         public async Task<bool> UpdateStateInDatabaseAsync()
         {
             string sqlCmd;
             DateTime? doneDateParam = null;
 
-            // Vérifier si l'état est "Done" (2)
             if (this.State == 2 && this.DoneDate == null)
             {
                 this.DoneDate = DateTime.Now;
                 doneDateParam = this.DoneDate;
 
                 sqlCmd = @"UPDATE atooerp_activity 
-                  SET state = @State, done_date = @DoneDate 
+                  SET state = @State, done_date = @DoneDate, summary = @Summary, memo = @Memo
                   WHERE id = @Id;";
             }
             else
             {
                 sqlCmd = @"UPDATE atooerp_activity 
-                  SET state = @State 
+                  SET state = @State, summary = @Summary, memo = @Memo
                   WHERE id = @Id;";
             }
 
@@ -1236,6 +1292,8 @@ namespace SmartPharma5.Model
                     {
                         cmd.Parameters.AddWithValue("@State", this.State);
                         cmd.Parameters.AddWithValue("@Id", this.Id);
+                        cmd.Parameters.AddWithValue("@Summary", this.Summary);
+                        cmd.Parameters.AddWithValue("@Memo", this.Memo);
 
                         if (this.State == 2 && doneDateParam != null)
                         {
@@ -1243,6 +1301,11 @@ namespace SmartPharma5.Model
                         }
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                        if (rowsAffected > 0)
+                        {
+                            // L'événement ActivityStateChanged est maintenant géré dans la propriété SelectedState
+                            // ActivityStateChanged?.Invoke(this, this);
+                        }
                         return rowsAffected > 0;
                     }
                 }
@@ -1393,10 +1456,10 @@ VALUES
                         cmd.Parameters.AddWithValue("@Memo", activity.Memo ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@State", activity.State);
                         cmd.Parameters.AddWithValue("@Parent", activity.Parent ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@ObjectType", activity.ObjectType);
-                        cmd.Parameters.AddWithValue("@Object", activity.Object);
+                        cmd.Parameters.AddWithValue("@ObjectType", activity.ObjectType ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Object", activity.Object ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Date", activity.Date);
-                        cmd.Parameters.AddWithValue("@Form", activity.Form);
+                        cmd.Parameters.AddWithValue("@Form", activity.Form ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Gps", activity.Gps ?? (object)DBNull.Value);
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
@@ -1425,9 +1488,9 @@ VALUES
 
             const string sqlCmd = @"
 INSERT INTO atooerp_activity 
-(create_date, type, summary, due_date, done_date, assigned_employee, author, memo, state, parent, object_type, object, date, form, gps)) 
+(create_date, type, summary, due_date, done_date, assigned_employee, author, memo, state, parent, object_type, object, date, form, gps) 
 VALUES 
-(@CreateDate, @Type, @Summary, @DueDate, @DoneDate, @AssignedEmployee, @Author, @Memo, @State, @Parent, @ObjectType, @Object, @Date, @Form, @Gps);";
+(@CreateDate, @Type, @Summary, @DueDate, @DoneDate, @AssignedEmployee, @Author, @Memo, @State, @Parent, @ObjectType, @Object, @Date, @Form, @Gps)";
 
             using (var connection = new MySqlConnection(DbConnection.ConnectionString))
             {
@@ -1447,13 +1510,11 @@ VALUES
                         cmd.Parameters.AddWithValue("@Memo", activity.Memo ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@State", activity.State);
                         cmd.Parameters.AddWithValue("@Parent", activity.Parent ?? (object)DBNull.Value);
-                        // Toujours null pour ObjectType et Object
-                        cmd.Parameters.AddWithValue("@ObjectType", (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@Object", (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ObjectType", activity.ObjectType ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Object", activity.Object ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Date", activity.Date);
                         cmd.Parameters.AddWithValue("@Form", activity.Form ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@Gps", activity.Gps ?? (object)DBNull.Value);
-
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
                         return rowsAffected > 0;
@@ -1571,6 +1632,7 @@ VALUES
           atooerp_activity_state.Id AS State,
           atooerp_activity.object_type AS ObjectType,
           atooerp_activity.object AS Object,
+          atooerp_activity.form AS Form,
           atooerp_activity.memo AS Memo,
           CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
           CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
@@ -1804,6 +1866,8 @@ VALUES
 
                                     ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
                                     Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Gps = reader["Gps"] != DBNull.Value ? reader["Gps"].ToString() : string.Empty,
                                     Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
                                     Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
                                     Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
@@ -1890,6 +1954,7 @@ VALUES
                                     Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
                                     Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
                                     Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
                                 };
 
@@ -1930,6 +1995,74 @@ VALUES
               AND a.state = 1  
             ORDER BY a.create_date DESC; ";
 
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@entityId", entityId);
+                        cmd.Parameters.AddWithValue("@entityType", entityType);
+
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+                                    Id = reader["id"] != DBNull.Value ? Convert.ToInt32(reader["id"]) : 0,
+                                    CreateDate = reader["create_date"] != DBNull.Value ? Convert.ToDateTime(reader["create_date"]) : DateTime.MinValue,
+                                    Type = reader["type"] != DBNull.Value ? Convert.ToInt32(reader["type"]) : 0,
+                                    Summary = reader["summary"] != DBNull.Value ? reader["summary"].ToString() : string.Empty,
+                                    DueDate = reader["due_date"] != DBNull.Value ? Convert.ToDateTime(reader["due_date"]) : DateTime.MinValue,
+                                    DoneDate = reader["done_date"] != DBNull.Value ? Convert.ToDateTime(reader["done_date"]) : (DateTime?)null,
+                                    AssignedEmployee = reader["assigned_employee"] != DBNull.Value ? Convert.ToInt32(reader["assigned_employee"]) : 0,
+                                    Author = reader["author"] != DBNull.Value ? Convert.ToInt32(reader["author"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
+                                    State = reader["state"] != DBNull.Value ? Convert.ToInt32(reader["state"]) : 0,
+                                    Parent = reader["parent"] != DBNull.Value ? Convert.ToInt32(reader["parent"]) : (int?)null,
+                                    ObjectType = reader["object_type"] != DBNull.Value ? reader["object_type"].ToString() : string.Empty,
+                                    Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
+                                    Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
+                                    Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités In Progress : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+
+        public async static Task<List<Activity>> GetInProgressActivitiesToday(int entityId, string entityType)
+        {
+            List<Activity> activities = new List<Activity>();
+
+            const string sqlCmd = @"
+            SELECT a.*, CONCAT(p.first_name, ' ', p.last_name) AS assigned_employee_name
+            FROM atooerp_activity a
+            LEFT JOIN hr_employe e ON a.assigned_employee = e.Id
+            LEFT JOIN atooerp_person p ON e.Id = p.Id
+            WHERE a.object = @entityId 
+              AND a.object_type = @entityType
+              AND a.state = 1  
+              AND DATE(a.due_date) = CURDATE()
+            ORDER BY a.create_date DESC; ";
+
         using (var connection = new MySqlConnection(DbConnection.ConnectionString))
             {
                 try
@@ -1962,6 +2095,7 @@ VALUES
                                     Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
                                     Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
                                     Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
                                 };
                                 activities.Add(activity);
@@ -1981,6 +2115,142 @@ VALUES
 
             return activities.OrderBy(a => a.DueDate).ToList();
         }
+        public async static Task<List<Activity>> GetInProgressActivitiesOverdue(int entityId, string entityType)
+        {
+            List<Activity> activities = new List<Activity>();
+
+            const string sqlCmd = @"
+            SELECT a.*, CONCAT(p.first_name, ' ', p.last_name) AS assigned_employee_name
+            FROM atooerp_activity a
+            LEFT JOIN hr_employe e ON a.assigned_employee = e.Id
+            LEFT JOIN atooerp_person p ON e.Id = p.Id
+            WHERE a.object = @entityId 
+              AND a.object_type = @entityType
+              AND a.state = 1  
+              AND DATE(a.due_date) < CURDATE()
+            ORDER BY a.create_date DESC; ";
+
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@entityId", entityId);
+                        cmd.Parameters.AddWithValue("@entityType", entityType);
+
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+                                    Id = reader["id"] != DBNull.Value ? Convert.ToInt32(reader["id"]) : 0,
+                                    CreateDate = reader["create_date"] != DBNull.Value ? Convert.ToDateTime(reader["create_date"]) : DateTime.MinValue,
+                                    Type = reader["type"] != DBNull.Value ? Convert.ToInt32(reader["type"]) : 0,
+                                    Summary = reader["summary"] != DBNull.Value ? reader["summary"].ToString() : string.Empty,
+                                    DueDate = reader["due_date"] != DBNull.Value ? Convert.ToDateTime(reader["due_date"]) : DateTime.MinValue,
+                                    DoneDate = reader["done_date"] != DBNull.Value ? Convert.ToDateTime(reader["done_date"]) : (DateTime?)null,
+                                    AssignedEmployee = reader["assigned_employee"] != DBNull.Value ? Convert.ToInt32(reader["assigned_employee"]) : 0,
+                                    Author = reader["author"] != DBNull.Value ? Convert.ToInt32(reader["author"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
+                                    State = reader["state"] != DBNull.Value ? Convert.ToInt32(reader["state"]) : 0,
+                                    Parent = reader["parent"] != DBNull.Value ? Convert.ToInt32(reader["parent"]) : (int?)null,
+                                    ObjectType = reader["object_type"] != DBNull.Value ? reader["object_type"].ToString() : string.Empty,
+                                    Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
+                                    Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
+                                    Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités In Progress : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+        public async static Task<List<Activity>> GetInProgressActivitiesFuture(int entityId, string entityType)
+        {
+            List<Activity> activities = new List<Activity>();
+
+            const string sqlCmd = @"
+            SELECT a.*, CONCAT(p.first_name, ' ', p.last_name) AS assigned_employee_name
+            FROM atooerp_activity a
+            LEFT JOIN hr_employe e ON a.assigned_employee = e.Id
+            LEFT JOIN atooerp_person p ON e.Id = p.Id
+            WHERE a.object = @entityId 
+              AND a.object_type = @entityType
+              AND a.state = 1  
+              AND DATE(a.due_date) > CURDATE()
+            ORDER BY a.create_date DESC; ";
+
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@entityId", entityId);
+                        cmd.Parameters.AddWithValue("@entityType", entityType);
+
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+                                    Id = reader["id"] != DBNull.Value ? Convert.ToInt32(reader["id"]) : 0,
+                                    CreateDate = reader["create_date"] != DBNull.Value ? Convert.ToDateTime(reader["create_date"]) : DateTime.MinValue,
+                                    Type = reader["type"] != DBNull.Value ? Convert.ToInt32(reader["type"]) : 0,
+                                    Summary = reader["summary"] != DBNull.Value ? reader["summary"].ToString() : string.Empty,
+                                    DueDate = reader["due_date"] != DBNull.Value ? Convert.ToDateTime(reader["due_date"]) : DateTime.MinValue,
+                                    DoneDate = reader["done_date"] != DBNull.Value ? Convert.ToDateTime(reader["done_date"]) : (DateTime?)null,
+                                    AssignedEmployee = reader["assigned_employee"] != DBNull.Value ? Convert.ToInt32(reader["assigned_employee"]) : 0,
+                                    Author = reader["author"] != DBNull.Value ? Convert.ToInt32(reader["author"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
+                                    State = reader["state"] != DBNull.Value ? Convert.ToInt32(reader["state"]) : 0,
+                                    Parent = reader["parent"] != DBNull.Value ? Convert.ToInt32(reader["parent"]) : (int?)null,
+                                    ObjectType = reader["object_type"] != DBNull.Value ? reader["object_type"].ToString() : string.Empty,
+                                    Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
+                                    Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
+                                    Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités In Progress : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+
+
         public async static Task<List<Activity>> GetDoneActivities(int entityId, string entityType)
         {
             List<Activity> activities = new List<Activity>();
@@ -2027,6 +2297,7 @@ VALUES
                                     Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
                                     Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
                                     Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
                                 };
                                 activities.Add(activity);
@@ -2092,6 +2363,7 @@ VALUES
                                     Object = reader["object"] != DBNull.Value ? Convert.ToInt32(reader["object"]) : 0,
                                     Date = reader["date"] != DBNull.Value ? Convert.ToDateTime(reader["date"]) : DateTime.MinValue,
                                     Form = reader["form"] != DBNull.Value ? reader["form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     AssignedEmployeeName = reader["assigned_employee_name"] != DBNull.Value ? reader["assigned_employee_name"].ToString() : "Non assigné"
                                 };
                                 activities.Add(activity);
@@ -2127,6 +2399,9 @@ VALUES
           atooerp_activity_state.Id AS State,
           atooerp_activity.object_type AS ObjectType,
           atooerp_activity.object AS Object,
+          atooerp_activity.form AS Form,
+          atooerp_activity.gps AS Gps,
+          atooerp_activity.memo AS Memo,
           CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
           CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
           atooerp_activity_1.summary AS Parent,
@@ -2350,6 +2625,7 @@ VALUES
                                     Icon = reader["Icon"] != DBNull.Value ? reader["Icon"].ToString() : string.Empty,
                                     CreateDate = reader["CreateDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreateDate"]) : DateTime.MinValue,
                                     Date = reader["Date"] != DBNull.Value ? Convert.ToDateTime(reader["Date"]) : DateTime.MinValue,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
                                     Type_all = reader["Type"] != DBNull.Value ? reader["Type"].ToString() : string.Empty,
                                     Summary = reader["Summary"] != DBNull.Value ? reader["Summary"].ToString() : string.Empty,
                                     DueDate = reader["DueDate"] != DBNull.Value ? Convert.ToDateTime(reader["DueDate"]) : DateTime.MinValue,
@@ -2357,12 +2633,14 @@ VALUES
                                     State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 3, // Forcé à 3 pour cohérence
                                     ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
                                     Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
                                     Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
                                     Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
                                     Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
                                     PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
                                     PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
                                     PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
                                 };
                                 activities.Add(activity);
@@ -2399,6 +2677,8 @@ VALUES
           atooerp_activity_state.Id AS State,
           atooerp_activity.object_type AS ObjectType,
           atooerp_activity.object AS Object,
+          atooerp_activity.form AS Form,
+          atooerp_activity.memo AS Memo,
           CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
           CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
           atooerp_activity_1.summary AS Parent,
@@ -2629,12 +2909,15 @@ VALUES
                                     State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 2, // Forcé à 2 pour cohérence
                                     ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
                                     Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
                                     Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
                                     Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
                                     Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
                                     PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
                                     PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
                                     PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
                                 };
                                 activities.Add(activity);
@@ -2671,6 +2954,9 @@ VALUES
           atooerp_activity_state.Id AS State,
           atooerp_activity.object_type AS ObjectType,
           atooerp_activity.object AS Object,
+          atooerp_activity.memo AS Memo,
+          atooerp_activity.form AS Form,
+          atooerp_activity.gps AS Gps,
           CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
           CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
           atooerp_activity_1.summary AS Parent,
@@ -2901,10 +3187,666 @@ VALUES
                                     State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 1, // Forcé à 1 pour cohérence
                                     ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
                                     Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
                                     Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
                                     Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
                                     Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
                                     PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
+                                    PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
+                                    PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités annulées : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+            // Trier par due_date (du plus proche au plus éloigné)
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+        public async static Task<List<Activity>> GetInProgressAllActivitiesToday(int userId)
+        {
+            List<Activity> activities = new List<Activity>();
+            string todayDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            const string sqlCmd = @"
+        SELECT
+          atooerp_activity.Id,
+          atooerp_activity_type.icon AS Icon,
+          atooerp_activity.create_date AS CreateDate,
+          atooerp_activity.date AS Date,
+          atooerp_activity_type.name AS Type,
+          atooerp_activity.summary AS Summary,
+          atooerp_activity.due_date AS DueDate,
+          atooerp_activity.done_date AS DoneDate,
+          atooerp_activity_state.Id AS State,
+          atooerp_activity.object_type AS ObjectType,
+          atooerp_activity.object AS Object,
+          atooerp_activity.memo AS Memo,
+          atooerp_activity.form AS Form,
+          atooerp_activity.gps AS Gps,
+          CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
+          CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
+          atooerp_activity_1.summary AS Parent,
+          -- New Columns: Piece Acronym (Dynamic Logic)
+          CASE
+          -- Purchase
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation%' THEN 'PQ'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Order%' THEN 'PO'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping%' THEN 'PS'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Invoice%' THEN 'PIN'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%' THEN 'PCI'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation_request%' THEN 'PQR'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping_return%' THEN 'PSR'
+
+          -- Sale
+          WHEN atooerp_activity.object_type LIKE 'Sale.Quotation%' THEN 'SQ'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Order%' THEN 'SO'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Shipping%' THEN 'SS'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Invoice%' THEN 'SIN'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Credit_invoice%' THEN 'SCI'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Shipping_return%' THEN 'SSR'
+
+          -- POS
+          WHEN atooerp_activity.object_type LIKE 'POS.Order%' THEN 'POSO'
+          WHEN atooerp_activity.object_type LIKE 'POS.Credit_order%' THEN 'POSC'
+
+          -- Commercial
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Payment%' THEN 'CP'
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_out%' THEN 'CSO'
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_entry%' THEN 'CSE'
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_mouvement%' THEN 'CSM'
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Need_expression%' THEN 'CNE'
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Product%' THEN 'PROD'
+          WHEN atooerp_activity.object_type LIKE 'Commercial.Partner%' THEN 'PAR'
+  
+          -- CRM
+          WHEN atooerp_activity.object_type LIKE 'CRM.Opportunity%' THEN 'CRMO'
+
+          ELSE NULL
+        END AS piece_acronym,
+          -- New Column: Piece Code (from joined table)
+          COALESCE(
+          -- Purchase Tables
+          purchase_quotation.code,
+          purchase_order.code,
+          purchase_shipping.code,
+          purchase_invoice.code,
+          purchase_credit_invoice.code,
+          purchase_quotation_request.code,
+          purchase_shipping_return.code,
+
+          -- Sale Tables
+          sale_quotation.code,
+          sale_order.code,
+          sale_shipping.code,
+          sale_invoice.code,
+          sale_credit_invoice.code,
+          sale_shipping_return.code,
+
+          -- POS Tables
+          pos_order.code,
+          pos_credit_order.code,
+
+          -- Commercial Tables
+          commercial_payment.code,
+          commercial_stock_out.code,
+          commercial_stock_entry.code,
+          commercial_stock_mouvement.code,
+          commercial_need_expression.code,
+  
+          -- Commercial Partner (Added for partner case)
+          CASE WHEN atooerp_activity.object_type LIKE 'Commercial.Partner%' THEN commercial_partner_direct.name ELSE NULL END,
+
+          -- CRM Table
+          crm_opportunity.code
+        ) AS piece_code,
+          -- New Column: Partner Name (via commercial_partner)
+          commercial_partner.name AS partner_name,
+          -- Product Name (only populated for Commercial.Product%)
+          commercial_product.name AS product_name
+        FROM
+          atooerp_activity
+          -- Existing Joins (unchanged)
+          LEFT OUTER JOIN hr_employe ON atooerp_activity.author = hr_employe.Id
+          LEFT OUTER JOIN hr_employe hr_employe_1 ON atooerp_activity.assigned_employee = hr_employe_1.Id
+          LEFT OUTER JOIN atooerp_activity atooerp_activity_1 ON atooerp_activity.parent = atooerp_activity_1.Id
+          LEFT OUTER JOIN atooerp_activity_type ON atooerp_activity.type = atooerp_activity_type.Id
+          LEFT OUTER JOIN atooerp_person ON hr_employe.Id = atooerp_person.Id
+          LEFT OUTER JOIN atooerp_person atooerp_person_1 ON hr_employe_1.Id = atooerp_person_1.Id
+          LEFT OUTER JOIN atooerp_activity_state ON atooerp_activity.state = atooerp_activity_state.Id
+          -- Purchase Tables
+        LEFT OUTER JOIN purchase_quotation 
+          ON atooerp_activity.object = purchase_quotation.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Quotation%'
+        LEFT OUTER JOIN purchase_order 
+          ON atooerp_activity.object = purchase_order.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Order%'
+        LEFT OUTER JOIN purchase_shipping 
+          ON atooerp_activity.object = purchase_shipping.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Shipping%'
+        LEFT OUTER JOIN purchase_invoice 
+          ON atooerp_activity.object = purchase_invoice.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Invoice%'
+        LEFT OUTER JOIN purchase_credit_invoice 
+          ON atooerp_activity.object = purchase_credit_invoice.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%'
+        LEFT OUTER JOIN purchase_quotation_request 
+          ON atooerp_activity.object = purchase_quotation_request.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Quotation_request%'
+        LEFT OUTER JOIN purchase_shipping_return 
+          ON atooerp_activity.object = purchase_shipping_return.Id 
+          AND atooerp_activity.object_type LIKE 'Purchase.Shipping_return%'
+
+        -- Sale Tables
+        LEFT OUTER JOIN sale_quotation 
+          ON atooerp_activity.object = sale_quotation.Id 
+          AND atooerp_activity.object_type LIKE 'Sale.Quotation%'
+        LEFT OUTER JOIN sale_order 
+          ON atooerp_activity.object = sale_order.Id 
+          AND atooerp_activity.object_type LIKE 'Sale.Order%'
+        LEFT OUTER JOIN sale_shipping 
+          ON atooerp_activity.object = sale_shipping.Id 
+          AND atooerp_activity.object_type LIKE 'Sale.Shipping%'
+        LEFT OUTER JOIN sale_invoice 
+          ON atooerp_activity.object = sale_invoice.Id 
+          AND atooerp_activity.object_type LIKE 'Sale.Invoice%'
+        LEFT OUTER JOIN sale_credit_invoice 
+          ON atooerp_activity.object = sale_credit_invoice.Id 
+          AND atooerp_activity.object_type LIKE 'Sale.Credit_invoice%'
+        LEFT OUTER JOIN sale_shipping_return 
+          ON atooerp_activity.object = sale_shipping_return.Id 
+          AND atooerp_activity.object_type LIKE 'Sale.Shipping_return%'
+
+        -- POS Tables
+        LEFT OUTER JOIN pos_order 
+          ON atooerp_activity.object = pos_order.Id 
+          AND atooerp_activity.object_type LIKE 'POS.Order%'
+        LEFT OUTER JOIN pos_credit_order 
+          ON atooerp_activity.object = pos_credit_order.Id 
+          AND atooerp_activity.object_type LIKE 'POS.Credit_order%'
+
+        -- Commercial Tables
+        LEFT OUTER JOIN commercial_payment 
+          ON atooerp_activity.object = commercial_payment.Id 
+          AND atooerp_activity.object_type LIKE 'Commercial.Payment%'
+        LEFT OUTER JOIN commercial_stock_out 
+          ON atooerp_activity.object = commercial_stock_out.Id
+          AND atooerp_activity.object_type LIKE 'Commercial.Stock_out%'
+        LEFT OUTER JOIN commercial_stock_entry 
+          ON atooerp_activity.object = commercial_stock_entry.Id 
+          AND atooerp_activity.object_type LIKE 'Commercial.Stock_entry%'
+        LEFT OUTER JOIN commercial_stock_mouvement 
+          ON atooerp_activity.object = commercial_stock_mouvement.Id 
+          AND atooerp_activity.object_type LIKE 'Commercial.Stock_mouvement%'
+        LEFT OUTER JOIN commercial_need_expression 
+          ON atooerp_activity.object = commercial_need_expression.Id
+          AND atooerp_activity.object_type LIKE 'Commercial.Need_expression%'
+
+        -- New join for Commercial.Partner
+        LEFT OUTER JOIN commercial_partner AS commercial_partner_direct
+          ON atooerp_activity.object = commercial_partner_direct.Id
+          AND atooerp_activity.object_type LIKE 'Commercial.Partner%'
+
+        -- CRM Table
+        LEFT OUTER JOIN crm_opportunity
+          ON atooerp_activity.object = crm_opportunity.Id 
+          AND atooerp_activity.object_type LIKE 'CRM.Opportunity%'
+         -- New Join for Commercial.Product
+          LEFT OUTER JOIN commercial_product 
+            ON atooerp_activity.object = commercial_product.Id 
+            AND atooerp_activity.object_type LIKE 'Commercial.Product%'
+          -- Add joins for ALL other object_type cases here
+          -- Join commercial_partner (for partner name)
+          LEFT OUTER JOIN commercial_partner
+          ON COALESCE(
+            -- Purchase Tables
+            purchase_quotation.partner,
+            purchase_order.partner,
+            purchase_shipping.partner,
+            purchase_invoice.partner,
+            purchase_credit_invoice.partner,
+            purchase_shipping_return.partner,
+
+            -- Sale Tables
+            sale_quotation.partner,
+            sale_order.partner,
+            sale_shipping.partner,
+            sale_invoice.partner,
+            sale_credit_invoice.partner,
+            sale_shipping_return.partner,
+
+            -- POS Tables
+            pos_order.partner,
+            pos_credit_order.partner,
+
+            -- Commercial Tables
+            commercial_payment.partner,
+
+            -- CRM Table
+            crm_opportunity.partner
+          ) = commercial_partner.Id
+         WHERE hr_employe_1.user = @userId 
+              AND atooerp_activity.state = 1  -- Filtre pour n'avoir que les activités annulées
+              AND DATE(atooerp_activity.due_date) = CURDATE()
+            ORDER BY atooerp_activity.due_date ASC;";
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userId", userId);
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+                                    Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+                                    Icon = reader["Icon"] != DBNull.Value ? reader["Icon"].ToString() : string.Empty,
+                                    CreateDate = reader["CreateDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreateDate"]) : DateTime.MinValue,
+                                    Date = reader["Date"] != DBNull.Value ? Convert.ToDateTime(reader["Date"]) : DateTime.MinValue,
+                                    Type_all = reader["Type"] != DBNull.Value ? reader["Type"].ToString() : string.Empty,
+                                    Summary = reader["Summary"] != DBNull.Value ? reader["Summary"].ToString() : string.Empty,
+                                    DueDate = reader["DueDate"] != DBNull.Value ? Convert.ToDateTime(reader["DueDate"]) : DateTime.MinValue,
+                                    DoneDate = reader["DoneDate"] != DBNull.Value ? Convert.ToDateTime(reader["DoneDate"]) : (DateTime?)null,
+                                    State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 1, // Forcé à 1 pour cohérence
+                                    ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
+                                    Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
+                                    Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
+                                    Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
+                                    Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
+                                    PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
+                                    PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
+                                    PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités annulées : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                
+                }
+            }
+
+            // Trier par due_date (du plus proche au plus éloigné)
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+        public async static Task<List<Activity>> GetInProgressAllActivitiesOverDue(int userId)
+        {
+            List<Activity> activities = new List<Activity>();
+            string todayDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            const string sqlCmd = @"
+       SELECT
+          atooerp_activity.Id,
+          atooerp_activity_type.icon AS Icon,
+          atooerp_activity.create_date AS CreateDate,
+          atooerp_activity.date AS Date,
+          atooerp_activity_type.name AS Type,
+          atooerp_activity.summary AS Summary,
+          atooerp_activity.due_date AS DueDate,
+          atooerp_activity.done_date AS DoneDate,
+          atooerp_activity_state.Id AS State,
+          atooerp_activity.object_type AS ObjectType,
+          atooerp_activity.object AS Object,
+          atooerp_activity.memo AS Memo,
+          atooerp_activity.form AS Form,
+          atooerp_activity.gps AS Gps,
+          CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
+          CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
+          atooerp_activity_1.summary AS Parent,
+          CASE
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation%' THEN 'PQ'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Order%' THEN 'PO'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping%' THEN 'PS'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Invoice%' THEN 'PIN'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%' THEN 'PCI'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation_request%' THEN 'PQR'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping_return%' THEN 'PSR'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Quotation%' THEN 'SQ'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Order%' THEN 'SO'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Shipping%' THEN 'SS'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Invoice%' THEN 'SIN'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Credit_invoice%' THEN 'SCI'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Shipping_return%' THEN 'SSR'
+            WHEN atooerp_activity.object_type LIKE 'POS.Order%' THEN 'POSO'
+            WHEN atooerp_activity.object_type LIKE 'POS.Credit_order%' THEN 'POSC'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Payment%' THEN 'CP'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_out%' THEN 'CSO'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_entry%' THEN 'CSE'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_mouvement%' THEN 'CSM'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Need_expression%' THEN 'CNE'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Product%' THEN 'PROD'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Partner%' THEN 'PAR'
+            WHEN atooerp_activity.object_type LIKE 'CRM.Opportunity%' THEN 'CRMO'
+            ELSE NULL
+          END AS piece_acronym,
+          COALESCE(
+            purchase_quotation.code,
+            purchase_order.code,
+            purchase_shipping.code,
+            purchase_invoice.code,
+            purchase_credit_invoice.code,
+            purchase_quotation_request.code,
+            purchase_shipping_return.code,
+            sale_quotation.code,
+            sale_order.code,
+            sale_shipping.code,
+            sale_invoice.code,
+            sale_credit_invoice.code,
+            sale_shipping_return.code,
+            pos_order.code,
+            pos_credit_order.code,
+            commercial_payment.code,
+            commercial_stock_out.code,
+            commercial_stock_entry.code,
+            commercial_stock_mouvement.code,
+            commercial_need_expression.code,
+            CASE WHEN atooerp_activity.object_type LIKE 'Commercial.Partner%' THEN commercial_partner_direct.name ELSE NULL END,
+            crm_opportunity.code
+          ) AS piece_code,
+          commercial_partner.name AS partner_name,
+          commercial_product.name AS product_name
+        FROM
+          atooerp_activity
+          LEFT OUTER JOIN hr_employe ON atooerp_activity.author = hr_employe.Id
+          LEFT OUTER JOIN hr_employe hr_employe_1 ON atooerp_activity.assigned_employee = hr_employe_1.Id
+          LEFT OUTER JOIN atooerp_activity atooerp_activity_1 ON atooerp_activity.parent = atooerp_activity_1.Id
+          LEFT OUTER JOIN atooerp_activity_type ON atooerp_activity.type = atooerp_activity_type.Id
+          LEFT OUTER JOIN atooerp_person ON hr_employe.Id = atooerp_person.Id
+          LEFT OUTER JOIN atooerp_person atooerp_person_1 ON hr_employe_1.Id = atooerp_person_1.Id
+          LEFT OUTER JOIN atooerp_activity_state ON atooerp_activity.state = atooerp_activity_state.Id
+          LEFT OUTER JOIN purchase_quotation ON atooerp_activity.object = purchase_quotation.Id AND atooerp_activity.object_type LIKE 'Purchase.Quotation%'
+          LEFT OUTER JOIN purchase_order ON atooerp_activity.object = purchase_order.Id AND atooerp_activity.object_type LIKE 'Purchase.Order%'
+          LEFT OUTER JOIN purchase_shipping ON atooerp_activity.object = purchase_shipping.Id AND atooerp_activity.object_type LIKE 'Purchase.Shipping%'
+          LEFT OUTER JOIN purchase_invoice ON atooerp_activity.object = purchase_invoice.Id AND atooerp_activity.object_type LIKE 'Purchase.Invoice%'
+          LEFT OUTER JOIN purchase_credit_invoice ON atooerp_activity.object = purchase_credit_invoice.Id AND atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%'
+          LEFT OUTER JOIN purchase_quotation_request ON atooerp_activity.object = purchase_quotation_request.Id AND atooerp_activity.object_type LIKE 'Purchase.Quotation_request%'
+          LEFT OUTER JOIN purchase_shipping_return ON atooerp_activity.object = purchase_shipping_return.Id AND atooerp_activity.object_type LIKE 'Purchase.Shipping_return%'
+          LEFT OUTER JOIN sale_quotation ON atooerp_activity.object = sale_quotation.Id AND atooerp_activity.object_type LIKE 'Sale.Quotation%'
+          LEFT OUTER JOIN sale_order ON atooerp_activity.object = sale_order.Id AND atooerp_activity.object_type LIKE 'Sale.Order%'
+          LEFT OUTER JOIN sale_shipping ON atooerp_activity.object = sale_shipping.Id AND atooerp_activity.object_type LIKE 'Sale.Shipping%'
+          LEFT OUTER JOIN sale_invoice ON atooerp_activity.object = sale_invoice.Id AND atooerp_activity.object_type LIKE 'Sale.Invoice%'
+          LEFT OUTER JOIN sale_credit_invoice ON atooerp_activity.object = sale_credit_invoice.Id AND atooerp_activity.object_type LIKE 'Sale.Credit_invoice%'
+          LEFT OUTER JOIN sale_shipping_return ON atooerp_activity.object = sale_shipping_return.Id AND atooerp_activity.object_type LIKE 'Sale.Shipping_return%'
+          LEFT OUTER JOIN pos_order ON atooerp_activity.object = pos_order.Id AND atooerp_activity.object_type LIKE 'POS.Order%'
+          LEFT OUTER JOIN pos_credit_order ON atooerp_activity.object = pos_credit_order.Id AND atooerp_activity.object_type LIKE 'POS.Credit_order%'
+          LEFT OUTER JOIN commercial_payment ON atooerp_activity.object = commercial_payment.Id AND atooerp_activity.object_type LIKE 'Commercial.Payment%'
+          LEFT OUTER JOIN commercial_stock_out ON atooerp_activity.object = commercial_stock_out.Id AND atooerp_activity.object_type LIKE 'Commercial.Stock_out%'
+          LEFT OUTER JOIN commercial_stock_entry ON atooerp_activity.object = commercial_stock_entry.Id AND atooerp_activity.object_type LIKE 'Commercial.Stock_entry%'
+          LEFT OUTER JOIN commercial_stock_mouvement ON atooerp_activity.object = commercial_stock_mouvement.Id AND atooerp_activity.object_type LIKE 'Commercial.Stock_mouvement%'
+          LEFT OUTER JOIN commercial_need_expression ON atooerp_activity.object = commercial_need_expression.Id AND atooerp_activity.object_type LIKE 'Commercial.Need_expression%'
+          LEFT OUTER JOIN commercial_partner AS commercial_partner_direct ON atooerp_activity.object = commercial_partner_direct.Id AND atooerp_activity.object_type LIKE 'Commercial.Partner%'
+          LEFT OUTER JOIN crm_opportunity ON atooerp_activity.object = crm_opportunity.Id AND atooerp_activity.object_type LIKE 'CRM.Opportunity%'
+          LEFT OUTER JOIN commercial_product ON atooerp_activity.object = commercial_product.Id AND atooerp_activity.object_type LIKE 'Commercial.Product%'
+          LEFT OUTER JOIN commercial_partner ON COALESCE(
+            purchase_quotation.partner,
+            purchase_order.partner,
+            purchase_shipping.partner,
+            purchase_invoice.partner,
+            purchase_credit_invoice.partner,
+            purchase_shipping_return.partner,
+            sale_quotation.partner,
+            sale_order.partner,
+            sale_shipping.partner,
+            sale_invoice.partner,
+            sale_credit_invoice.partner,
+            sale_shipping_return.partner,
+            pos_order.partner,
+            pos_credit_order.partner,
+            commercial_payment.partner,
+            crm_opportunity.partner
+          ) = commercial_partner.Id
+        WHERE hr_employe_1.user = 85
+          AND atooerp_activity.state = 1
+          AND DATE(atooerp_activity.due_date) < CURRENT_DATE()
+        ORDER BY atooerp_activity.due_date ASC;";
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userId", userId);
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+                                    Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+                                    Icon = reader["Icon"] != DBNull.Value ? reader["Icon"].ToString() : string.Empty,
+                                    CreateDate = reader["CreateDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreateDate"]) : DateTime.MinValue,
+                                    Date = reader["Date"] != DBNull.Value ? Convert.ToDateTime(reader["Date"]) : DateTime.MinValue,
+                                    Type_all = reader["Type"] != DBNull.Value ? reader["Type"].ToString() : string.Empty,
+                                    Summary = reader["Summary"] != DBNull.Value ? reader["Summary"].ToString() : string.Empty,
+                                    DueDate = reader["DueDate"] != DBNull.Value ? Convert.ToDateTime(reader["DueDate"]) : DateTime.MinValue,
+                                    DoneDate = reader["DoneDate"] != DBNull.Value ? Convert.ToDateTime(reader["DoneDate"]) : (DateTime?)null,
+                                    State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 1, // Forcé à 1 pour cohérence
+                                    ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
+                                    Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
+                                    Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
+                                    Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
+                                    Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
+                                    PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
+                                    PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
+                                    PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités annulées : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+            // Trier par due_date (du plus proche au plus éloigné)
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+
+        public async static Task<List<Activity>> GetInProgressAllActivitiesFuture(int userId)
+        {
+            List<Activity> activities = new List<Activity>();
+            string todayDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            const string sqlCmd = @"
+       SELECT
+          atooerp_activity.Id,
+          atooerp_activity_type.icon AS Icon,
+          atooerp_activity.create_date AS CreateDate,
+          atooerp_activity.date AS Date,
+          atooerp_activity_type.name AS Type,
+          atooerp_activity.summary AS Summary,
+          atooerp_activity.due_date AS DueDate,
+          atooerp_activity.done_date AS DoneDate,
+          atooerp_activity_state.Id AS State,
+          atooerp_activity.object_type AS ObjectType,
+          atooerp_activity.object AS Object,
+          atooerp_activity.memo AS Memo,
+          atooerp_activity.form AS Form,
+          atooerp_activity.gps AS Gps,
+          CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
+          CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
+          atooerp_activity_1.summary AS Parent,
+          CASE
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation%' THEN 'PQ'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Order%' THEN 'PO'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping%' THEN 'PS'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Invoice%' THEN 'PIN'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%' THEN 'PCI'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation_request%' THEN 'PQR'
+            WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping_return%' THEN 'PSR'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Quotation%' THEN 'SQ'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Order%' THEN 'SO'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Shipping%' THEN 'SS'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Invoice%' THEN 'SIN'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Credit_invoice%' THEN 'SCI'
+            WHEN atooerp_activity.object_type LIKE 'Sale.Shipping_return%' THEN 'SSR'
+            WHEN atooerp_activity.object_type LIKE 'POS.Order%' THEN 'POSO'
+            WHEN atooerp_activity.object_type LIKE 'POS.Credit_order%' THEN 'POSC'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Payment%' THEN 'CP'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_out%' THEN 'CSO'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_entry%' THEN 'CSE'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Stock_mouvement%' THEN 'CSM'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Need_expression%' THEN 'CNE'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Product%' THEN 'PROD'
+            WHEN atooerp_activity.object_type LIKE 'Commercial.Partner%' THEN 'PAR'
+            WHEN atooerp_activity.object_type LIKE 'CRM.Opportunity%' THEN 'CRMO'
+            ELSE NULL
+          END AS piece_acronym,
+          COALESCE(
+            purchase_quotation.code,
+            purchase_order.code,
+            purchase_shipping.code,
+            purchase_invoice.code,
+            purchase_credit_invoice.code,
+            purchase_quotation_request.code,
+            purchase_shipping_return.code,
+            sale_quotation.code,
+            sale_order.code,
+            sale_shipping.code,
+            sale_invoice.code,
+            sale_credit_invoice.code,
+            sale_shipping_return.code,
+            pos_order.code,
+            pos_credit_order.code,
+            commercial_payment.code,
+            commercial_stock_out.code,
+            commercial_stock_entry.code,
+            commercial_stock_mouvement.code,
+            commercial_need_expression.code,
+            CASE WHEN atooerp_activity.object_type LIKE 'Commercial.Partner%' THEN commercial_partner_direct.name ELSE NULL END,
+            crm_opportunity.code
+          ) AS piece_code,
+          commercial_partner.name AS partner_name,
+          commercial_product.name AS product_name
+        FROM
+          atooerp_activity
+          LEFT OUTER JOIN hr_employe ON atooerp_activity.author = hr_employe.Id
+          LEFT OUTER JOIN hr_employe hr_employe_1 ON atooerp_activity.assigned_employee = hr_employe_1.Id
+          LEFT OUTER JOIN atooerp_activity atooerp_activity_1 ON atooerp_activity.parent = atooerp_activity_1.Id
+          LEFT OUTER JOIN atooerp_activity_type ON atooerp_activity.type = atooerp_activity_type.Id
+          LEFT OUTER JOIN atooerp_person ON hr_employe.Id = atooerp_person.Id
+          LEFT OUTER JOIN atooerp_person atooerp_person_1 ON hr_employe_1.Id = atooerp_person_1.Id
+          LEFT OUTER JOIN atooerp_activity_state ON atooerp_activity.state = atooerp_activity_state.Id
+          LEFT OUTER JOIN purchase_quotation ON atooerp_activity.object = purchase_quotation.Id AND atooerp_activity.object_type LIKE 'Purchase.Quotation%'
+          LEFT OUTER JOIN purchase_order ON atooerp_activity.object = purchase_order.Id AND atooerp_activity.object_type LIKE 'Purchase.Order%'
+          LEFT OUTER JOIN purchase_shipping ON atooerp_activity.object = purchase_shipping.Id AND atooerp_activity.object_type LIKE 'Purchase.Shipping%'
+          LEFT OUTER JOIN purchase_invoice ON atooerp_activity.object = purchase_invoice.Id AND atooerp_activity.object_type LIKE 'Purchase.Invoice%'
+          LEFT OUTER JOIN purchase_credit_invoice ON atooerp_activity.object = purchase_credit_invoice.Id AND atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%'
+          LEFT OUTER JOIN purchase_quotation_request ON atooerp_activity.object = purchase_quotation_request.Id AND atooerp_activity.object_type LIKE 'Purchase.Quotation_request%'
+          LEFT OUTER JOIN purchase_shipping_return ON atooerp_activity.object = purchase_shipping_return.Id AND atooerp_activity.object_type LIKE 'Purchase.Shipping_return%'
+          LEFT OUTER JOIN sale_quotation ON atooerp_activity.object = sale_quotation.Id AND atooerp_activity.object_type LIKE 'Sale.Quotation%'
+          LEFT OUTER JOIN sale_order ON atooerp_activity.object = sale_order.Id AND atooerp_activity.object_type LIKE 'Sale.Order%'
+          LEFT OUTER JOIN sale_shipping ON atooerp_activity.object = sale_shipping.Id AND atooerp_activity.object_type LIKE 'Sale.Shipping%'
+          LEFT OUTER JOIN sale_invoice ON atooerp_activity.object = sale_invoice.Id AND atooerp_activity.object_type LIKE 'Sale.Invoice%'
+          LEFT OUTER JOIN sale_credit_invoice ON atooerp_activity.object = sale_credit_invoice.Id AND atooerp_activity.object_type LIKE 'Sale.Credit_invoice%'
+          LEFT OUTER JOIN sale_shipping_return ON atooerp_activity.object = sale_shipping_return.Id AND atooerp_activity.object_type LIKE 'Sale.Shipping_return%'
+          LEFT OUTER JOIN pos_order ON atooerp_activity.object = pos_order.Id AND atooerp_activity.object_type LIKE 'POS.Order%'
+          LEFT OUTER JOIN pos_credit_order ON atooerp_activity.object = pos_credit_order.Id AND atooerp_activity.object_type LIKE 'POS.Credit_order%'
+          LEFT OUTER JOIN commercial_payment ON atooerp_activity.object = commercial_payment.Id AND atooerp_activity.object_type LIKE 'Commercial.Payment%'
+          LEFT OUTER JOIN commercial_stock_out ON atooerp_activity.object = commercial_stock_out.Id AND atooerp_activity.object_type LIKE 'Commercial.Stock_out%'
+          LEFT OUTER JOIN commercial_stock_entry ON atooerp_activity.object = commercial_stock_entry.Id AND atooerp_activity.object_type LIKE 'Commercial.Stock_entry%'
+          LEFT OUTER JOIN commercial_stock_mouvement ON atooerp_activity.object = commercial_stock_mouvement.Id AND atooerp_activity.object_type LIKE 'Commercial.Stock_mouvement%'
+          LEFT OUTER JOIN commercial_need_expression ON atooerp_activity.object = commercial_need_expression.Id AND atooerp_activity.object_type LIKE 'Commercial.Need_expression%'
+          LEFT OUTER JOIN commercial_partner AS commercial_partner_direct ON atooerp_activity.object = commercial_partner_direct.Id AND atooerp_activity.object_type LIKE 'Commercial.Partner%'
+          LEFT OUTER JOIN crm_opportunity ON atooerp_activity.object = crm_opportunity.Id AND atooerp_activity.object_type LIKE 'CRM.Opportunity%'
+          LEFT OUTER JOIN commercial_product ON atooerp_activity.object = commercial_product.Id AND atooerp_activity.object_type LIKE 'Commercial.Product%'
+          LEFT OUTER JOIN commercial_partner ON COALESCE(
+            purchase_quotation.partner,
+            purchase_order.partner,
+            purchase_shipping.partner,
+            purchase_invoice.partner,
+            purchase_credit_invoice.partner,
+            purchase_shipping_return.partner,
+            sale_quotation.partner,
+            sale_order.partner,
+            sale_shipping.partner,
+            sale_invoice.partner,
+            sale_credit_invoice.partner,
+            sale_shipping_return.partner,
+            pos_order.partner,
+            pos_credit_order.partner,
+            commercial_payment.partner,
+            crm_opportunity.partner
+          ) = commercial_partner.Id
+        WHERE hr_employe_1.user = 85
+          AND atooerp_activity.state = 1
+          AND DATE(atooerp_activity.due_date) > CURRENT_DATE()
+        ORDER BY atooerp_activity.due_date ASC;";
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userId", userId);
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+                                    Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+                                    Icon = reader["Icon"] != DBNull.Value ? reader["Icon"].ToString() : string.Empty,
+                                    CreateDate = reader["CreateDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreateDate"]) : DateTime.MinValue,
+                                    Date = reader["Date"] != DBNull.Value ? Convert.ToDateTime(reader["Date"]) : DateTime.MinValue,
+                                    Type_all = reader["Type"] != DBNull.Value ? reader["Type"].ToString() : string.Empty,
+                                    Summary = reader["Summary"] != DBNull.Value ? reader["Summary"].ToString() : string.Empty,
+                                    DueDate = reader["DueDate"] != DBNull.Value ? Convert.ToDateTime(reader["DueDate"]) : DateTime.MinValue,
+                                    DoneDate = reader["DoneDate"] != DBNull.Value ? Convert.ToDateTime(reader["DoneDate"]) : (DateTime?)null,
+                                    State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 1, // Forcé à 1 pour cohérence
+                                    ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
+                                    Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+                                    Memo = reader["memo"] != DBNull.Value ? reader["memo"].ToString() : string.Empty,
+                                    Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
+                                    Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
+                                    Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
+                                    PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
                                     PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
                                     PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
                                     ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
@@ -2925,6 +3867,219 @@ VALUES
             }
 
             // Trier par due_date (du plus proche au plus éloigné)
+            return activities.OrderBy(a => a.DueDate).ToList();
+        }
+
+
+        public async static Task<List<Activity>> GetLateActivities(int userId)
+        {
+            List<Activity> activities = new List<Activity>();
+            const string sqlCmd = @"
+        SELECT
+          atooerp_activity.Id,
+          atooerp_activity_type.icon AS Icon,
+          atooerp_activity.create_date AS CreateDate,
+          atooerp_activity.date AS Date,
+          atooerp_activity_type.name AS Type,
+          atooerp_activity.summary AS Summary,
+          atooerp_activity.due_date AS DueDate,
+          atooerp_activity.done_date AS DoneDate,
+          atooerp_activity_state.Id AS State,
+          atooerp_activity.object_type AS ObjectType,
+          atooerp_activity.object AS Object,
+          atooerp_activity.memo AS Memo,
+          atooerp_activity.form AS Form,
+          atooerp_activity.gps AS Gps,
+          CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name) AS Author,
+          CONCAT(atooerp_person_1.first_name, ' ', atooerp_person_1.last_name) AS Employee,
+          atooerp_activity_1.summary AS Parent,
+          -- New Columns: Piece Acronym (Dynamic Logic)
+          CASE
+          -- Purchase
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation%' THEN 'PQ'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Order%' THEN 'PO'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping%' THEN 'PS'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Invoice%' THEN 'PIN'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%' THEN 'PCI'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation_request%' THEN 'PQR'
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping_return%' THEN 'PSR'
+
+          -- Sale
+          WHEN atooerp_activity.object_type LIKE 'Sale.Quotation%' THEN 'SQ'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Order%' THEN 'SO'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Shipping%' THEN 'SS'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Invoice%' THEN 'SIN'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Credit_invoice%' THEN 'SCI'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Quotation_request%' THEN 'SQR'
+          WHEN atooerp_activity.object_type LIKE 'Sale.Shipping_return%' THEN 'SSR'
+
+          -- Inventory
+          WHEN atooerp_activity.object_type LIKE 'Inventory.Stock%' THEN 'ST'
+          WHEN atooerp_activity.object_type LIKE 'Inventory.Stock_Move%' THEN 'SM'
+          WHEN atooerp_activity.object_type LIKE 'Inventory.Stock_Adjustment%' THEN 'SA'
+          WHEN atooerp_activity.object_type LIKE 'Inventory.Stock_Count%' THEN 'SC'
+
+          -- Manufacturing
+          WHEN atooerp_activity.object_type LIKE 'Manufacturing.Production%' THEN 'PR'
+          WHEN atooerp_activity.object_type LIKE 'Manufacturing.Bill_of_Materials%' THEN 'BOM'
+          WHEN atooerp_activity.object_type LIKE 'Manufacturing.Routing%' THEN 'RT'
+
+          -- Quality
+          WHEN atooerp_activity.object_type LIKE 'Quality.Control%' THEN 'QC'
+          WHEN atooerp_activity.object_type LIKE 'Quality.Inspection%' THEN 'QI'
+          WHEN atooerp_activity.object_type LIKE 'Quality.Test%' THEN 'QT'
+
+          -- Maintenance
+          WHEN atooerp_activity.object_type LIKE 'Maintenance.Equipment%' THEN 'EQ'
+          WHEN atooerp_activity.object_type LIKE 'Maintenance.Maintenance%' THEN 'MT'
+          WHEN atooerp_activity.object_type LIKE 'Maintenance.Preventive%' THEN 'PM'
+
+          -- Project
+          WHEN atooerp_activity.object_type LIKE 'Project.Project%' THEN 'PJ'
+          WHEN atooerp_activity.object_type LIKE 'Project.Task%' THEN 'TSK'
+          WHEN atooerp_activity.object_type LIKE 'Project.Milestone%' THEN 'MS'
+
+          -- HR
+          WHEN atooerp_activity.object_type LIKE 'HR.Employee%' THEN 'EMP'
+          WHEN atooerp_activity.object_type LIKE 'HR.Contract%' THEN 'CTR'
+          WHEN atooerp_activity.object_type LIKE 'HR.Attendance%' THEN 'ATT'
+          WHEN atooerp_activity.object_type LIKE 'HR.Leave%' THEN 'LV'
+          WHEN atooerp_activity.object_type LIKE 'HR.Payroll%' THEN 'PYR'
+
+          -- Finance
+          WHEN atooerp_activity.object_type LIKE 'Finance.Account%' THEN 'ACC'
+          WHEN atooerp_activity.object_type LIKE 'Finance.Journal%' THEN 'JNL'
+          WHEN atooerp_activity.object_type LIKE 'Finance.Payment%' THEN 'PMT'
+          WHEN atooerp_activity.object_type LIKE 'Finance.Receipt%' THEN 'RCP'
+          WHEN atooerp_activity.object_type LIKE 'Finance.Tax%' THEN 'TAX'
+
+          -- CRM
+          WHEN atooerp_activity.object_type LIKE 'CRM.Lead%' THEN 'LD'
+          WHEN atooerp_activity.object_type LIKE 'CRM.Opportunity%' THEN 'OPP'
+          WHEN atooerp_activity.object_type LIKE 'CRM.Campaign%' THEN 'CMP'
+          WHEN atooerp_activity.object_type LIKE 'CRM.Contact%' THEN 'CNT'
+
+          -- Other
+          ELSE 'OT'
+          END AS piece_acronym,
+          -- Piece Code (Dynamic Logic)
+          CASE
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Order%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Invoice%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Credit_invoice%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Quotation_request%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Purchase.Shipping_return%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Quotation%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Order%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Shipping%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Invoice%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Credit_invoice%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Quotation_request%' THEN atooerp_activity.object
+          WHEN atooerp_activity.object_type LIKE 'Sale.Shipping_return%' THEN atooerp_activity.object
+          ELSE NULL
+          END AS piece_code,
+          -- Partner Name (Dynamic Logic)
+          CASE
+          WHEN atooerp_activity.object_type LIKE 'Purchase%' THEN (
+              SELECT CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name)
+              FROM atooerp_purchase_quotation
+              LEFT JOIN atooerp_person ON atooerp_purchase_quotation.partner = atooerp_person.Id
+              WHERE atooerp_purchase_quotation.Id = atooerp_activity.object
+              LIMIT 1
+          )
+          WHEN atooerp_activity.object_type LIKE 'Sale%' THEN (
+              SELECT CONCAT(atooerp_person.first_name, ' ', atooerp_person.last_name)
+              FROM atooerp_sale_quotation
+              LEFT JOIN atooerp_person ON atooerp_sale_quotation.partner = atooerp_person.Id
+              WHERE atooerp_sale_quotation.Id = atooerp_activity.object
+              LIMIT 1
+          )
+          ELSE NULL
+          END AS partner_name,
+          -- Product Name (Dynamic Logic)
+          CASE
+          WHEN atooerp_activity.object_type LIKE 'Purchase%' THEN (
+              SELECT atooerp_product.name
+              FROM atooerp_purchase_quotation_line
+              LEFT JOIN atooerp_product ON atooerp_purchase_quotation_line.product = atooerp_product.Id
+              WHERE atooerp_purchase_quotation_line.quotation = atooerp_activity.object
+              LIMIT 1
+          )
+          WHEN atooerp_activity.object_type LIKE 'Sale%' THEN (
+              SELECT atooerp_product.name
+              FROM atooerp_sale_quotation_line
+              LEFT JOIN atooerp_product ON atooerp_sale_quotation_line.product = atooerp_product.Id
+              WHERE atooerp_sale_quotation_line.quotation = atooerp_activity.object
+              LIMIT 1
+          )
+          ELSE NULL
+          END AS product_name
+        FROM atooerp_activity
+        LEFT JOIN atooerp_activity_type ON atooerp_activity.type = atooerp_activity_type.Id
+        LEFT JOIN atooerp_activity_state ON atooerp_activity.state = atooerp_activity_state.Id
+        LEFT JOIN atooerp_person ON atooerp_activity.author = atooerp_person.Id
+        LEFT JOIN atooerp_person atooerp_person_1 ON atooerp_activity.assigned_employee = atooerp_person_1.Id
+        LEFT JOIN atooerp_activity atooerp_activity_1 ON atooerp_activity.parent = atooerp_activity_1.Id
+        WHERE atooerp_activity.assigned_employee = @userId
+          AND atooerp_activity.state = 1  -- En cours
+          AND atooerp_activity.due_date < CURDATE()  -- Date d'échéance dépassée
+        ORDER BY atooerp_activity.due_date ASC;";
+
+            using (var connection = new MySqlConnection(DbConnection.ConnectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userId", userId);
+                        using (MySqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var activity = new Activity
+                                {
+
+                                    Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
+                                    Icon = reader["Icon"] != DBNull.Value ? reader["Icon"].ToString() : string.Empty,
+                                    CreateDate = reader["CreateDate"] != DBNull.Value ? Convert.ToDateTime(reader["CreateDate"]) : DateTime.MinValue,
+                                    Date = reader["Date"] != DBNull.Value ? Convert.ToDateTime(reader["Date"]) : DateTime.MinValue,
+                                    Type_all = reader["Type"] != DBNull.Value ? reader["Type"].ToString() : string.Empty,
+                                    Summary = reader["Summary"] != DBNull.Value ? reader["Summary"].ToString() : string.Empty,
+                                    DueDate = reader["DueDate"] != DBNull.Value ? Convert.ToDateTime(reader["DueDate"]) : DateTime.MinValue,
+                                    DoneDate = reader["DoneDate"] != DBNull.Value ? Convert.ToDateTime(reader["DoneDate"]) : (DateTime?)null,
+                                    State = reader["State"] != DBNull.Value ? Convert.ToInt32(reader["State"]) : 1,
+                                    ObjectType = reader["ObjectType"] != DBNull.Value ? reader["ObjectType"].ToString() : string.Empty,
+                                    Object = reader["Object"] != DBNull.Value ? Convert.ToInt32(reader["Object"]) : 0,
+
+                                    Author_name = reader["Author"] != DBNull.Value ? reader["Author"].ToString() : string.Empty,
+                                    Employee = reader["Employee"] != DBNull.Value ? reader["Employee"].ToString() : string.Empty,
+                                    Parent_name = reader["Parent"] != DBNull.Value ? reader["Parent"].ToString() : string.Empty,
+                                    PieceAcronym = reader["piece_acronym"] != DBNull.Value ? reader["piece_acronym"].ToString() : string.Empty,
+                                    PieceCode = reader["piece_code"] != DBNull.Value ? reader["piece_code"].ToString() : string.Empty,
+                                    PartnerName = reader["partner_name"] != DBNull.Value ? reader["partner_name"].ToString() : string.Empty,
+                                    Form = reader["Form"] != DBNull.Value ? reader["Form"].ToString() : string.Empty,
+                                    Gps = reader["gps"] != DBNull.Value ? reader["gps"].ToString() : string.Empty,
+                                    ProductName = reader["product_name"] != DBNull.Value ? reader["product_name"].ToString() : string.Empty
+                                };
+                                activities.Add(activity);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la récupération des activités en retard : {ex.Message}");
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
             return activities.OrderBy(a => a.DueDate).ToList();
         }
 

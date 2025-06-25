@@ -3,6 +3,7 @@ using DevExpress.Xpo.DB;
 using Microsoft.Maui.ApplicationModel;
 using MvvmHelpers;
 using MySqlConnector;
+using SmartPharma5.ViewModel;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
@@ -1819,6 +1820,10 @@ ORDER BY
 
             private bool is_checked;
             public bool Is_checked { get => is_checked; set => SetProperty(ref is_checked, value); }
+            
+            private bool showSociety;
+            public bool ShowSociety { get => showSociety; set => SetProperty(ref showSociety, value); }
+            
             public Color stateColor
             {
                 get
@@ -1873,6 +1878,7 @@ ORDER BY
                 this.email = email;
                 this.partnerCategory = partnerCategory;
                 this.Is_checked = false;
+                this.ShowSociety = false; // Initialisation par défaut
             }
 
             public Piece(int id, string code, string reference, DateTime date, int IdPartner,
@@ -1903,6 +1909,7 @@ ORDER BY
                 this.currencySymbol = currencySymbol;
                 this.societe = societe;
                 this.SocityId = SocityId;
+                this.ShowSociety = false; // Initialisation par défaut
             }
             /*   public Piece(int id, string code, string reference, DateTime date, int IdPartner,
                string partnerName, string paymentConditionName, string paymentMethodName,
@@ -1950,6 +1957,7 @@ ORDER BY
             private decimal piece_restAmount;
             public uint? Currency { get; set; }
             public string CurrencySymbol { get; set; }
+
             public decimal DecimalNumber { get; set; }
 
             public decimal Piece_restAmount
@@ -1957,6 +1965,22 @@ ORDER BY
                 get => piece_restAmount; set => SetProperty(ref piece_restAmount, value);
             }
             public string NameSociety { get; set; }
+
+            // Ajout de la propriété ShowSociety
+            private bool isvisibleSociety;
+            public bool IsVisibleSociety
+            {
+                get => isvisibleSociety;
+                set
+                {
+                    if (isvisibleSociety != value)  // Ajoutez cette vérification
+                    {
+                        isvisibleSociety = value;
+                        OnPropertyChanged(nameof(IsVisibleSociety));  // Assurez-vous que cette notification est faite
+                    }
+                }
+            }
+
             #endregion
             #region Constructeur
             public Payment_piece() { }
@@ -2007,9 +2031,9 @@ ORDER BY
                     Piece_restAmount = Math.Round(piece_restAmount, (int)decimalNumber);
                 else
                     Piece_restAmount = Math.Round(piece_restAmount - this.amount, (int)decimalNumber);
-
+                
             }
-            public Payment_piece(int id, int piece, string piece_type, string piece_typeName, string piece_code, int payment, decimal amount, decimal piece_totalAmont, decimal piece_paiedAmount, decimal piece_restAmount, string currencySymbol, decimal decimalNumber, string NameSociety)
+            public Payment_piece(int id, int piece, string piece_type, string piece_typeName, string piece_code, int payment, decimal amount, decimal piece_totalAmont, decimal piece_paiedAmount, decimal piece_restAmount, string currencySymbol, decimal decimalNumber, string NameSociety, Payment.Piece sourcePiece = null)
             {
                 Id = id;
                 this.create_date = DateTime.Now;

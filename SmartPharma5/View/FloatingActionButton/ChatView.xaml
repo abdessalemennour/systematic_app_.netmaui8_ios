@@ -133,6 +133,23 @@
                                                 <Image Source="failed_con" VerticalOptions="CenterAndExpand"></Image>
 
                                             </StackLayout>
+                                            
+                                            <!-- Indicateur de chargement vers le dernier message -->
+                                            <StackLayout IsVisible="{Binding IsLoadingToLastMessage}" 
+                                                         Orientation="Horizontal" 
+                                                         Margin="20" 
+                                                         HorizontalOptions="CenterAndExpand" 
+                                                         VerticalOptions="CenterAndExpand">
+                                                <ActivityIndicator IsRunning="True" 
+                                                                  Color="#2196F3" 
+                                                                  VerticalOptions="CenterAndExpand" 
+                                                                  Margin="0,0,10,0"/>
+                                                <Label Text="Chargement vers le dernier message..." 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#2196F3"
+                                                       VerticalOptions="CenterAndExpand"/>
+                                            </StackLayout>
+                                            
                                             <!-- Liste des messages dynamiques -->
                                             <CollectionView x:Name="MessagesCollectionView" ItemsSource="{Binding Messages}" VerticalOptions="FillAndExpand">
                                                 <CollectionView.ItemTemplate>
